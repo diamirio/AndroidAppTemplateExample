@@ -16,12 +16,12 @@ package com.tailoredapps.countriesexample.overview
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.isVisible
 import at.florianschuster.reaktor.ReactorView
 import at.florianschuster.reaktor.android.bind
 import at.florianschuster.reaktor.changesFrom
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
+import com.jakewharton.rxbinding3.view.visibility
 import com.tailoredapps.androidutil.async.Async
 import com.tailoredapps.androidutil.core.extensions.snack
 import com.tailoredapps.countriesexample.CountryAdapter
@@ -78,9 +78,12 @@ class OverviewFragment : BaseFragment(R.layout.fragment_overview), ReactorView<O
             .addTo(disposables)
 
         // state
+        reactor.state.changesFrom { it.hasCountries }
+            .bind(to = emptyLayout.visibility())
+            .addTo(disposables)
+
         reactor.state.changesFrom { it.countriesAsync }
             .bind {
-                emptyLayout.isVisible = it !is Async.Loading && it()?.isEmpty() == true
                 swipeRefresh.isRefreshing = it is Async.Loading
                 when (it) {
                     is Async.Success -> adapter.submitList(it.element)
@@ -112,6 +115,7 @@ class OverviewReactor(
     }
 
     data class State(
+        val hasCountries: Boolean = false,
         val countriesAsync: Async<List<Country>> = Async.Uninitialized
     )
 
@@ -134,11 +138,14 @@ class OverviewReactor(
     }
 
     override fun reduce(previousState: State, mutation: Mutation): State = when (mutation) {
-        is Mutation.SetCountries -> previousState.copy(countriesAsync = mutation.countries)
+        is Mutation.SetCountries -> previousState.copy(
+            countriesAsync = mutation.countries,
+            hasCountries = mutation.countries !is Async.Loading && mutation.countries()?.isEmpty() == true
+        )
     }
 
-    private val storedCountriesMutation: Observable<Mutation>
+    private val storedCountriesMutation: Observable<out Mutation>
         get() = countriesRepo.all
-            .toObservable()
             .map { Mutation.SetCountries(Async.Success(it)) }
+            .toObservable()
 }
