@@ -20,5 +20,6 @@ import com.tailoredapps.reaktor.koin.reactor
 import org.koin.dsl.module
 
 val detailModule = module {
-    reactor { DetailReactor(dataRepo = get()) }
+    reactor { (alpha2Code: String) -> DetailReactor(alpha2Code = alpha2Code, countriesRepo = get()) }
+    factory { DetailAdapter() }
 }

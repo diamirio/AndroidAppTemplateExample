@@ -17,6 +17,7 @@
 package com.tailoredapps.countriesexample.core.remote
 
 import com.google.gson.Gson
+import com.tailoredapps.androidutil.network.networkresponse.NetworkResponseRxJava2CallAdapterFactory
 import com.tailoredapps.countriesexample.core.BuildConfig
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
@@ -28,7 +29,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 val remoteModule = module {
     single { provideOkHttpClient() }
-    single { provideApi<MyApi>(okHttpClient = get(), gson = get(), baseUrl = get()) }
+    single { provideApi<CountriesApi>(okHttpClient = get(), gson = get(), baseUrl = get()) }
 }
 
 data class BaseUrl(val url: String)
@@ -47,5 +48,6 @@ private inline fun <reified T> provideApi(okHttpClient: OkHttpClient, gson: Gson
         baseUrl(baseUrl.url)
         client(okHttpClient)
         addConverterFactory(GsonConverterFactory.create(gson))
+        addCallAdapterFactory(NetworkResponseRxJava2CallAdapterFactory.create())
         addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
     }.build().create(T::class.java)

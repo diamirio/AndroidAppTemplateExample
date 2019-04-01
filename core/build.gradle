@@ -28,6 +28,14 @@ dependencies {
     implementation deps.networking.values()
 
     /**
+     * Persistence
+     */
+    implementation deps.room.core
+    kapt deps.room.compiler
+    implementation deps.room.rxjava
+    debugImplementation deps.room.debug
+
+    /**
      * Util
      */
     api deps.coreutil.values()

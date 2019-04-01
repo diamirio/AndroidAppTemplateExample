@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+            android:id="@+id/overviewFragment"
+            android:icon="@drawable/ic_public"
+            android:title="@string/bnv_countries"/>
+
+    <item
+            android:id="@+id/favoritesFragment"
+            android:icon="@drawable/ic_favorite"
+            android:title="@string/bnv_favorites"/>
+</menu>

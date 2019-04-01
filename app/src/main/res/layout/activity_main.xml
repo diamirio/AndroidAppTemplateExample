@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -12,8 +11,21 @@
             android:id="@+id/navHost"
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             app:defaultNavHost="true"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_anchor="@id/bnv"
+            app:layout_anchorGravity="top"
+            app:layout_constraintBottom_toTopOf="@id/bnv"
+            app:layout_constraintTop_toBottomOf="@id/appBar"
             app:navGraph="@navigation/nav_graph"/>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bnv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:itemIconTint="@drawable/selector_bnv"
+            app:itemTextColor="@drawable/selector_bnv"
+            app:labelVisibilityMode="labeled"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:menu="@menu/menu_bnv"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

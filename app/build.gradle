@@ -121,6 +121,7 @@ dependencies {
     releaseImplementation deps.leakcanary.noop
     implementation deps.glide.core
     kapt deps.glide.compiler
+    implementation deps.customtabs
 
     /**
      * Testing

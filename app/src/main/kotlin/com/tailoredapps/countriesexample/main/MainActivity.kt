@@ -17,11 +17,16 @@
 package com.tailoredapps.countriesexample.main
 
 import android.os.Bundle
+import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import com.tailoredapps.androidutil.core.extensions.liftWith
 import com.tailoredapps.countriesexample.R
 import com.tailoredapps.countriesexample.base.BaseActivity
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_appbar.*
 
 class MainActivity : BaseActivity(R.layout.activity_main) {
@@ -29,7 +34,11 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        toolbar.setupWithNavController(navController)
+        bnv.setupWithNavController(navController)
+
+        AppBarConfiguration.Builder(R.id.overviewFragment, R.id.favoritesFragment).build().let {
+            toolbar.setupWithNavController(navController, it)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean = navController.navigateUp()
@@ -39,4 +48,10 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
             super.onBackPressed()
         }
     }
+}
+
+fun Fragment.liftsAppBarWith(view: View) {
+    val activity = activity as? MainActivity ?: return
+    activity.appBar.setLiftable(true)
+    activity.appBar.liftWith(view)
 }

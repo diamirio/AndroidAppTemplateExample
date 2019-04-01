@@ -24,4 +24,6 @@ import org.koin.dsl.module
 val appModule = module {
     single { BaseUrl(BuildConfig.BASE_URL) }
     single { LeakCanary.install(androidApplication()) }
+
+    factory { CountryAdapter() }
 }

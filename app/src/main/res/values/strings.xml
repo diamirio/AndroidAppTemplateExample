@@ -1,3 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="bnv_countries">Countries</string>
+    <string name="bnv_favorites">Favorites</string>
+    <string name="overview_error_message">Error loading countries</string>
+    <string name="overview_error_retry">Retry</string>
+    <string name="overview_empty_text">No countries loaded yet.</string>
+    <string name="overview_btn_load">Load now!</string>
+    <string name="item_country_btn_detail">View Details</string>
+    <string name="item_country_btn_favorite">Favorite</string>
+    <string name="item_country_btn_remove_favorite">Remove Favorite</string>
+    <string name="detail_location">Location</string>
+    <string name="detail_languages">Languages</string>
+    <string name="detail_population">Population</string>
+    <string name="detail_area">Area</string>
+    <string name="detail_capital">Capital</string>
+    <string name="detail_region">Region</string>
+    <string name="detail_btn_more">Show more</string>
+    <string name="detail_dialog_title">Watch out!</string>
+    <string name="detail_dialog_message">Do you really want to leave the app and open %s?</string>
+    <string name="detail_dialog_positive">Yea, sure!</string>
+    <string name="detail_dialog_negative">Nope</string>
+    <string name="favorite_empty_text">No countries favorited yet.</string>
+    <string name="detail_cd_flag">Image of the flag of the country.</string>
+    <string name="item_detail_cd_icon">Icon of this list item.</string>
+    <string name="favorites_cd_image">Empty favorites image.</string>
+    <string name="overview_cd_image">Empty favorites image.</string>
 </resources>

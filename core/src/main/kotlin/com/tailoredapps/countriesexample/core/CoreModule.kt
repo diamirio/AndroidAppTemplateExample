@@ -21,7 +21,7 @@ import org.koin.dsl.module
 
 val coreModule = module {
     single { provideGson() }
-    single { CoreDataRepo(api = get(), prefService = get()) as DataRepo }
+    single { RetrofitRoomCountriesRepo(api = get(), db = get()) as CountriesRepo }
 }
 
 private fun provideGson() = GsonBuilder().create()

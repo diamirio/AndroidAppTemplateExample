@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Florian Schuster.
+ * Copyright 2019 Michael Gostner.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,6 +14,19 @@
  * limitations under the License.
  */
 
-package com.tailoredapps.countriesexample.core.remote
+package com.tailoredapps.countriesexample.core.local.dao
 
-interface MyApi
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import com.tailoredapps.countriesexample.core.local.model.LocalFavoriteCountry
+
+@Dao
+interface FavoriteDao {
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun addFavorite(favoriteCountry: LocalFavoriteCountry)
+
+    @Delete
+    fun removeFavorite(favoriteCountry: LocalFavoriteCountry)
+}

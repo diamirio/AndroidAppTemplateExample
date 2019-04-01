@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-package com.tailoredapps.countriesexample.core
+package com.tailoredapps.countriesexample.core.remote
 
-import com.tailoredapps.countriesexample.core.local.PrefService
-import com.tailoredapps.countriesexample.core.remote.MyApi
+import com.tailoredapps.androidutil.network.networkresponse.NetworkResponse
+import com.tailoredapps.countriesexample.core.remote.model.RemoteCountry
+import io.reactivex.Single
+import retrofit2.http.GET
 
-interface DataRepo
+interface CountriesApi {
 
-class CoreDataRepo(private val api: MyApi, private val prefService: PrefService) : DataRepo
+    @GET("all")
+    fun all(): Single<NetworkResponse<List<RemoteCountry>>>
+}

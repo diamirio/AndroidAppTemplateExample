@@ -16,9 +16,15 @@
 
 package com.tailoredapps.countriesexample.core.local
 
+import android.content.Context
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val localModule = module {
-    single { SharedPrefService(context = androidContext()) as PrefService }
+    single { provideDataBase<CountriesDatabase>(androidContext(), CountriesDatabase.NAME) }
 }
+
+private inline fun <reified T : RoomDatabase> provideDataBase(context: Context, name: String) =
+    Room.databaseBuilder(context, T::class.java, name).build()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Florian Schuster.
+ * Copyright 2019 Michael Gostner.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package com.tailoredapps.countriesexample.core.local
+package com.tailoredapps.countriesexample.core.local.dao
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.preference.PreferenceManager
+import androidx.room.Dao
+import androidx.room.Query
+import com.tailoredapps.countriesexample.core.local.model.LocalLanguage
+import io.reactivex.Flowable
+import io.reactivex.Single
 
-interface PrefService
+@Dao
+interface LanguageDao : BaseDao<LocalLanguage> {
+    @Query("SELECT * FROM language WHERE l_name = :name")
+    fun get(name: String): Single<LocalLanguage>
 
-class SharedPrefService(context: Context) : PrefService {
-    private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    @Query("SELECT * FROM language")
+    fun getAll(): Flowable<List<LocalLanguage>>
 }
