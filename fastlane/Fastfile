@@ -5,4 +5,16 @@ platform :android do
   lane :test do
     gradle(task: "test")
   end
+
+  desc "Fetches localizations"
+  lane :localize do
+    google_sheet_localize(
+      service_account_path: "./fastlane/google_drive_credentials.json",
+      sheet_id: "1HiBLTS3iMO3OmViqPNusDa32kdAIQpXdmVMWirgyP9Q",
+      localization_path: "./core/src/main/res",
+      language_titles: ["en"],
+      default_language: "en",
+      base_language: "en"
+    )
+  end
 end
