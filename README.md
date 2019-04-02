@@ -11,3 +11,10 @@ Run `bundle exec fastlane localize` to fetch localizations.
 ## Formatting
 
 Run `bundle exec fastlane format` to format the code with [ktlint](https://ktlint.github.io/).
+
+
+## TODO
+
+* [ ] `build.gradle` -> packagingOptions exclude fixen in AndroidUtil/Reaktor
+* [ ] core/local -> check if its still ok (@gustl)
+* [ ] more tests
