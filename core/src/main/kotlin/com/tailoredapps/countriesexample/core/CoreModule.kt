@@ -17,11 +17,13 @@
 package com.tailoredapps.countriesexample.core
 
 import com.google.gson.GsonBuilder
+import com.tailoredapps.countriesexample.core.local.localModule
+import com.tailoredapps.countriesexample.core.remote.remoteModule
 import org.koin.dsl.module
 
-val coreModule = module {
-    single { provideGson() }
+internal val coreModule = module {
+    single { GsonBuilder().create() }
     single { RetrofitRoomCountriesRepo(api = get(), db = get()) as CountriesRepo }
 }
 
-private fun provideGson() = GsonBuilder().create()
+val coreModules = listOf(coreModule, localModule, remoteModule)

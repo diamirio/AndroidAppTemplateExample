@@ -6,13 +6,18 @@ platform :android do
     gradle(task: "test")
   end
 
+  desc "Formats the code according to ktlint"
+  lane :format do
+    gradle(task: "ktlintFormat")
+  end
+
   desc "Fetches localizations"
   lane :localize do
     google_sheet_localize(
       service_account_path: "./fastlane/google_drive_credentials.json",
       sheet_id: "1HiBLTS3iMO3OmViqPNusDa32kdAIQpXdmVMWirgyP9Q",
-      localization_path: "./core/src/main/res",
-      language_titles: ["en"],
+      localization_path: "./app/src/main/res",
+      language_titles: ["en", "de"],
       default_language: "en",
       base_language: "en"
     )

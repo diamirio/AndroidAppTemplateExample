@@ -36,9 +36,10 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
         super.onCreate(savedInstanceState)
         bnv.setupWithNavController(navController)
 
-        AppBarConfiguration.Builder(R.id.overviewFragment, R.id.favoritesFragment).build().let {
-            toolbar.setupWithNavController(navController, it)
-        }
+        AppBarConfiguration
+            .Builder(R.id.overview, R.id.favorites)
+            .build()
+            .let { toolbar.setupWithNavController(navController, it) }
     }
 
     override fun onSupportNavigateUp(): Boolean = navController.navigateUp()

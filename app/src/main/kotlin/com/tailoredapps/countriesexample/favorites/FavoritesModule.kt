@@ -17,6 +17,6 @@ package com.tailoredapps.countriesexample.favorites
 import com.tailoredapps.reaktor.koin.reactor
 import org.koin.dsl.module
 
-val favoritesModule = module {
+internal val favoritesModule = module {
     reactor { FavoritesReactor(countriesRepo = get()) }
 }

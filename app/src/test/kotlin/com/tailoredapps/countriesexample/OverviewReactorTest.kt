@@ -130,7 +130,6 @@ class OverviewReactorTest : AutoCloseKoinTest() {
         testObserver.assertValueCount(2)
     }
 
-
     companion object {
         val mockCountry = Country("", "", "", null, false, 0, 0.0, "", "", "", "", emptyList())
     }

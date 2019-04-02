@@ -18,12 +18,17 @@ package com.tailoredapps.countriesexample
 
 import com.squareup.leakcanary.LeakCanary
 import com.tailoredapps.countriesexample.core.remote.BaseUrl
+import com.tailoredapps.countriesexample.detail.detailModule
+import com.tailoredapps.countriesexample.favorites.favoritesModule
+import com.tailoredapps.countriesexample.overview.overviewModule
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
-val appModule = module {
+internal val appModule = module {
     single { BaseUrl(BuildConfig.BASE_URL) }
     single { LeakCanary.install(androidApplication()) }
 
     factory { CountryAdapter() }
 }
+
+val appModules = listOf(appModule, overviewModule, favoritesModule, detailModule)

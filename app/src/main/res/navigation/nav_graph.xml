@@ -3,15 +3,15 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/app_graph"
-            app:startDestination="@id/overviewFragment">
+            app:startDestination="@id/overview">
 
     <fragment
-            android:id="@+id/overviewFragment"
+            android:id="@+id/overview"
             android:name="com.tailoredapps.countriesexample.overview.OverviewFragment"
             tools:layout="@layout/fragment_overview">
         <action
                 android:id="@+id/action_overview_to_detail"
-                app:destination="@id/detailFragment"
+                app:destination="@id/detail"
                 app:enterAnim="@anim/slide_in_right"
                 app:exitAnim="@anim/slide_out_left"
                 app:popEnterAnim="@anim/slide_in_left"
@@ -19,12 +19,12 @@
     </fragment>
 
     <fragment
-            android:id="@+id/favoritesFragment"
+            android:id="@+id/favorites"
             android:name="com.tailoredapps.countriesexample.favorites.FavoritesFragment"
             tools:layout="@layout/fragment_favorites">
         <action
                 android:id="@+id/action_favorites_to_detail"
-                app:destination="@id/detailFragment"
+                app:destination="@id/detail"
                 app:enterAnim="@anim/slide_in_right"
                 app:exitAnim="@anim/slide_out_left"
                 app:popEnterAnim="@anim/slide_in_left"
@@ -32,7 +32,7 @@
     </fragment>
 
     <fragment
-            android:id="@+id/detailFragment"
+            android:id="@+id/detail"
             android:name="com.tailoredapps.countriesexample.detail.DetailFragment"
             tools:layout="@layout/fragment_detail">
         <argument android:name="alpha2code" app:argType="string"/>

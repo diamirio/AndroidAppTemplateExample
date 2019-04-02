@@ -5,7 +5,6 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.akaita.android.easylauncher'
 apply plugin: "androidx.navigation.safeargs.kotlin"
 
-
 android {
     compileSdkVersion rootProject.ext.buildConfig.compileSdkVersion
 
@@ -63,6 +62,10 @@ android {
         unitTests.returnDefaultValues = true
     }
 
+    packagingOptions {
+        exclude 'META-INF/core_release.kotlin_module' //todo fix wherever this is coming from (reaktor or util)
+    }
+
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
         test.java.srcDirs += 'src/test/kotlin'
@@ -87,11 +90,9 @@ android {
     }
 }
 
-
 androidExtensions {
     experimental = true
 }
-
 
 dependencies {
     /**
@@ -129,7 +130,6 @@ dependencies {
     testImplementation deps.test.values()
     androidTestImplementation deps.androidtest.values()
 }
-
 
 easylauncher {
     iconNames "@mipmap/ic_launcher_foreground"
