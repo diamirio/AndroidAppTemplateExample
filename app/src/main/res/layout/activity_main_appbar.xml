@@ -14,7 +14,7 @@
                 android:contentDescription="@string/app_name"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_margin="@dimen/margin"
+                android:layout_margin="@dimen/all_margin"
                 android:src="@drawable/ta_logo"
                 app:layout_constraintBottom_toBottomOf="@id/toolbar"
                 app:layout_constraintTop_toTopOf="@id/toolbar"/>

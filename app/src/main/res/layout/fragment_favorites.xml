@@ -11,7 +11,7 @@
             android:id="@+id/rvFavorites"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="@dimen/margin_half"
+            android:padding="@dimen/all_margin_half"
             android:clipToPadding="false"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="2"

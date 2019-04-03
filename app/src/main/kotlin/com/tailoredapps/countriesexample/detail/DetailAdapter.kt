@@ -19,7 +19,7 @@ import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
-import com.tailoredapps.androidutil.core.extensions.inflate
+import com.tailoredapps.androidutil.ui.extensions.inflate
 import com.tailoredapps.countriesexample.R
 import com.tailoredapps.countriesexample.core.model.Country
 import kotlinx.android.synthetic.main.item_detail.view.*
@@ -39,22 +39,22 @@ class DetailAdapter : RecyclerView.Adapter<DetailViewHolder>() {
 
     fun submitCountry(country: Country) {
         items = listOfNotNull(
-            Item(R.drawable.ic_person_outline, country.population.formatThousands(), R.string.detail_population),
-            Item(R.drawable.ic_adjust, country.capital, R.string.detail_capital),
-            Item(R.drawable.ic_terrain, "${country.subRegion}, ${country.region}", R.string.detail_region),
-            Item(R.drawable.ic_map, "${country.area.formatThousands()} km²", R.string.detail_area),
+            Item(R.drawable.ic_person_outline, country.population.formatThousands(), R.string.detail_tv_population),
+            Item(R.drawable.ic_adjust, country.capital, R.string.detail_tv_capital),
+            Item(R.drawable.ic_terrain, "${country.subRegion}, ${country.region}", R.string.detail_tv_region),
+            Item(R.drawable.ic_map, "${country.area.formatThousands()} km²", R.string.detail_tv_area),
             country.languages.ifEmpty { null }?.let { languages ->
                 Item(
                     R.drawable.ic_language,
                     languages.joinToString(", ") { "${it.name} (${it.nativeName})" },
-                    R.string.detail_languages
+                    R.string.detail_tv_languages
                 )
             },
             country.location?.let {
                 Item(
                     R.drawable.ic_location_on,
                     "(${it.first.formatTwoDecimals()}, ${it.second.formatTwoDecimals()})",
-                    R.string.detail_location
+                    R.string.detail_tv_location
                 )
             }
         )

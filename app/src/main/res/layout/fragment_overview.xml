@@ -15,7 +15,7 @@
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvOverView"
                 android:layout_width="match_parent"
-                android:padding="@dimen/margin_half"
+                android:padding="@dimen/all_margin_half"
                 android:clipToPadding="false"
                 android:layout_height="wrap_content"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"

@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxrelay2.PublishRelay
-import com.tailoredapps.androidutil.core.extensions.inflate
+import com.tailoredapps.androidutil.ui.extensions.inflate
 import com.tailoredapps.countriesexample.core.model.Country
 import com.tailoredapps.countriesexample.util.source
 import kotlinx.android.extensions.LayoutContainer

@@ -5,7 +5,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_half">
+        android:layout_margin="@dimen/all_margin_half">
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container"
@@ -23,7 +23,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="@string/item_country_cd_iv_flag"
+                android:contentDescription="@string/item_country_iv_cd_flag"
                 tools:src="@mipmap/ic_launcher"/>
 
         <TextView
@@ -31,7 +31,7 @@
                 style="@style/TextAppearance.MaterialComponents.Subtitle2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin"
+                android:layout_margin="@dimen/all_margin"
                 android:maxLines="2"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -44,10 +44,10 @@
                 android:id="@+id/btnFavorite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/margin"
-                android:contentDescription="@string/item_country_cd_btn_favorite"
+                android:layout_marginEnd="@dimen/all_margin"
+                android:contentDescription="@string/item_country_btn_cd_favorite"
                 android:background="?selectableItemBackgroundBorderless"
-                android:padding="@dimen/padding"
+                android:padding="@dimen/all_padding"
                 android:tint="@color/favoriteColor"
                 app:layout_constraintBottom_toBottomOf="@+id/tvName"
                 app:layout_constraintEnd_toEndOf="parent"

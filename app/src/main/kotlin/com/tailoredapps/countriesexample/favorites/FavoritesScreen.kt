@@ -28,7 +28,7 @@ import com.tailoredapps.countriesexample.base.BaseReactor
 import com.tailoredapps.countriesexample.core.CountriesRepo
 import com.tailoredapps.countriesexample.core.model.Country
 import com.tailoredapps.countriesexample.main.liftsAppBarWith
-import com.tailoredapps.reaktor.koin.reactor
+import com.tailoredapps.reaktor.android.koin.reactor
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo

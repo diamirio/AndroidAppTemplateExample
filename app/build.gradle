@@ -62,10 +62,6 @@ android {
         unitTests.returnDefaultValues = true
     }
 
-    packagingOptions {
-        exclude 'META-INF/core_release.kotlin_module' //todo fix wherever this is coming from (reaktor or util)
-    }
-
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
         test.java.srcDirs += 'src/test/kotlin'

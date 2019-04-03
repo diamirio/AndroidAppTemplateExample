@@ -23,7 +23,7 @@ import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.view.visibility
 import com.tailoredapps.androidutil.async.Async
-import com.tailoredapps.androidutil.core.extensions.snack
+import com.tailoredapps.androidutil.ui.extensions.snack
 import com.tailoredapps.countriesexample.CountryAdapter
 import com.tailoredapps.countriesexample.CountryAdapterInteractionType
 import com.tailoredapps.countriesexample.R
@@ -32,7 +32,7 @@ import com.tailoredapps.countriesexample.base.BaseReactor
 import com.tailoredapps.countriesexample.core.CountriesRepo
 import com.tailoredapps.countriesexample.core.model.Country
 import com.tailoredapps.countriesexample.main.liftsAppBarWith
-import com.tailoredapps.reaktor.koin.reactor
+import com.tailoredapps.reaktor.android.koin.reactor
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo

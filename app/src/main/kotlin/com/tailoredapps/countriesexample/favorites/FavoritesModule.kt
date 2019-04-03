@@ -14,7 +14,7 @@
 
 package com.tailoredapps.countriesexample.favorites
 
-import com.tailoredapps.reaktor.koin.reactor
+import com.tailoredapps.reaktor.android.koin.reactor
 import org.koin.dsl.module
 
 internal val favoritesModule = module {

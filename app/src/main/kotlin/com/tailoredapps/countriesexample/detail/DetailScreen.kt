@@ -28,9 +28,9 @@ import at.florianschuster.reaktor.ReactorView
 import at.florianschuster.reaktor.android.bind
 import at.florianschuster.reaktor.changesFrom
 import com.jakewharton.rxbinding3.view.clicks
-import com.tailoredapps.androidutil.core.IntentUtil
-import com.tailoredapps.androidutil.core.extensions.RxDialogAction
-import com.tailoredapps.androidutil.core.extensions.rxDialog
+import com.tailoredapps.androidutil.ui.IntentUtil
+import com.tailoredapps.androidutil.ui.extensions.RxDialogAction
+import com.tailoredapps.androidutil.ui.extensions.rxDialog
 import com.tailoredapps.androidutil.optional.asOptional
 import com.tailoredapps.androidutil.optional.filterSome
 import com.tailoredapps.androidutil.optional.ofType
@@ -41,7 +41,7 @@ import com.tailoredapps.countriesexample.core.CountriesRepo
 import com.tailoredapps.countriesexample.core.model.Country
 import com.tailoredapps.countriesexample.main.liftsAppBarWith
 import com.tailoredapps.countriesexample.util.source
-import com.tailoredapps.reaktor.koin.reactor
+import com.tailoredapps.reaktor.android.koin.reactor
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.fragment_detail.*

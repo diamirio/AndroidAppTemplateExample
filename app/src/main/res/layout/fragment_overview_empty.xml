@@ -7,7 +7,7 @@
 
     <ImageView
             android:id="@+id/ivImage"
-            android:contentDescription="@string/overview_cd_image"
+            android:contentDescription="@string/overview_iv_cd_empty"
             android:layout_width="88dp"
             android:layout_height="88dp"
             android:src="@drawable/ic_live_help"
@@ -24,8 +24,8 @@
             style="@style/Text.Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin"
-            android:text="@string/overview_empty_text"
+            android:layout_marginTop="@dimen/all_margin"
+            android:text="@string/overview_tv_empty"
             app:layout_constraintBottom_toTopOf="@id/btnLoad"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

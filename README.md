@@ -15,6 +15,5 @@ Run `bundle exec fastlane format` to format the code with [ktlint](https://ktlin
 
 ## TODO
 
-* [ ] `build.gradle` -> packagingOptions exclude fixen in AndroidUtil/Reaktor
 * [ ] core/local -> check if its still ok (@gustl)
 * [ ] more tests
