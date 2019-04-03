@@ -35,12 +35,12 @@ import com.tailoredapps.androidutil.optional.asOptional
 import com.tailoredapps.androidutil.optional.filterSome
 import com.tailoredapps.androidutil.optional.ofType
 import com.tailoredapps.countriesexample.R
-import com.tailoredapps.countriesexample.base.BaseReactor
-import com.tailoredapps.countriesexample.base.BaseFragment
+import com.tailoredapps.countriesexample.all.base.BaseReactor
+import com.tailoredapps.countriesexample.all.base.BaseFragment
 import com.tailoredapps.countriesexample.core.CountriesRepo
 import com.tailoredapps.countriesexample.core.model.Country
 import com.tailoredapps.countriesexample.main.liftsAppBarWith
-import com.tailoredapps.countriesexample.util.source
+import com.tailoredapps.countriesexample.all.util.source
 import com.tailoredapps.reaktor.android.koin.reactor
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo

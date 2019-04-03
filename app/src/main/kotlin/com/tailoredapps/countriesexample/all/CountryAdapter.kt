@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
-package com.tailoredapps.countriesexample
+package com.tailoredapps.countriesexample.all
 
 import android.view.View
 import android.view.ViewGroup
@@ -21,8 +21,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxrelay2.PublishRelay
 import com.tailoredapps.androidutil.ui.extensions.inflate
+import com.tailoredapps.countriesexample.R
 import com.tailoredapps.countriesexample.core.model.Country
-import com.tailoredapps.countriesexample.util.source
+import com.tailoredapps.countriesexample.all.util.source
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_country.view.*
 

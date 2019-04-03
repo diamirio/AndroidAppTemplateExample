@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tailoredapps.countriesexample.base
+package com.tailoredapps.countriesexample.all.base
 
 import androidx.annotation.CallSuper
 import at.florianschuster.reaktor.android.ViewModelReactor

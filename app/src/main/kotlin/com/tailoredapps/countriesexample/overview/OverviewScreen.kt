@@ -24,11 +24,11 @@ import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.view.visibility
 import com.tailoredapps.androidutil.async.Async
 import com.tailoredapps.androidutil.ui.extensions.snack
-import com.tailoredapps.countriesexample.CountryAdapter
-import com.tailoredapps.countriesexample.CountryAdapterInteractionType
+import com.tailoredapps.countriesexample.all.CountryAdapter
+import com.tailoredapps.countriesexample.all.CountryAdapterInteractionType
 import com.tailoredapps.countriesexample.R
-import com.tailoredapps.countriesexample.base.BaseFragment
-import com.tailoredapps.countriesexample.base.BaseReactor
+import com.tailoredapps.countriesexample.all.base.BaseFragment
+import com.tailoredapps.countriesexample.all.base.BaseReactor
 import com.tailoredapps.countriesexample.core.CountriesRepo
 import com.tailoredapps.countriesexample.core.model.Country
 import com.tailoredapps.countriesexample.main.liftsAppBarWith

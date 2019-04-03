@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tailoredapps.countriesexample.util
+package com.tailoredapps.countriesexample.all.util
 
 import android.widget.ImageView
 import androidx.annotation.DrawableRes

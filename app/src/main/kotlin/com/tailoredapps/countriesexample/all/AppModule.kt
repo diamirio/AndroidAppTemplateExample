@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.tailoredapps.countriesexample
+package com.tailoredapps.countriesexample.all
 
 import com.squareup.leakcanary.LeakCanary
+import com.tailoredapps.countriesexample.BuildConfig
 import com.tailoredapps.countriesexample.core.remote.BaseUrl
 import com.tailoredapps.countriesexample.detail.detailModule
 import com.tailoredapps.countriesexample.favorites.favoritesModule

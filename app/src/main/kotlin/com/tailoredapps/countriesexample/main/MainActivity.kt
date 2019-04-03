@@ -25,7 +25,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.tailoredapps.androidutil.ui.extensions.liftWith
 import com.tailoredapps.countriesexample.R
-import com.tailoredapps.countriesexample.base.BaseActivity
+import com.tailoredapps.countriesexample.all.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_appbar.*
 
