@@ -35,15 +35,19 @@ import com.tailoredapps.androidutil.optional.asOptional
 import com.tailoredapps.androidutil.optional.filterSome
 import com.tailoredapps.androidutil.optional.ofType
 import com.tailoredapps.countriesexample.R
-import com.tailoredapps.countriesexample.all.base.BaseReactor
-import com.tailoredapps.countriesexample.all.base.BaseFragment
+import com.tailoredapps.countriesexample.uibase.BaseReactor
+import com.tailoredapps.countriesexample.uibase.BaseFragment
 import com.tailoredapps.countriesexample.core.CountriesRepo
 import com.tailoredapps.countriesexample.core.model.Country
 import com.tailoredapps.countriesexample.main.liftsAppBarWith
 import com.tailoredapps.countriesexample.all.util.source
+import com.tailoredapps.countriesexample.detail.recyclerview.DetailAdapter
+import com.tailoredapps.countriesexample.detail.recyclerview.DetailAdapterInteraction
+import com.tailoredapps.countriesexample.detail.recyclerview.convertToDetailAdapterItems
 import com.tailoredapps.reaktor.android.koin.reactor
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.ofType
 import kotlinx.android.synthetic.main.fragment_detail.*
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
@@ -65,6 +69,20 @@ class DetailFragment : BaseFragment(R.layout.fragment_detail), ReactorView<Detai
         DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
             .apply { ContextCompat.getDrawable(requireContext(), R.drawable.bg_divider)?.let(::setDrawable) }
             .also(rvDetail::addItemDecoration)
+
+        val locationIntentObservable = adapter.interaction
+            .ofType<DetailAdapterInteraction.LocationClick>()
+            .map { it.latLng }
+            .map { IntentUtil.maps("${it.first}, ${it.second}") }
+
+        val capitalIntentObservable = adapter.interaction
+            .ofType<DetailAdapterInteraction.CapitalClick>()
+            .map { it.capital }
+            .map(IntentUtil::maps)
+
+        Observable.merge(locationIntentObservable, capitalIntentObservable)
+            .bind(requireContext()::startActivity)
+            .addTo(disposables)
 
         // action
         btnMore.clicks()
@@ -88,7 +106,7 @@ class DetailFragment : BaseFragment(R.layout.fragment_detail), ReactorView<Detai
             .bind {
                 ivFlag.source(R.drawable.ic_help_outline).accept(it.flagPngUrl)
                 tvName.text = it.name
-                adapter.submitCountry(it)
+                adapter.submitList(it.convertToDetailAdapterItems())
             }
             .addTo(disposables)
     }

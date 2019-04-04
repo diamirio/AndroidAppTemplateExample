@@ -30,16 +30,15 @@ import com.tailoredapps.countriesexample.core.local.model.LocalFavoriteCountry
 import com.tailoredapps.countriesexample.core.remote.model.RemoteCountry
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
 interface CountriesRepo {
-    val empty: Single<Boolean>
-    val all: Flowable<List<Country>>
-    val favorites: Flowable<List<Country>>
+    val allCountries: Flowable<List<Country>>
+    val allFavorites: Flowable<List<Country>>
+
+    fun refreshCountries(): Completable
 
     fun getCountry(alpha2Code: String): Flowable<Country>
-    fun refreshCountries(): Completable
     fun toggleFavorite(country: Country): Completable
 }
 
@@ -47,25 +46,15 @@ class RetrofitRoomCountriesRepo(
     private val api: CountriesApi,
     private val db: CountriesDatabase
 ) : CountriesRepo {
-    override val empty: Single<Boolean>
-        get() = Single.fromCallable { db.countryDao().getNumberOfCountries() }
-            .map { it == 0 }
-            .subscribeOn(Schedulers.io())
-
-    override val all: Flowable<List<Country>>
+    override val allCountries: Flowable<List<Country>>
         get() = db.countryDao().getAll()
             .onBackpressureLatest()
             .flatMap(::combineWithLanguages)
             .subscribeOn(Schedulers.io())
 
-    override val favorites: Flowable<List<Country>>
+    override val allFavorites: Flowable<List<Country>>
         get() = db.countryDao().getAllFavorites()
             .onBackpressureLatest()
-            .flatMap(::combineWithLanguages)
-            .subscribeOn(Schedulers.io())
-
-    override fun getCountry(alpha2Code: String): Flowable<Country> =
-        db.countryDao().get(alpha2Code)
             .flatMap(::combineWithLanguages)
             .subscribeOn(Schedulers.io())
 
@@ -74,6 +63,11 @@ class RetrofitRoomCountriesRepo(
         .flattenAsObservable { it }
         .flatMapCompletable(::updateOrInsertCountry)
         .subscribeOn(Schedulers.io())
+
+    override fun getCountry(alpha2Code: String): Flowable<Country> =
+        db.countryDao().get(alpha2Code)
+            .flatMap(::combineWithLanguages)
+            .subscribeOn(Schedulers.io())
 
     override fun toggleFavorite(country: Country): Completable =
         if (country.favorite) removeAsFavorite(country.alpha2Code)

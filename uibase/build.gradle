@@ -1,0 +1,29 @@
+apply from: "$rootDir/library-module.gradle"
+
+dependencies {
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
+
+    /**
+     * Ui
+     */
+    api deps.reaktor.values()
+    api deps.ui.values()
+    kapt deps.lifecycle.compiler
+    implementation deps.androidutil.viewstate
+
+    /**
+     * DI
+     */
+    api deps.koin.values()
+
+    /**
+     * Rx
+     */
+    api deps.rxjava.core
+
+    /**
+     * util
+     */
+    debugApi deps.leakcanary.op
+    releaseApi deps.leakcanary.noop
+}

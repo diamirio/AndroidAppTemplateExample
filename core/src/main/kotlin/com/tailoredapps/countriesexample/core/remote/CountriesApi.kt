@@ -23,6 +23,6 @@ import retrofit2.http.GET
 
 interface CountriesApi {
 
-    @GET("all")
+    @GET("allCountries")
     fun all(): Single<NetworkResponse<List<RemoteCountry>>>
 }

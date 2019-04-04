@@ -22,6 +22,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.squareup.leakcanary.LeakCanary
 import com.tailoredapps.countriesexample.all.appModules
 import com.tailoredapps.countriesexample.core.coreModules
+import com.tailoredapps.countriesexample.uibase.uiBaseModule
 import io.reactivex.plugins.RxJavaPlugins
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -45,7 +46,7 @@ class CountriesExampleApp : Application() {
         startKoin {
             androidContext(this@CountriesExampleApp)
             androidLogger(Level.INFO)
-            modules(coreModules + appModules)
+            modules(coreModules + uiBaseModule + appModules)
         }
     }
 

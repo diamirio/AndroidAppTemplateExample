@@ -16,6 +16,7 @@
 
 package com.tailoredapps.countriesexample.detail
 
+import com.tailoredapps.countriesexample.detail.recyclerview.DetailAdapter
 import com.tailoredapps.reaktor.android.koin.reactor
 import org.koin.dsl.module
 

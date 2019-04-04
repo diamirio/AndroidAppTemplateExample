@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package com.tailoredapps.countriesexample.all
+package com.tailoredapps.countriesexample.uibase
 
-import com.tailoredapps.countriesexample.BuildConfig
-import com.tailoredapps.countriesexample.core.remote.BaseUrl
-import com.tailoredapps.countriesexample.detail.detailModule
-import com.tailoredapps.countriesexample.favorites.favoritesModule
-import com.tailoredapps.countriesexample.overview.overviewModule
+import com.squareup.leakcanary.LeakCanary
+import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
-internal val appModule = module {
-    single { BaseUrl(BuildConfig.BASE_URL) }
-    factory { CountryAdapter() }
+val uiBaseModule = module {
+    single { LeakCanary.install(androidApplication()) }
 }
-
-val appModules = listOf(appModule, overviewModule, favoritesModule, detailModule)

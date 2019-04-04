@@ -41,16 +41,16 @@ class OverviewReactorTest : AutoCloseKoinTest() {
 
     @Test
     fun testLoadAllCountriesOnStart() {
-        every { repo.all } returns Flowable.just(listOf(mockCountry))
+        every { repo.allCountries } returns Flowable.just(listOf(mockCountry))
 
         reactor.state.subscribe()
 
-        verify { repo.all }
+        verify { repo.allCountries }
     }
 
     @Test
     fun testReloadActionTriggersRefreshCountriesCall() {
-        every { repo.all } returns Flowable.just(listOf(mockCountry))
+        every { repo.allCountries } returns Flowable.just(listOf(mockCountry))
         every { repo.refreshCountries() } returns Completable.complete()
 
         val reloadAction = OverviewReactor.Action.Reload
@@ -65,7 +65,7 @@ class OverviewReactorTest : AutoCloseKoinTest() {
     fun testReloadActionSetsLoadingAndSuccessState() {
         val subject = BehaviorSubject.createDefault(listOf(mockCountry))
 
-        every { repo.all } returns subject.toFlowable(BackpressureStrategy.LATEST)
+        every { repo.allCountries } returns subject.toFlowable(BackpressureStrategy.LATEST)
         every { repo.refreshCountries() } returns Completable.complete()
 
         val testObserver = reactor.state.test()
@@ -85,7 +85,7 @@ class OverviewReactorTest : AutoCloseKoinTest() {
     fun testReloadActionSetsErrorStateOnApiFailure() {
         val errorToThrow = Throwable()
 
-        every { repo.all } returns Flowable.just(listOf(mockCountry))
+        every { repo.allCountries } returns Flowable.just(listOf(mockCountry))
         every { repo.refreshCountries() } returns Completable.error(errorToThrow)
 
         val testObserver = reactor.state.test()
@@ -101,7 +101,7 @@ class OverviewReactorTest : AutoCloseKoinTest() {
 
     @Test
     fun testToggleFavoriteActionTriggersToggleFavoriteInRepo() {
-        every { repo.all } returns Flowable.just(listOf(mockCountry))
+        every { repo.allCountries } returns Flowable.just(listOf(mockCountry))
 
         reactor.state.subscribe()
         reactor.action.accept(OverviewReactor.Action.ToggleFavorite(mockCountry))
@@ -116,7 +116,7 @@ class OverviewReactorTest : AutoCloseKoinTest() {
 
         val subject = BehaviorSubject.createDefault(listOf(initialMockCountry))
 
-        every { repo.all } returns subject.toFlowable(BackpressureStrategy.LATEST)
+        every { repo.allCountries } returns subject.toFlowable(BackpressureStrategy.LATEST)
 
         val testObserver = reactor.state.test()
 
