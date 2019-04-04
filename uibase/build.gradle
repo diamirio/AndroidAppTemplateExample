@@ -8,8 +8,8 @@ dependencies {
      */
     api deps.reaktor.values()
     api deps.ui.values()
-    kapt deps.lifecycle.compiler
-    implementation deps.androidutil.viewstate
+    api deps.navigation.values()
+    api deps.androidutil.viewstate
 
     /**
      * DI
@@ -20,6 +20,8 @@ dependencies {
      * Rx
      */
     api deps.rxjava.core
+    api deps.rxjava.android
+    api deps.rxbinding.values()
 
     /**
      * util

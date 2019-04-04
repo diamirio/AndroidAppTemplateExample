@@ -101,14 +101,8 @@ dependencies {
      * UI
      */
     implementation project(path: ':uibase')
-
-    /**
-     * Rx
-     */
-    implementation deps.rxjava.android
-    implementation deps.rxjava.kotlin
-    implementation deps.rxjava.relay
-    implementation deps.rxbinding.values()
+    implementation deps.lifecycle.arch
+    kapt deps.lifecycle.compiler
 
     /**
      * Util
