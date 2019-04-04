@@ -21,7 +21,7 @@ import com.tailoredapps.countriesexample.core.model.Country
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.NumberFormat
-import java.util.*
+import java.util.Locale
 
 data class DetailAdapterItem(
     @DrawableRes val icon: Int,
