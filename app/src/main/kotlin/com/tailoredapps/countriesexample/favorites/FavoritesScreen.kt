@@ -56,8 +56,7 @@ class FavoritesFragment : BaseFragment(R.layout.fragment_favorites), ReactorView
 
         // action
         adapter.interaction.ofType<CountryAdapterInteractionType.FavoriteClick>()
-            .map { it.country }
-            .map { FavoritesReactor.Action.RemoveFavorite(it) }
+            .map { FavoritesReactor.Action.RemoveFavorite(it.country) }
             .bind(to = reactor.action)
             .addTo(disposables)
 

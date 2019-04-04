@@ -32,8 +32,6 @@ sealed class CountryAdapterInteractionType {
     data class FavoriteClick(val country: Country) : CountryAdapterInteractionType()
 }
 
-typealias CountryAdapterInteraction = (CountryAdapterInteractionType) -> Unit
-
 class CountryAdapter : ListAdapter<Country, CountryViewHolder>(countryDiff) {
     val interaction = PublishRelay.create<CountryAdapterInteractionType>()
 
@@ -50,7 +48,7 @@ private val countryDiff: DiffUtil.ItemCallback<Country> = object : DiffUtil.Item
 }
 
 class CountryViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
-    fun bind(item: Country, interaction: CountryAdapterInteraction) {
+    fun bind(item: Country, interaction: (CountryAdapterInteractionType) -> Unit) {
         itemView.tvName.text = item.name
         itemView.ivFlag.source(R.drawable.ic_help_outline).accept(item.flagPngUrl)
 

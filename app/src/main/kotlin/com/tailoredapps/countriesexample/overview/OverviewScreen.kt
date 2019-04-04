@@ -19,6 +19,7 @@ import android.view.View
 import at.florianschuster.reaktor.ReactorView
 import at.florianschuster.reaktor.android.bind
 import at.florianschuster.reaktor.changesFrom
+import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.view.visibility
@@ -95,7 +96,7 @@ class OverviewFragment : BaseFragment(R.layout.fragment_overview), ReactorView<O
 
     private fun errorSnack(throwable: Throwable) {
         Timber.e(throwable)
-        root.snack(R.string.overview_error_message, R.string.overview_error_retry) {
+        root.snack(R.string.overview_error_message, Snackbar.LENGTH_INDEFINITE, R.string.overview_error_retry) {
             reactor.action.accept(OverviewReactor.Action.Reload)
         }
     }
