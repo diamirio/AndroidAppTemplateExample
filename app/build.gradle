@@ -101,7 +101,7 @@ dependencies {
      * UI
      */
     implementation project(path: ':uibase')
-    implementation deps.lifecycle.arch
+    implementation deps.lifecycle.core
     kapt deps.lifecycle.compiler
 
     /**
