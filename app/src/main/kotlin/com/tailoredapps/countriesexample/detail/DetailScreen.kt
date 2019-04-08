@@ -72,8 +72,8 @@ class DetailFragment : BaseFragment(R.layout.fragment_detail), ReactorView<Detai
 
         val locationIntentObservable = adapter.interaction
             .ofType<DetailAdapterInteraction.LocationClick>()
-            .map { it.latLng }
-            .map { IntentUtil.maps("${it.first}, ${it.second}") }
+            .map { "${it.latLng.first}, ${it.latLng.second}" }
+            .map(IntentUtil::maps)
 
         val capitalIntentObservable = adapter.interaction
             .ofType<DetailAdapterInteraction.CapitalClick>()
@@ -81,7 +81,7 @@ class DetailFragment : BaseFragment(R.layout.fragment_detail), ReactorView<Detai
             .map(IntentUtil::maps)
 
         Observable.merge(locationIntentObservable, capitalIntentObservable)
-            .bind(requireContext()::startActivity)
+            .bind(to = requireContext()::startActivity)
             .addTo(disposables)
 
         // action
@@ -96,17 +96,17 @@ class DetailFragment : BaseFragment(R.layout.fragment_detail), ReactorView<Detai
             }
             .map { reactor.currentState.country.asOptional }
             .filterSome()
-            .map { it.infoUrl }
+            .map(Country::infoUrl)
             .bind(to = this::openChromeTab)
             .addTo(disposables)
 
         // state
         reactor.state.changesFrom { it.country.asOptional }
             .filterSome()
-            .bind {
-                ivFlag.source(R.drawable.ic_help_outline).accept(it.flagPngUrl)
-                tvName.text = it.name
-                adapter.submitList(it.convertToDetailAdapterItems())
+            .bind { country ->
+                ivFlag.source(R.drawable.ic_help_outline).accept(country.flagPngUrl)
+                tvName.text = country.name
+                adapter.submitList(country.convertToDetailAdapterItems())
             }
             .addTo(disposables)
     }

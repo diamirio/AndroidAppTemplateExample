@@ -43,29 +43,29 @@ interface CountriesRepo {
 }
 
 class RetrofitRoomCountriesRepo(
-    private val api: CountriesApi,
-    private val db: CountriesDatabase
+    private val countriesApi: CountriesApi,
+    private val countriesDb: CountriesDatabase
 ) : CountriesRepo {
     override val allCountries: Flowable<List<Country>>
-        get() = db.countryDao().getAll()
+        get() = countriesDb.countryDao().getAll()
             .onBackpressureLatest()
             .flatMap(::combineWithLanguages)
             .subscribeOn(Schedulers.io())
 
     override val allFavorites: Flowable<List<Country>>
-        get() = db.countryDao().getAllFavorites()
+        get() = countriesDb.countryDao().getAllFavorites()
             .onBackpressureLatest()
             .flatMap(::combineWithLanguages)
             .subscribeOn(Schedulers.io())
 
-    override fun refreshCountries(): Completable = api.all()
+    override fun refreshCountries(): Completable = countriesApi.all()
         .split()
         .flattenAsObservable { it }
         .flatMapCompletable(::updateOrInsertCountry)
         .subscribeOn(Schedulers.io())
 
     override fun getCountry(alpha2Code: String): Flowable<Country> =
-        db.countryDao().get(alpha2Code)
+        countriesDb.countryDao().get(alpha2Code)
             .flatMap(::combineWithLanguages)
             .subscribeOn(Schedulers.io())
 
@@ -73,25 +73,25 @@ class RetrofitRoomCountriesRepo(
         if (country.favorite) removeAsFavorite(country.alpha2Code)
         else setAsFavorite(country.alpha2Code)
 
-    private fun setAsFavorite(alpha2Code: String): Completable = Completable
-        .fromAction { db.favoriteDao().addFavorite(LocalFavoriteCountry(alpha2Code)) }
+    private fun removeAsFavorite(alpha2Code: String): Completable = Completable
+        .fromAction { countriesDb.favoriteDao().removeFavorite(LocalFavoriteCountry(alpha2Code)) }
         .subscribeOn(Schedulers.io())
 
-    private fun removeAsFavorite(alpha2Code: String): Completable = Completable
-        .fromAction { db.favoriteDao().removeFavorite(LocalFavoriteCountry(alpha2Code)) }
+    private fun setAsFavorite(alpha2Code: String): Completable = Completable
+        .fromAction { countriesDb.favoriteDao().addFavorite(LocalFavoriteCountry(alpha2Code)) }
         .subscribeOn(Schedulers.io())
 
     private fun updateOrInsertCountry(country: RemoteCountry): Completable = Completable
         .fromAction {
             // insert or update country
-            db.countryDao().insertOrUpdate(country.asLocalCountry)
+            countriesDb.countryDao().insertOrUpdate(country.asLocalCountry)
 
             // insert or update languages
-            db.languageDao().insertOrUpdate(*country.languages.asLocalLanguageList.toTypedArray())
+            countriesDb.languageDao().insertOrUpdate(*country.languages.asLocalLanguageList.toTypedArray())
 
             // insert or update country language join
             country.languages.forEach { language ->
-                db.countryLanguageDao().insertOrUpdate(CountryLanguageJoin(country.alpha2Code, language.name))
+                countriesDb.countryLanguageDao().insertOrUpdate(CountryLanguageJoin(country.alpha2Code, language.name))
             }
         }
         .subscribeOn(Schedulers.io())
@@ -103,7 +103,7 @@ class RetrofitRoomCountriesRepo(
             .toFlowable()
 
     private fun combineWithLanguages(country: LocalCountryWithFavorite): Flowable<Country> =
-        db.countryLanguageDao()
+        countriesDb.countryLanguageDao()
             .getLanguagesByCountry(country.country.alpha2Code)
             .map { country.asCountryWithLanguages(it.asLanguageList) }
             .toFlowable()
