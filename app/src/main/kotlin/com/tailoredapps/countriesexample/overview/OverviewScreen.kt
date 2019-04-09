@@ -28,6 +28,7 @@ import com.tailoredapps.androidutil.ui.extensions.snack
 import com.tailoredapps.countriesexample.all.CountryAdapter
 import com.tailoredapps.countriesexample.all.CountryAdapterInteractionType
 import com.tailoredapps.countriesexample.R
+import com.tailoredapps.countriesexample.all.util.asCause
 import com.tailoredapps.countriesexample.uibase.BaseFragment
 import com.tailoredapps.countriesexample.uibase.BaseReactor
 import com.tailoredapps.countriesexample.core.CountriesRepo
@@ -96,7 +97,8 @@ class OverviewFragment : BaseFragment(R.layout.fragment_overview), ReactorView<O
 
     private fun errorSnack(throwable: Throwable) {
         Timber.e(throwable)
-        root.snack(R.string.overview_error_message, Snackbar.LENGTH_INDEFINITE, R.string.overview_error_retry) {
+        val message = throwable.asCause(R.string.overview_error_message).translation(resources)
+        root.snack(message, Snackbar.LENGTH_INDEFINITE, getString(R.string.overview_error_retry)) {
             reactor.action.accept(OverviewReactor.Action.Reload)
         }
     }
