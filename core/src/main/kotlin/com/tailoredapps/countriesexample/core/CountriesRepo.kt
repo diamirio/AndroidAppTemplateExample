@@ -17,16 +17,12 @@
 package com.tailoredapps.countriesexample.core
 
 import com.tailoredapps.androidutil.network.networkresponse.split
-import com.tailoredapps.countriesexample.core.local.asCountryWithLanguages
-import com.tailoredapps.countriesexample.core.local.asLanguageList
-import com.tailoredapps.countriesexample.core.local.asLocalCountry
-import com.tailoredapps.countriesexample.core.local.asLocalLanguageList
-import com.tailoredapps.countriesexample.core.model.Country
-import com.tailoredapps.countriesexample.core.remote.CountriesApi
-import com.tailoredapps.countriesexample.core.local.CountriesDatabase
+import com.tailoredapps.countriesexample.core.local.*
 import com.tailoredapps.countriesexample.core.local.model.CountryLanguageJoin
 import com.tailoredapps.countriesexample.core.local.model.LocalCountryWithFavorite
 import com.tailoredapps.countriesexample.core.local.model.LocalFavoriteCountry
+import com.tailoredapps.countriesexample.core.model.Country
+import com.tailoredapps.countriesexample.core.remote.CountriesApi
 import com.tailoredapps.countriesexample.core.remote.model.RemoteCountry
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -73,13 +69,13 @@ class RetrofitRoomCountriesRepo(
         if (country.favorite) removeAsFavorite(country.alpha2Code)
         else setAsFavorite(country.alpha2Code)
 
-    private fun removeAsFavorite(alpha2Code: String): Completable = Completable
-        .fromAction { countriesDb.favoriteDao().removeFavorite(LocalFavoriteCountry(alpha2Code)) }
-        .subscribeOn(Schedulers.io())
+    private fun removeAsFavorite(alpha2Code: String): Completable =
+        countriesDb.favoriteDao().removeFavorite(LocalFavoriteCountry(alpha2Code))
+            .subscribeOn(Schedulers.io())
 
-    private fun setAsFavorite(alpha2Code: String): Completable = Completable
-        .fromAction { countriesDb.favoriteDao().addFavorite(LocalFavoriteCountry(alpha2Code)) }
-        .subscribeOn(Schedulers.io())
+    private fun setAsFavorite(alpha2Code: String): Completable =
+        countriesDb.favoriteDao().addFavorite(LocalFavoriteCountry(alpha2Code))
+            .subscribeOn(Schedulers.io())
 
     private fun updateOrInsertCountry(country: RemoteCountry): Completable = Completable
         .fromAction {

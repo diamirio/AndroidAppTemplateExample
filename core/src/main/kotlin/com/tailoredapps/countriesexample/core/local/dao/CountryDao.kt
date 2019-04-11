@@ -25,8 +25,6 @@ import io.reactivex.Flowable
 
 @Dao
 interface CountryDao : BaseDao<LocalCountry> {
-    @Query("SELECT COUNT(*) FROM country")
-    fun getNumberOfCountries(): Int
 
     @Query("SELECT * FROM country WHERE ${LocalCountry.PRIMARY_KEY} = :alpha2Code")
     fun get(alpha2Code: String): Flowable<LocalCountryWithFavorite>
