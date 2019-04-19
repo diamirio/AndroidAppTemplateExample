@@ -74,7 +74,7 @@ class OverviewFragment : BaseFragment(R.layout.fragment_overview), ReactorView<O
             .bind(to = reactor.action)
             .addTo(disposables)
 
-        swipeRefresh.refreshes()
+        srlOverView.refreshes()
             .map { OverviewReactor.Action.Reload }
             .bind(to = reactor.action)
             .addTo(disposables)
@@ -86,7 +86,7 @@ class OverviewFragment : BaseFragment(R.layout.fragment_overview), ReactorView<O
 
         reactor.state.changesFrom { it.countriesAsync }
             .bind {
-                swipeRefresh.isRefreshing = it is Async.Loading
+                srlOverView.isRefreshing = it is Async.Loading
                 when (it) {
                     is Async.Success -> adapter.submitList(it.element)
                     is Async.Error -> errorSnack(it.error)
