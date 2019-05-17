@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.tailoredapps.countriesexample.all.util
+package com.tailoredapps.countriesexample.util
 
 import android.content.res.Resources
 import androidx.annotation.StringRes
-import com.tailoredapps.androidutil.network.networkresponse.NetworkUnavailableException
+import com.tailoredapps.androidutil.network.NetworkUnavailableException
 import com.tailoredapps.countriesexample.R
 import retrofit2.HttpException
 

@@ -28,10 +28,10 @@ import com.tailoredapps.androidutil.ui.extensions.snack
 import com.tailoredapps.countriesexample.all.CountryAdapter
 import com.tailoredapps.countriesexample.all.CountryAdapterInteractionType
 import com.tailoredapps.countriesexample.R
-import com.tailoredapps.countriesexample.all.util.asCause
+import com.tailoredapps.countriesexample.util.asCause
 import com.tailoredapps.countriesexample.uibase.BaseFragment
 import com.tailoredapps.countriesexample.uibase.BaseReactor
-import com.tailoredapps.countriesexample.core.CountriesRepo
+import com.tailoredapps.countriesexample.core.CountriesProvider
 import com.tailoredapps.countriesexample.core.model.Country
 import com.tailoredapps.countriesexample.main.liftsAppBarWith
 import com.tailoredapps.reaktor.android.koin.reactor
@@ -105,7 +105,7 @@ class OverviewFragment : BaseFragment(R.layout.fragment_overview), ReactorView<O
 }
 
 class OverviewReactor(
-    private val countriesRepo: CountriesRepo
+    private val countriesProvider: CountriesProvider
 ) : BaseReactor<OverviewReactor.Action, OverviewReactor.Mutation, OverviewReactor.State>(State()) {
 
     sealed class Action {
@@ -122,20 +122,25 @@ class OverviewReactor(
         val countriesAsync: Async<List<Country>> = Async.Uninitialized
     )
 
-    override fun transformMutation(mutation: Observable<Mutation>): Observable<out Mutation> =
-        Observable.merge(mutation, storedCountriesMutation)
+    override fun transformMutation(mutation: Observable<Mutation>): Observable<out Mutation> {
+        val storedCountriesMutation = countriesProvider
+            .getCountries()
+            .map { Mutation.SetCountries(Async.Success(it)) }
+            .toObservable()
+        return Observable.merge(mutation, storedCountriesMutation)
+    }
 
     override fun mutate(action: Action): Observable<out Mutation> = when (action) {
         is Action.Reload -> {
             val startLoading = Observable.just(Mutation.SetCountries(Async.Loading))
-            val refreshCountries = countriesRepo.refreshCountries()
+            val refreshCountries = countriesProvider.refreshCountries()
                 .toObservable<Mutation>()
                 .onErrorReturn { Mutation.SetCountries(Async.Error(it)) }
             Observable.concat(startLoading, refreshCountries)
         }
         is Action.ToggleFavorite -> {
             Single.just(action.country)
-                .flatMapCompletable(countriesRepo::toggleFavorite)
+                .flatMapCompletable(countriesProvider::toggleFavorite)
                 .toObservable()
         }
     }
@@ -146,9 +151,4 @@ class OverviewReactor(
             hasCountries = mutation.countries !is Async.Loading && mutation.countries()?.isEmpty() == true
         )
     }
-
-    private val storedCountriesMutation: Observable<out Mutation>
-        get() = countriesRepo.allCountries
-            .map { Mutation.SetCountries(Async.Success(it)) }
-            .toObservable()
 }

@@ -21,6 +21,6 @@ import com.tailoredapps.reaktor.android.koin.reactor
 import org.koin.dsl.module
 
 internal val detailModule = module {
-    reactor { (alpha2Code: String) -> DetailReactor(alpha2Code = alpha2Code, countriesRepo = get()) }
+    reactor { (alpha2Code: String) -> DetailReactor(alpha2Code = alpha2Code, countriesProvider = get()) }
     factory { DetailAdapter() }
 }

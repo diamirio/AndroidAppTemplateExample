@@ -25,7 +25,7 @@ import com.tailoredapps.countriesexample.all.CountryAdapterInteractionType
 import com.tailoredapps.countriesexample.R
 import com.tailoredapps.countriesexample.uibase.BaseFragment
 import com.tailoredapps.countriesexample.uibase.BaseReactor
-import com.tailoredapps.countriesexample.core.CountriesRepo
+import com.tailoredapps.countriesexample.core.CountriesProvider
 import com.tailoredapps.countriesexample.core.model.Country
 import com.tailoredapps.countriesexample.main.liftsAppBarWith
 import com.tailoredapps.reaktor.android.koin.reactor
@@ -72,7 +72,7 @@ class FavoritesFragment : BaseFragment(R.layout.fragment_favorites), ReactorView
 }
 
 class FavoritesReactor(
-    private val countriesRepo: CountriesRepo
+    private val countriesProvider: CountriesProvider
 ) : BaseReactor<FavoritesReactor.Action, FavoritesReactor.Mutation, FavoritesReactor.State>(State()) {
 
     sealed class Action {
@@ -87,13 +87,18 @@ class FavoritesReactor(
         val countries: List<Country> = emptyList()
     )
 
-    override fun transformMutation(mutation: Observable<Mutation>): Observable<out Mutation> =
-        Observable.merge(mutation, favoritesObservable)
+    override fun transformMutation(mutation: Observable<Mutation>): Observable<out Mutation> {
+        val favoritesObservable = countriesProvider
+            .getFavoriteCountries()
+            .map { Mutation.SetCountries(it) }
+            .toObservable()
+        return Observable.merge(mutation, favoritesObservable)
+    }
 
     override fun mutate(action: Action): Observable<out Mutation> = when (action) {
         is Action.RemoveFavorite -> {
             Single.just(action.country)
-                .flatMapCompletable(countriesRepo::toggleFavorite)
+                .flatMapCompletable(countriesProvider::toggleFavorite)
                 .toObservable()
         }
     }
@@ -101,9 +106,4 @@ class FavoritesReactor(
     override fun reduce(previousState: State, mutation: Mutation): State = when (mutation) {
         is Mutation.SetCountries -> previousState.copy(countries = mutation.countries)
     }
-
-    private val favoritesObservable: Observable<out Mutation>
-        get() = countriesRepo.allFavorites
-            .map { Mutation.SetCountries(it) }
-            .toObservable()
 }

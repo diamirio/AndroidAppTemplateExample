@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.tailoredapps.countriesexample.all
+package com.tailoredapps.countriesexample
 
-import com.tailoredapps.countriesexample.BuildConfig
+import com.tailoredapps.countriesexample.all.CountryAdapter
 import com.tailoredapps.countriesexample.core.remote.BaseUrl
 import com.tailoredapps.countriesexample.detail.detailModule
 import com.tailoredapps.countriesexample.favorites.favoritesModule

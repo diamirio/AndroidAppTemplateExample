@@ -28,37 +28,37 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
 
-interface CountriesRepo {
-    val allCountries: Flowable<List<Country>>
-    val allFavorites: Flowable<List<Country>>
-
+interface CountriesProvider {
     fun refreshCountries(): Completable
 
+    fun getCountries(): Flowable<List<Country>>
+    fun getFavoriteCountries(): Flowable<List<Country>>
     fun getCountry(alpha2Code: String): Flowable<Country>
     fun toggleFavorite(country: Country): Completable
 }
 
-class RetrofitRoomCountriesRepo(
+class RetrofitRoomCountriesProvider(
     private val countriesApi: CountriesApi,
     private val countriesDb: CountriesDatabase
-) : CountriesRepo {
-    override val allCountries: Flowable<List<Country>>
-        get() = countriesDb.countryDao().getAll()
-            .onBackpressureLatest()
-            .flatMap(::combineWithLanguages)
-            .subscribeOn(Schedulers.io())
-
-    override val allFavorites: Flowable<List<Country>>
-        get() = countriesDb.countryDao().getAllFavorites()
-            .onBackpressureLatest()
-            .flatMap(::combineWithLanguages)
-            .subscribeOn(Schedulers.io())
+) : CountriesProvider {
 
     override fun refreshCountries(): Completable = countriesApi.all()
         .split()
         .flattenAsObservable { it }
         .flatMapCompletable(::updateOrInsertCountry)
         .subscribeOn(Schedulers.io())
+
+    override fun getCountries(): Flowable<List<Country>> =
+        countriesDb.countryDao().getAll()
+            .onBackpressureLatest()
+            .flatMap(::combineWithLanguages)
+            .subscribeOn(Schedulers.io())
+
+    override fun getFavoriteCountries(): Flowable<List<Country>> =
+        countriesDb.countryDao().getAllFavorites()
+            .onBackpressureLatest()
+            .flatMap(::combineWithLanguages)
+            .subscribeOn(Schedulers.io())
 
     override fun getCountry(alpha2Code: String): Flowable<Country> =
         countriesDb.countryDao().get(alpha2Code)

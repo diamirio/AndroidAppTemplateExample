@@ -18,5 +18,5 @@ import com.tailoredapps.reaktor.android.koin.reactor
 import org.koin.dsl.module
 
 internal val overviewModule = module {
-    reactor { OverviewReactor(countriesRepo = get()) }
+    reactor { OverviewReactor(countriesProvider = get()) }
 }

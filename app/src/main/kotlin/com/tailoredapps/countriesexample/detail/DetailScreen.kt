@@ -37,10 +37,10 @@ import com.tailoredapps.androidutil.optional.ofType
 import com.tailoredapps.countriesexample.R
 import com.tailoredapps.countriesexample.uibase.BaseReactor
 import com.tailoredapps.countriesexample.uibase.BaseFragment
-import com.tailoredapps.countriesexample.core.CountriesRepo
+import com.tailoredapps.countriesexample.core.CountriesProvider
 import com.tailoredapps.countriesexample.core.model.Country
 import com.tailoredapps.countriesexample.main.liftsAppBarWith
-import com.tailoredapps.countriesexample.all.util.source
+import com.tailoredapps.countriesexample.util.source
 import com.tailoredapps.countriesexample.detail.recyclerview.DetailAdapter
 import com.tailoredapps.countriesexample.detail.recyclerview.DetailAdapterInteraction
 import com.tailoredapps.countriesexample.detail.recyclerview.convertToDetailAdapterItems
@@ -125,7 +125,7 @@ class DetailFragment : BaseFragment(R.layout.fragment_detail), ReactorView<Detai
 
 class DetailReactor(
     private val alpha2Code: String,
-    private val countriesRepo: CountriesRepo
+    private val countriesProvider: CountriesProvider
 ) : BaseReactor<DetailReactor.Action, DetailReactor.Mutation, DetailReactor.State>(
     initialState = State(),
     initialAction = Action.InitialLoad
@@ -144,7 +144,7 @@ class DetailReactor(
 
     override fun mutate(action: Action): Observable<out Mutation> = when (action) {
         Action.InitialLoad -> {
-            countriesRepo.getCountry(alpha2Code)
+            countriesProvider.getCountry(alpha2Code)
                 .map { Mutation.SetCountry(it) }
                 .toObservable()
         }

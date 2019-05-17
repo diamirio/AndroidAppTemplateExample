@@ -1,7 +1,7 @@
 package com.tailoredapps.countriesexample
 
 import com.tailoredapps.androidutil.async.Async
-import com.tailoredapps.countriesexample.core.CountriesRepo
+import com.tailoredapps.countriesexample.core.CountriesProvider
 import com.tailoredapps.countriesexample.core.model.Country
 import com.tailoredapps.countriesexample.overview.OverviewReactor
 import com.tailoredapps.countriesexample.overview.overviewModule
@@ -29,44 +29,44 @@ class OverviewReactorTest : AutoCloseKoinTest() {
     private val reactor: OverviewReactor by inject()
 
     @MockK
-    private lateinit var repo: CountriesRepo
+    private lateinit var provider: CountriesProvider
 
     @Before
     fun before() {
         MockKAnnotations.init(this)
         startKoin {
-            modules(overviewModule, module { single { repo } })
+            modules(overviewModule, module { single { provider } })
         }
     }
 
     @Test
     fun testLoadAllCountriesOnStart() {
-        every { repo.allCountries } returns Flowable.just(listOf(mockCountry))
+        every { provider.getCountries() } returns Flowable.just(listOf(mockCountry))
 
         reactor.state.subscribe()
 
-        verify { repo.allCountries }
+        verify { provider.getCountries() }
     }
 
     @Test
     fun testReloadActionTriggersRefreshCountriesCall() {
-        every { repo.allCountries } returns Flowable.just(listOf(mockCountry))
-        every { repo.refreshCountries() } returns Completable.complete()
+        every { provider.getCountries() } returns Flowable.just(listOf(mockCountry))
+        every { provider.refreshCountries() } returns Completable.complete()
 
         val reloadAction = OverviewReactor.Action.Reload
 
         reactor.state.subscribe()
         reactor.action.accept(reloadAction)
 
-        verify { repo.refreshCountries() }
+        verify { provider.refreshCountries() }
     }
 
     @Test
     fun testReloadActionSetsLoadingAndSuccessState() {
         val subject = BehaviorSubject.createDefault(listOf(mockCountry))
 
-        every { repo.allCountries } returns subject.toFlowable(BackpressureStrategy.LATEST)
-        every { repo.refreshCountries() } returns Completable.complete()
+        every { provider.getCountries() } returns subject.toFlowable(BackpressureStrategy.LATEST)
+        every { provider.refreshCountries() } returns Completable.complete()
 
         val testObserver = reactor.state.test()
 
@@ -85,8 +85,8 @@ class OverviewReactorTest : AutoCloseKoinTest() {
     fun testReloadActionSetsErrorStateOnApiFailure() {
         val errorToThrow = Throwable()
 
-        every { repo.allCountries } returns Flowable.just(listOf(mockCountry))
-        every { repo.refreshCountries() } returns Completable.error(errorToThrow)
+        every { provider.getCountries() } returns Flowable.just(listOf(mockCountry))
+        every { provider.refreshCountries() } returns Completable.error(errorToThrow)
 
         val testObserver = reactor.state.test()
 
@@ -101,12 +101,12 @@ class OverviewReactorTest : AutoCloseKoinTest() {
 
     @Test
     fun testToggleFavoriteActionTriggersToggleFavoriteInRepo() {
-        every { repo.allCountries } returns Flowable.just(listOf(mockCountry))
+        every { provider.getCountries() } returns Flowable.just(listOf(mockCountry))
 
         reactor.state.subscribe()
         reactor.action.accept(OverviewReactor.Action.ToggleFavorite(mockCountry))
 
-        verify { repo.toggleFavorite(mockCountry) }
+        verify { provider.toggleFavorite(mockCountry) }
     }
 
     @Test
@@ -116,7 +116,7 @@ class OverviewReactorTest : AutoCloseKoinTest() {
 
         val subject = BehaviorSubject.createDefault(listOf(initialMockCountry))
 
-        every { repo.allCountries } returns subject.toFlowable(BackpressureStrategy.LATEST)
+        every { provider.getCountries() } returns subject.toFlowable(BackpressureStrategy.LATEST)
 
         val testObserver = reactor.state.test()
 

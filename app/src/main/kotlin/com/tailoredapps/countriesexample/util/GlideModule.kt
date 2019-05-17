@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tailoredapps.countriesexample.all.util
+package com.tailoredapps.countriesexample.util
 
 import android.content.Context
 import android.util.Log
