@@ -80,7 +80,7 @@ class OverviewFragment : BaseFragment(R.layout.fragment_overview), ReactorView<O
             .addTo(disposables)
 
         // state
-        reactor.state.changesFrom { it.hasCountries }
+        reactor.state.changesFrom { !it.hasCountries }
             .bind(to = emptyLayout.visibility())
             .addTo(disposables)
 
@@ -118,7 +118,7 @@ class OverviewReactor(
     }
 
     data class State(
-        val hasCountries: Boolean = false,
+        val hasCountries: Boolean = true,
         val countriesAsync: Async<List<Country>> = Async.Uninitialized
     )
 
@@ -148,7 +148,7 @@ class OverviewReactor(
     override fun reduce(previousState: State, mutation: Mutation): State = when (mutation) {
         is Mutation.SetCountries -> previousState.copy(
             countriesAsync = mutation.countries,
-            hasCountries = mutation.countries !is Async.Loading && mutation.countries()?.isEmpty() == true
+            hasCountries = mutation.countries is Async.Success && mutation.countries.element.isNotEmpty()
         )
     }
 }
