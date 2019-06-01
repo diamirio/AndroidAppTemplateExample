@@ -28,15 +28,6 @@
 }
 -dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder
 
-# Gson
--keepattributes Signature
--keepattributes *Annotation*
--dontwarn sun.misc.**
--keep class com.google.gson.examples.android.model.** { *; }
--keep class * implements com.google.gson.TypeAdapterFactory
--keep class * implements com.google.gson.JsonSerializer
--keep class * implements com.google.gson.JsonDeserializer
-
 # Retrofit
 -keepattributes Signature, InnerClasses, EnclosingMethod
 -keepclassmembers,allowshrinking,allowobfuscation interface * {
@@ -71,4 +62,15 @@
     private void readObject(java.io.ObjectInputStream);
     java.lang.Object writeReplace();
     java.lang.Object readResolve();
+}
+
+# kotlinx.serialization
+-keepattributes *Annotation*, InnerClasses
+-dontnote kotlinx.serialization.SerializationKt
+-keep,includedescriptorclasses class com.yourcompany.yourpackage.**$$serializer { *; } # <-- change package name to your app's
+-keepclassmembers class com.yourcompany.yourpackage.** { # <-- change package name to your app's
+    *** Companion;
+}
+-keepclasseswithmembers class com.yourcompany.yourpackage.** { # <-- change package name to your app's
+    kotlinx.serialization.KSerializer serializer(...);
 }

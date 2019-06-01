@@ -17,7 +17,11 @@
 package com.tailoredapps.countriesexample.core
 
 import com.tailoredapps.androidutil.network.networkresponse.split
-import com.tailoredapps.countriesexample.core.local.*
+import com.tailoredapps.countriesexample.core.local.CountriesDatabase
+import com.tailoredapps.countriesexample.core.local.asCountryWithLanguages
+import com.tailoredapps.countriesexample.core.local.asLanguageList
+import com.tailoredapps.countriesexample.core.local.asLocalCountry
+import com.tailoredapps.countriesexample.core.local.asLocalLanguageList
 import com.tailoredapps.countriesexample.core.local.model.CountryLanguageJoin
 import com.tailoredapps.countriesexample.core.local.model.LocalCountryWithFavorite
 import com.tailoredapps.countriesexample.core.local.model.LocalFavoriteCountry

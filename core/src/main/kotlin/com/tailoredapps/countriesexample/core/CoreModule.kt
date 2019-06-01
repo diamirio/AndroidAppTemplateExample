@@ -16,19 +16,14 @@
 
 package com.tailoredapps.countriesexample.core
 
-import com.google.gson.GsonBuilder
 import com.tailoredapps.countriesexample.core.local.localModule
 import com.tailoredapps.countriesexample.core.remote.remoteModule
+import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 
 internal val coreModule = module {
-    single { GsonBuilder().create() }
-    single {
-        RetrofitRoomCountriesProvider(
-            countriesApi = get(),
-            countriesDb = get()
-        ) as CountriesProvider
-    }
+    single { RetrofitRoomCountriesProvider(countriesApi = get(), countriesDb = get()) as CountriesProvider }
+    single { Json.nonstrict }
 }
 
 val coreModules = listOf(coreModule, localModule, remoteModule)

@@ -16,38 +16,36 @@
 
 package com.tailoredapps.countriesexample.core.remote
 
-import com.google.gson.Gson
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.tailoredapps.androidutil.network.networkresponse.NetworkResponseRxJava2CallAdapterFactory
 import com.tailoredapps.countriesexample.core.BuildConfig
 import io.reactivex.schedulers.Schedulers
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
 
 internal val remoteModule = module {
-    single { provideOkHttpClient() }
-    single { provideApi<CountriesApi>(okHttpClient = get(), gson = get(), baseUrl = get()) }
+    factory { HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY } }
+    single { provideOkHttpClient(loggingInterceptor = get()) }
+    single { provideApi<CountriesApi>(okHttpClient = get(), json = get(), baseUrl = get()) }
 }
 
 data class BaseUrl(val url: String)
 
-private fun provideOkHttpClient() =
+private fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor) =
     OkHttpClient().newBuilder().apply {
-        if (BuildConfig.DEBUG) {
-            val loggingInterceptor = HttpLoggingInterceptor()
-            loggingInterceptor.level = HttpLoggingInterceptor.Level.BASIC
-            addInterceptor(loggingInterceptor)
-        }
+        if (BuildConfig.DEBUG) addInterceptor(loggingInterceptor)
     }.build()
 
-private inline fun <reified T> provideApi(okHttpClient: OkHttpClient, gson: Gson, baseUrl: BaseUrl): T =
+private inline fun <reified T> provideApi(okHttpClient: OkHttpClient, json: Json, baseUrl: BaseUrl): T =
     Retrofit.Builder().apply {
         baseUrl(baseUrl.url)
         client(okHttpClient)
-        addConverterFactory(GsonConverterFactory.create(gson))
+        addConverterFactory(json.asConverterFactory(MediaType.get("application/json")))
         addCallAdapterFactory(NetworkResponseRxJava2CallAdapterFactory.create())
         addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
     }.build().create(T::class.java)
