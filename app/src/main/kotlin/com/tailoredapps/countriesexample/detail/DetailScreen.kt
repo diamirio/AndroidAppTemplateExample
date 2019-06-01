@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import at.florianschuster.reaktor.ReactorView
 import at.florianschuster.reaktor.android.bind
+import at.florianschuster.reaktor.android.koin.reactor
 import at.florianschuster.reaktor.changesFrom
 import com.jakewharton.rxbinding3.view.clicks
 import com.tailoredapps.androidutil.ui.IntentUtil
@@ -44,7 +45,6 @@ import com.tailoredapps.countriesexample.util.source
 import com.tailoredapps.countriesexample.detail.recyclerview.DetailAdapter
 import com.tailoredapps.countriesexample.detail.recyclerview.DetailAdapterInteraction
 import com.tailoredapps.countriesexample.detail.recyclerview.convertToDetailAdapterItems
-import com.tailoredapps.reaktor.android.koin.reactor
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.ofType

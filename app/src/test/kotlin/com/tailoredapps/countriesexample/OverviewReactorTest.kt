@@ -35,7 +35,7 @@ class OverviewReactorTest : AutoCloseKoinTest() {
     fun before() {
         MockKAnnotations.init(this)
         startKoin {
-            modules(overviewModule, module { single { provider } })
+            modules(overviewModule + module { single { provider } })
         }
     }
 

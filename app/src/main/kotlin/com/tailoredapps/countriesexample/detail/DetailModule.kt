@@ -16,8 +16,8 @@
 
 package com.tailoredapps.countriesexample.detail
 
+import at.florianschuster.reaktor.android.koin.reactor
 import com.tailoredapps.countriesexample.detail.recyclerview.DetailAdapter
-import com.tailoredapps.reaktor.android.koin.reactor
 import org.koin.dsl.module
 
 internal val detailModule = module {
