@@ -21,7 +21,7 @@ data class Country(
     val location: Pair<Double, Double>?,
     val favorite: Boolean,
     val population: Long,
-    val area: Double,
+    val area: Double?,
     val capital: String,
     val region: String,
     val subRegion: String,

@@ -20,38 +20,21 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class RemoteCountry(
     val name: String,
-    val topLevelDomain: List<String>,
     val alpha2Code: String,
-    val alpha3Code: String,
-    val callingCodes: List<String>,
     val capital: String,
-    val altSpellings: List<String>,
     val region: String,
     val subregion: String,
     val population: Long,
     val latlng: List<Double>,
-    val demonym: String,
-    val area: Double,
-    val gini: Double?,
-    val timezones: List<String>,
-    val borders: List<String>,
+    val area: Double?,
     val nativeName: String,
-    val numericCode: String,
-    val currencies: List<Currency>,
     val languages: List<Language>,
-    val flag: String,
-    val cioc: String
+    val flag: String
 ) {
-    @Serializable
-    data class Currency(
-        val code: String,
-        val name: String,
-        val symbol: String
-    )
 
     @Serializable
     data class Language(
-        @SerialName("iso639_1") val iso6391: String,
+        @SerialName("iso639_1") val iso6391: String?,
         @SerialName("iso639_2") val iso6392: String,
         val name: String,
         val nativeName: String

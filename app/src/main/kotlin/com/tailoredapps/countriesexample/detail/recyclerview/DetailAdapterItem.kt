@@ -41,7 +41,7 @@ fun Country.convertToDetailAdapterItems(): List<DetailAdapterItem> {
             DetailAdapterInteraction.CapitalClick(capital)
         ),
         DetailAdapterItem(R.drawable.ic_terrain, "$subRegion, $region", R.string.detail_tv_region),
-        DetailAdapterItem(R.drawable.ic_map, "${area.formatThousands()} km²", R.string.detail_tv_area),
+        area?.let { DetailAdapterItem(R.drawable.ic_map, "${it.formatThousands()} km²", R.string.detail_tv_area) },
         languages.ifEmpty { null }?.let { languages ->
             DetailAdapterItem(
                 R.drawable.ic_language,
