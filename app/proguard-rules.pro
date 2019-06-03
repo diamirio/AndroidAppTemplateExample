@@ -10,6 +10,17 @@
 -keep class com.tailoredapps.countriesexample.core.model.** { *; }
 
 
+# kotlinx.serialization
+-keep,includedescriptorclasses class com.tailoredapps.countriesexample.**$$serializer { *; }
+-keepclassmembers class com.tailoredapps.countriesexample.** {
+    *** Companion;
+}
+-keepclasseswithmembers class com.tailoredapps.countriesexample.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+-keepattributes *Annotation*, InnerClasses
+-dontnote kotlinx.serialization.SerializationKt
+
 # LeakCanary
 -dontwarn com.squareup.haha.guava.**
 -dontwarn com.squareup.haha.perflib.**
@@ -62,15 +73,4 @@
     private void readObject(java.io.ObjectInputStream);
     java.lang.Object writeReplace();
     java.lang.Object readResolve();
-}
-
-# kotlinx.serialization
--keepattributes *Annotation*, InnerClasses
--dontnote kotlinx.serialization.SerializationKt
--keep,includedescriptorclasses class com.yourcompany.yourpackage.**$$serializer { *; } # <-- change package name to your app's
--keepclassmembers class com.yourcompany.yourpackage.** { # <-- change package name to your app's
-    *** Companion;
-}
--keepclasseswithmembers class com.yourcompany.yourpackage.** { # <-- change package name to your app's
-    kotlinx.serialization.KSerializer serializer(...);
 }
