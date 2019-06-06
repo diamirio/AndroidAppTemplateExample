@@ -63,7 +63,7 @@ class OverviewFragment : BaseFragment(R.layout.fragment_overview), ReactorView<O
             .addTo(disposables)
 
         // action
-        emptyLayout.btnLoad.clicks()
+        Observable.merge(srlOverView.refreshes(), emptyLayout.btnLoad.clicks())
             .map { OverviewReactor.Action.Reload }
             .bind(to = reactor.action)
             .addTo(disposables)
@@ -74,22 +74,17 @@ class OverviewFragment : BaseFragment(R.layout.fragment_overview), ReactorView<O
             .bind(to = reactor.action)
             .addTo(disposables)
 
-        srlOverView.refreshes()
-            .map { OverviewReactor.Action.Reload }
-            .bind(to = reactor.action)
-            .addTo(disposables)
-
         // state
-        reactor.state.changesFrom { !it.hasCountries }
+        reactor.state.changesFrom { !it.hasCountriesAndNotLoading }
             .bind(to = emptyLayout.visibility())
             .addTo(disposables)
 
         reactor.state.changesFrom { it.countriesAsync }
-            .bind {
-                srlOverView.isRefreshing = it is Async.Loading
-                when (it) {
-                    is Async.Success -> adapter.submitList(it.element)
-                    is Async.Error -> errorSnack(it.error)
+            .bind { countryAsync ->
+                srlOverView.isRefreshing = countryAsync is Async.Loading
+                when (countryAsync) {
+                    is Async.Success -> adapter.submitList(countryAsync.element)
+                    is Async.Error -> errorSnack(countryAsync.error)
                 }
             }
             .addTo(disposables)
@@ -118,7 +113,7 @@ class OverviewReactor(
     }
 
     data class State(
-        val hasCountries: Boolean = true,
+        val hasCountriesAndNotLoading: Boolean = true,
         val countriesAsync: Async<List<Country>> = Async.Uninitialized
     )
 
@@ -148,7 +143,8 @@ class OverviewReactor(
     override fun reduce(previousState: State, mutation: Mutation): State = when (mutation) {
         is Mutation.SetCountries -> previousState.copy(
             countriesAsync = mutation.countries,
-            hasCountries = mutation.countries is Async.Success && mutation.countries.element.isNotEmpty()
+            hasCountriesAndNotLoading = mutation.countries is Async.Loading ||
+                    mutation.countries is Async.Success && mutation.countries.element.isNotEmpty()
         )
     }
 }

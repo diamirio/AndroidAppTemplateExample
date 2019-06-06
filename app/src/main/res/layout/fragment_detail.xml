@@ -52,6 +52,8 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/all_margin"
+                android:layout_marginEnd="@dimen/all_margin"
                 android:text="@string/detail_btn_more"
                 android:layout_marginTop="@dimen/all_margin"
                 app:layout_constraintEnd_toEndOf="parent"

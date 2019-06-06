@@ -112,13 +112,13 @@ class DetailFragment : BaseFragment(R.layout.fragment_detail), ReactorView<Detai
     }
 
     private fun openChromeTab(url: String) {
-        if (!url.isEmpty()) {
-            try {
-                CustomTabsIntent.Builder().build().launchUrl(requireContext(), Uri.parse(url))
-            } catch (throwable: Throwable) {
-                Timber.i(throwable)
-                startActivity(IntentUtil.web(url)) // fallback of chrome not installed -> open default browser
-            }
+        if (url.isEmpty()) return
+
+        try {
+            CustomTabsIntent.Builder().build().launchUrl(requireContext(), Uri.parse(url))
+        } catch (throwable: Throwable) {
+            Timber.i(throwable)
+            startActivity(IntentUtil.web(url)) // fallback of chrome not installed -> open default browser
         }
     }
 }
