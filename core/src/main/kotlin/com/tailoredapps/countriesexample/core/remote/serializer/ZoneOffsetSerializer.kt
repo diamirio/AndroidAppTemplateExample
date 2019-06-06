@@ -19,8 +19,10 @@ object ZoneOffsetSerializer : KSerializer<ZoneOffset> {
     }
 
     override fun deserialize(decoder: Decoder): ZoneOffset {
+        val decodedString = decoder.decodeString()
         return try {
-            ZoneOffset.of(decoder.decodeString().removePrefix("UTC"))
+            if (decodedString.equals("UTC", ignoreCase = true)) ZoneOffset.UTC
+            else ZoneOffset.of(decodedString.removePrefix("UTC"))
         } catch (e: DateTimeException) {
             ZoneOffset.UTC
         }
