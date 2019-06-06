@@ -17,13 +17,16 @@
 package com.tailoredapps.countriesexample.core
 
 import com.tailoredapps.countriesexample.core.local.localModule
+import com.tailoredapps.countriesexample.core.remote.serializer.ZoneOffsetSerializer
 import com.tailoredapps.countriesexample.core.remote.remoteModule
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.modules.serializersModule
 import org.koin.dsl.module
 
 internal val coreModule = module {
     single { RetrofitRoomCountriesProvider(countriesApi = get(), countriesDb = get()) as CountriesProvider }
-    single { Json.nonstrict }
+    single { Json(JsonConfiguration(strictMode = false), serializersModule(ZoneOffsetSerializer)) }
 }
 
 val coreModules = listOf(coreModule, localModule, remoteModule)
