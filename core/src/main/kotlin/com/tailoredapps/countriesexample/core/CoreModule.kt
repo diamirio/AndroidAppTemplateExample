@@ -26,7 +26,7 @@ import org.koin.dsl.module
 
 internal val coreModule = module {
     single { RetrofitRoomCountriesProvider(countriesApi = get(), countriesDb = get()) as CountriesProvider }
-    single { Json(JsonConfiguration(strictMode = false), serializersModule(ZoneOffsetSerializer)) }
+    single { Json.nonstrict }
 }
 
 val coreModules = listOf(coreModule, localModule, remoteModule)

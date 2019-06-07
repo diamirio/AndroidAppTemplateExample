@@ -14,7 +14,7 @@
 
 package com.tailoredapps.countriesexample.core.remote.model
 
-import kotlinx.serialization.ContextualSerialization
+import com.tailoredapps.countriesexample.core.remote.serializer.ZoneOffsetSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.threeten.bp.ZoneOffset
@@ -32,7 +32,7 @@ data class RemoteCountry(
     val nativeName: String,
     val languages: List<Language>,
     val flag: String,
-    val timezones: List<@ContextualSerialization ZoneOffset?>
+    val timezones: List<@Serializable(with= ZoneOffsetSerializer::class) ZoneOffset?>
 ) {
 
     @Serializable
