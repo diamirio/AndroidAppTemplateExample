@@ -32,7 +32,7 @@ data class RemoteCountry(
     val nativeName: String,
     val languages: List<Language>,
     val flag: String,
-    val timezones: List<@Serializable(with= ZoneOffsetSerializer::class) ZoneOffset?>
+    val timezones: List<@Serializable(with = ZoneOffsetSerializer::class) ZoneOffset?>
 ) {
 
     @Serializable

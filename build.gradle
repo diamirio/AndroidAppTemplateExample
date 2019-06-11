@@ -19,7 +19,6 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$versions.kotlin"
 
-
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$versions.navigation"
 
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.21.0'
