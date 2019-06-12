@@ -14,61 +14,32 @@
 
 package com.tailoredapps.countriesexample.core.remote.model
 
-import com.google.gson.annotations.SerializedName
+import com.tailoredapps.countriesexample.core.remote.serializer.ZoneOffsetSerializer
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.threeten.bp.ZoneOffset
 
+@Serializable
 data class RemoteCountry(
     val name: String,
-    val topLevelDomain: List<String>,
     val alpha2Code: String,
-    val alpha3Code: String,
-    val callingCodes: List<String>,
     val capital: String,
-    val altSpellings: List<String>,
     val region: String,
-    val subregion: String,
+    @SerialName("subregion") val subRegion: String,
     val population: Long,
-    val latlng: List<Double>,
-    val demonym: String,
-    val area: Double,
-    val gini: Double,
-    val timezones: List<String>,
-    val borders: List<String>,
+    @SerialName("latlng") val latLng: List<Double>,
+    val area: Double?,
     val nativeName: String,
-    val numericCode: String,
-    val currencies: List<RemoteCurrency>,
-    val languages: List<RemoteLanguage>,
-    val translations: RemoteTranslations,
+    val languages: List<Language>,
     val flag: String,
-    val regionalBlocs: List<RemoteRegionalBloc>,
-    val cioc: String
-)
+    val timezones: List<@Serializable(with = ZoneOffsetSerializer::class) ZoneOffset?>
+) {
 
-data class RemoteCurrency(
-    val code: String,
-    val name: String,
-    val symbol: String
-)
-
-data class RemoteLanguage(
-    @SerializedName("iso639_1") val iso6391: String,
-    @SerializedName("iso639_2") val iso6392: String,
-    val name: String,
-    val nativeName: String
-)
-
-data class RemoteRegionalBloc(
-    val acronym: String,
-    val name: String,
-    val otherAcronyms: List<String>,
-    val otherNames: List<String>
-)
-
-data class RemoteTranslations(
-    val de: String,
-    val es: String,
-    val fr: String,
-    val ja: String,
-    val it: String,
-    val br: String,
-    val pt: String
-)
+    @Serializable
+    data class Language(
+        @SerialName("iso639_1") val iso6391: String?,
+        @SerialName("iso639_2") val iso6392: String,
+        val name: String,
+        val nativeName: String
+    )
+}

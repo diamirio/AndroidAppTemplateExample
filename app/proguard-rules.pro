@@ -10,6 +10,17 @@
 -keep class com.tailoredapps.countriesexample.core.model.** { *; }
 
 
+# kotlinx.serialization
+-keep,includedescriptorclasses class com.tailoredapps.countriesexample.**$$serializer { *; }
+-keepclassmembers class com.tailoredapps.countriesexample.** {
+    *** Companion;
+}
+-keepclasseswithmembers class com.tailoredapps.countriesexample.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+-keepattributes *Annotation*, InnerClasses
+-dontnote kotlinx.serialization.SerializationKt
+
 # LeakCanary
 -dontwarn com.squareup.haha.guava.**
 -dontwarn com.squareup.haha.perflib.**
@@ -27,15 +38,6 @@
   public *;
 }
 -dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder
-
-# Gson
--keepattributes Signature
--keepattributes *Annotation*
--dontwarn sun.misc.**
--keep class com.google.gson.examples.android.model.** { *; }
--keep class * implements com.google.gson.TypeAdapterFactory
--keep class * implements com.google.gson.JsonSerializer
--keep class * implements com.google.gson.JsonDeserializer
 
 # Retrofit
 -keepattributes Signature, InnerClasses, EnclosingMethod

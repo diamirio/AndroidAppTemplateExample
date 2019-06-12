@@ -33,7 +33,7 @@ data class LocalCountry(
     val lat: Double?,
     val lng: Double?,
     val population: Long,
-    val area: Double,
+    val area: Double?,
     val capital: String,
     val region: String,
     val subregion: String,

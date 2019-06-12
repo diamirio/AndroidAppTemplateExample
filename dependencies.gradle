@@ -17,6 +17,10 @@ ext {
     ]
 
     deps = [
+            kotlin     : [
+                    standard     : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin",
+                    serialization: "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.11.0"
+            ],
             reaktor    : [
                     core       : "at.florianschuster.reaktor:reaktor-core:${versions.reaktor}",
                     android    : "at.florianschuster.reaktor:reaktor-android:${versions.reaktor}",
@@ -24,7 +28,7 @@ ext {
             ],
             androidutil: [
                     base       : "com.tailoredapps.androidutil:util-base:${versions.androidutil}",
-                    ui       : "com.tailoredapps.androidutil:util-ui:${versions.androidutil}",
+                    ui         : "com.tailoredapps.androidutil:util-ui:${versions.androidutil}",
                     async      : "com.tailoredapps.androidutil:util-async:${versions.androidutil}",
                     network    : "com.tailoredapps.androidutil:util-network:${versions.androidutil}",
                     optional   : "com.tailoredapps.androidutil:util-optional:${versions.androidutil}",
@@ -70,11 +74,11 @@ ext {
                     material          : "com.jakewharton.rxbinding3:rxbinding-material:${versions.rxbinding}"
             ],
             networking : [
-                    retrofit      : "com.squareup.retrofit2:retrofit:${versions.retrofit}",
-                    retrofitGson  : "com.squareup.retrofit2:converter-gson:${versions.retrofit}",
-                    retrofitRxjava: "com.squareup.retrofit2:adapter-rxjava2:${versions.retrofit}",
-                    okhttp        : "com.squareup.okhttp3:okhttp:${versions.okhttp}",
-                    okhttpLogging : "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
+                    retrofit             : "com.squareup.retrofit2:retrofit:${versions.retrofit}",
+                    retrofitSerialization: "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.4.0",
+                    retrofitRxjava       : "com.squareup.retrofit2:adapter-rxjava2:${versions.retrofit}",
+                    okhttp               : "com.squareup.okhttp3:okhttp:${versions.okhttp}",
+                    okhttpLogging        : "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
             ],
             room       : [
                     core    : "androidx.room:room-runtime:${versions.room}",
@@ -91,7 +95,6 @@ ext {
                     compiler: "com.github.bumptech.glide:compiler:${versions.glide}"
             ],
             coreutil   : [
-                    gson    : 'com.google.code.gson:gson:2.8.5',
                     timber  : 'com.jakewharton.timber:timber:4.7.1',
                     threeten: 'com.jakewharton.threetenabp:threetenabp:1.2.0'
             ],

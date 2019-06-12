@@ -21,16 +21,15 @@ import com.tailoredapps.countriesexample.core.local.model.LocalCountry
 import com.tailoredapps.countriesexample.core.local.model.LocalCountryWithFavorite
 import com.tailoredapps.countriesexample.core.local.model.LocalLanguage
 import com.tailoredapps.countriesexample.core.remote.model.RemoteCountry
-import com.tailoredapps.countriesexample.core.remote.model.RemoteLanguage
 
 val RemoteCountry.asLocalCountry: LocalCountry
-    get() = LocalCountry(alpha2Code, name, flag, latlng.firstOrNull(), latlng.getOrNull(1), population, area, capital, region, subregion, nativeName)
+    get() = LocalCountry(alpha2Code, name, flag, latLng.firstOrNull(), latLng.getOrNull(1), population, area, capital, region, subRegion, nativeName)
 
-val RemoteLanguage.asLocalLanguage: LocalLanguage
+val RemoteCountry.Language.asLocalLanguage: LocalLanguage
     get() = LocalLanguage(name, nativeName)
 
-val List<RemoteLanguage>.asLocalLanguageList: List<LocalLanguage>
-    get() = map(RemoteLanguage::asLocalLanguage)
+val List<RemoteCountry.Language>.asLocalLanguageList: List<LocalLanguage>
+    get() = map(RemoteCountry.Language::asLocalLanguage)
 
 val LocalLanguage.asLanguage: Country.Language
     get() = Country.Language(name, nativeName)
