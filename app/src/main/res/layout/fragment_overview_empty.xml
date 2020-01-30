@@ -11,7 +11,7 @@
             android:layout_width="88dp"
             android:layout_height="88dp"
             android:src="@drawable/ic_live_help"
-            android:tint="@color/colorAccent"
+            android:tint="?colorAccent"
             app:layout_constraintBottom_toTopOf="@id/tvText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -19,7 +19,10 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_detail.view.*
 
-class DetailViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
+class DetailViewHolder(
+    override val containerView: View
+) : RecyclerView.ViewHolder(containerView), LayoutContainer {
+
     fun bind(item: DetailAdapterItem, interaction: ((DetailAdapterInteraction) -> Unit)) {
         val resources = itemView.context.resources
         itemView.tvTitle.text = item.title

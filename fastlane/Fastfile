@@ -6,11 +6,6 @@ platform :android do
     gradle(task: "test")
   end
 
-  desc "Formats the code according to ktlint"
-  lane :format do
-    gradle(task: "ktlintFormat")
-  end
-
   desc "Fetches localizations"
   lane :localize do
     google_sheet_localize(

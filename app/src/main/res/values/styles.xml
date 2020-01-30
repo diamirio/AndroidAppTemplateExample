@@ -10,6 +10,8 @@
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="android:navigationBarColor">@color/colorPrimary</item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
+
+        <item name="alertDialogTheme">@style/AlertDialogTheme</item>
     </style>
 
     <!-- Text -->
@@ -32,4 +34,10 @@
         <item name="android:background">@color/divider</item>
     </style>
 
+    <!-- Alert -->
+    <style name="AlertDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert.Bridge">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
 </resources>

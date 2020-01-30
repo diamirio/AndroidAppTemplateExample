@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -14,11 +13,11 @@
                 android:id="@+id/ivFlag"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/detail_iv_cd_flag"
                 android:scaleType="centerCrop"
                 app:layout_constraintDimensionRatio="3:2"
-                tools:src="@mipmap/ic_launcher"
-                android:contentDescription="@string/detail_iv_cd_flag"/>
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@mipmap/ic_launcher" />
 
         <TextView
                 android:id="@+id/tvName"
@@ -27,15 +26,15 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/all_margin"
                 app:layout_constraintTop_toBottomOf="@id/ivFlag"
-                tools:text="Austria"/>
+                tools:text="Austria" />
 
         <View
                 android:id="@+id/dividerTitle"
                 style="@style/Divider"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="@dimen/all_margin"
-                app:layout_constraintTop_toBottomOf="@id/tvName"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvName" />
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvDetail"
@@ -45,21 +44,25 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintTop_toBottomOf="@id/dividerTitle"
                 tools:itemCount="3"
-                tools:listitem="@layout/item_detail"/>
+                tools:listitem="@layout/item_detail" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnMore"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/all_margin"
-                android:layout_marginEnd="@dimen/all_margin"
-                android:text="@string/detail_btn_more"
                 android:layout_marginTop="@dimen/all_margin"
+                android:layout_marginEnd="@dimen/all_margin"
+                android:layout_marginBottom="@dimen/all_margin"
+                android:text="@string/detail_btn_more"
+                android:textColor="?colorAccent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginBottom="@dimen/all_margin"
-                app:layout_constraintTop_toBottomOf="@id/rvDetail"/>
+                app:layout_constraintTop_toBottomOf="@id/rvDetail"
+                app:rippleColor="@color/colorAccentLight" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.core.widget.NestedScrollView>

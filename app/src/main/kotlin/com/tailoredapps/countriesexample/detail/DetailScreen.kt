@@ -89,17 +89,17 @@ class DetailFragment : BaseFragment(R.layout.fragment_detail), ReactorView<Detai
 
         // action
         btnMore.clicks()
+            .map { reactor.currentState.country.asOptional }
+            .filterSome()
+            .map(Country::infoUrl)
             .flatMapMaybe { url ->
                 rxDialog {
                     titleResource = R.string.detail_dialog_title
                     message = getString(R.string.detail_dialog_message, url)
                     positiveButtonResource = R.string.detail_dialog_positive
                     negativeButtonResource = R.string.detail_dialog_negative
-                }.ofType<RxDialogAction.Positive>()
+                }.ofType<RxDialogAction.Positive>().map { url }
             }
-            .map { reactor.currentState.country.asOptional }
-            .filterSome()
-            .map(Country::infoUrl)
             .bind(to = this::openChromeTab)
             .addTo(disposables)
 

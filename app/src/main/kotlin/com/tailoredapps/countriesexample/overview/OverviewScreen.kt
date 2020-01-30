@@ -113,9 +113,12 @@ class OverviewReactor(
     }
 
     data class State(
-        val hasCountriesAndNotLoading: Boolean = true,
         val countriesAsync: Async<List<Country>> = Async.Uninitialized
-    )
+    ) {
+        val hasCountriesAndNotLoading: Boolean
+            get() = countriesAsync is Async.Loading ||
+                    countriesAsync.complete && countriesAsync()?.isNotEmpty() == true
+    }
 
     override fun transformMutation(mutation: Observable<Mutation>): Observable<out Mutation> {
         val storedCountriesMutation = countriesProvider
@@ -141,10 +144,6 @@ class OverviewReactor(
     }
 
     override fun reduce(previousState: State, mutation: Mutation): State = when (mutation) {
-        is Mutation.SetCountries -> previousState.copy(
-            countriesAsync = mutation.countries,
-            hasCountriesAndNotLoading = mutation.countries is Async.Loading ||
-                    mutation.countries is Async.Success && mutation.countries.element.isNotEmpty()
-        )
+        is Mutation.SetCountries -> previousState.copy(countriesAsync = mutation.countries)
     }
 }

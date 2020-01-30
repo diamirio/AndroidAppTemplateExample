@@ -8,10 +8,6 @@ The localization sheet can be found [here](https://docs.google.com/spreadsheets/
 
 Run `bundle exec fastlane localize` to fetch localizations.
 
-## Formatting
-
-Run `bundle exec fastlane format` to format the code with [ktlint](https://ktlint.github.io/).
-
 
 ## TODO
 
