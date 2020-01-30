@@ -1,5 +1,6 @@
 package com.tailoredapps.countriesexample
 
+import com.tailoredapps.androidapptemplate.RxSchedulersOverrideRule
 import com.tailoredapps.androidutil.async.Async
 import com.tailoredapps.countriesexample.core.CountriesProvider
 import com.tailoredapps.countriesexample.core.model.Country
@@ -7,13 +8,12 @@ import com.tailoredapps.countriesexample.overview.OverviewReactor
 import com.tailoredapps.countriesexample.overview.overviewModule
 import io.mockk.MockKAnnotations
 import io.mockk.every
-import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
 import io.mockk.verify
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.subjects.BehaviorSubject
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -21,15 +21,16 @@ import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.inject
+import kotlin.test.assertEquals
 
 class OverviewReactorTest : AutoCloseKoinTest() {
+
     @get:Rule
     val rxSchedulersOverrideRule = RxSchedulersOverrideRule()
 
     private val reactor: OverviewReactor by inject()
 
-    @MockK
-    private lateinit var provider: CountriesProvider
+    private val provider: CountriesProvider = mockk()
 
     @Before
     fun before() {
@@ -75,9 +76,9 @@ class OverviewReactorTest : AutoCloseKoinTest() {
         subject.onNext(listOf(mockCountry, mockCountry))
 
         val stateValues = testObserver.values().map { it.countriesAsync }
-        Assert.assertEquals(Async.Success(listOf(mockCountry)), stateValues[0])
-        Assert.assertEquals(Async.Loading, stateValues[1])
-        Assert.assertEquals(Async.Success(listOf(mockCountry, mockCountry)), stateValues[2])
+        assertEquals(Async.Success(listOf(mockCountry)), stateValues[0])
+        assertEquals(Async.Loading, stateValues[1])
+        assertEquals(Async.Success(listOf(mockCountry, mockCountry)), stateValues[2])
         testObserver.assertValueCount(3)
     }
 
@@ -93,9 +94,9 @@ class OverviewReactorTest : AutoCloseKoinTest() {
         reactor.action.accept(OverviewReactor.Action.Reload)
 
         val stateValues = testObserver.values().map { it.countriesAsync }
-        Assert.assertEquals(Async.Success(listOf(mockCountry)), stateValues[0])
-        Assert.assertEquals(Async.Loading, stateValues[1])
-        Assert.assertEquals(Async.Error(errorToThrow), stateValues[2])
+        assertEquals(Async.Success(listOf(mockCountry)), stateValues[0])
+        assertEquals(Async.Loading, stateValues[1])
+        assertEquals(Async.Error(errorToThrow), stateValues[2])
         testObserver.assertValueCount(3)
     }
 
@@ -112,7 +113,8 @@ class OverviewReactorTest : AutoCloseKoinTest() {
     @Test
     fun testToggleFavoriteActionSetsSuccessStateWithToggledFavorite() {
         val initialMockCountry = mockCountry
-        val favoriteToggledMockCountry = initialMockCountry.copy(favorite = !initialMockCountry.favorite)
+        val favoriteToggledMockCountry =
+            initialMockCountry.copy(favorite = !initialMockCountry.favorite)
 
         val subject = BehaviorSubject.createDefault(listOf(initialMockCountry))
 
@@ -125,8 +127,8 @@ class OverviewReactorTest : AutoCloseKoinTest() {
         subject.onNext(listOf(favoriteToggledMockCountry))
 
         val stateValues = testObserver.values().map { it.countriesAsync }
-        Assert.assertEquals(Async.Success(listOf(initialMockCountry)), stateValues[0])
-        Assert.assertEquals(Async.Success(listOf(favoriteToggledMockCountry)), stateValues[1])
+        assertEquals(Async.Success(listOf(initialMockCountry)), stateValues[0])
+        assertEquals(Async.Success(listOf(favoriteToggledMockCountry)), stateValues[1])
         testObserver.assertValueCount(2)
     }
 

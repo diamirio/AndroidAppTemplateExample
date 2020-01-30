@@ -1,48 +1,31 @@
-apply from: "$rootDir/library-module.gradle"
+apply from: rootProject.file("gradle/library-module-android.gradle")
 
 dependencies {
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
+    api(Libs.kotlin_stdlib)
 
-    /**
-     * Base
-     */
-    api deps.reaktor.core
-    implementation deps.androidutil.network
-    implementation deps.androidutil.optional
+    api(Libs.util_network)
+    api(Libs.util_async)
+    api(Libs.util_optional)
 
-    /**
-     * DI
-     */
-    api deps.koin.values()
+    api(Libs.koin_core)
+    api(Libs.koin_android)
 
-    /**
-     * Rx
-     */
-    api deps.rxjava.core
-    api deps.rxjava.kotlin
-    api deps.rxjava.relay
+    api(Libs.rxjava)
+    api(Libs.rxkotlin)
+    api(Libs.rxrelay)
 
-    /**
-     * Networking
-     */
-    implementation deps.networking.values()
-    api deps.networking.retrofit
+    api(Libs.retrofit)
+    implementation(Libs.converter_gson)
+    implementation(Libs.adapter_rxjava2)
+    implementation(Libs.okhttp)
+    implementation(Libs.logging_interceptor)
 
-    /**
-     * Persistence
-     */
-    implementation deps.room.core
-    kapt deps.room.compiler
-    implementation deps.room.rxjava
-    debugImplementation deps.room.debug
+    api(Libs.gson)
+    api(Libs.timber)
+    api(Libs.threetenabp)
 
-    /**
-     * Util
-     */
-    api deps.coreutil.values()
-
-    /**
-     * Testing
-     */
-    testImplementation deps.test.values()
+    implementation("androidx.room:room-runtime:2.2.3")
+    implementation("androidx.room:room-rxjava2:2.2.3")
+    kapt("androidx.room:room-compiler:2.2.3")
+    debugImplementation("com.amitshekhar.android:debug-db:1.0.6")
 }

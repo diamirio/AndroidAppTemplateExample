@@ -1,9 +1,11 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: "kotlin-android-extensions"
-apply plugin: 'kotlin-kapt'
-apply plugin: 'com.akaita.android.easylauncher'
-apply plugin: "androidx.navigation.safeargs.kotlin"
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
+    id 'com.akaita.android.easylauncher'
+    id 'androidx.navigation.safeargs.kotlin'
+}
 
 android {
     compileSdkVersion rootProject.ext.buildConfig.compileSdkVersion
@@ -12,8 +14,8 @@ android {
         versionCode 1
         versionName '1.0.0'
 
-        applicationId "com.tailoredapps.countriesexample"
-        setProperty("archivesBaseName", "CountriesExample-v$versionName-b$versionCode")
+        applicationId "com.tailoredapps.androidapptemplate"
+        setProperty("archivesBaseName", "AndroidAppTemplate-v$versionName-b$versionCode")
 
         targetSdkVersion rootProject.ext.buildConfig.targetSdkVersion
         minSdkVersion rootProject.ext.buildConfig.minSdkVersion
@@ -46,13 +48,13 @@ android {
     productFlavors {
         dev {
             applicationIdSuffix ".dev"
-            resValue "string", "app_name", "CountriesExample Dev"
-            resValue "string", "leak_canary_display_activity_label", "CountriesExample Leaks"
+            resValue "string", "app_name", "AndroidAppTemplate Dev"
+            resValue "string", "leak_canary_display_activity_label", "AndroidAppTemplate Leaks"
             buildConfigField "String", "BASE_URL", "\"https://restcountries.eu/rest/v2/\""
             dimension "backend"
         }
         prod {
-            resValue "string", "app_name", "CountriesExample"
+            resValue "string", "app_name", "AndroidAppTemplate"
             buildConfigField "String", "BASE_URL", "\"https://restcountries.eu/rest/v2/\""
             dimension "backend"
         }
@@ -84,39 +86,31 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        warningsAsErrors true
+        abortOnError true
+    }
 }
 
 androidExtensions {
     experimental = true
 }
 
+apply from: rootProject.file("gradle/test-dependencies.gradle")
+apply from: rootProject.file("gradle/test-dependencies-android.gradle")
+
 dependencies {
-    /**
-     * Base
-     */
-    implementation project(path: ':core')
-    implementation deps.androidutil.values()
+    implementation(project(path: ":core"))
+    implementation(project(path: ":base-ui"))
 
-    /**
-     * UI
-     */
-    implementation project(path: ':uibase')
-    implementation deps.lifecycle.core
-    kapt deps.lifecycle.compiler
-
-    /**
-     * Util
-     */
-    implementation deps.glide.core
-    kapt deps.glide.compiler
-    implementation deps.customtabs
-
-    /**
-     * Testing
-     */
-    testImplementation deps.test.values()
-    androidTestImplementation deps.androidtest.values()
+    implementation(Libs.coil)
 }
+
 
 easylauncher {
     iconNames "@mipmap/ic_launcher_foreground"

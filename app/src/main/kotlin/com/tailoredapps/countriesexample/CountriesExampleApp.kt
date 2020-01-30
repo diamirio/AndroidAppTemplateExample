@@ -19,10 +19,10 @@ package com.tailoredapps.countriesexample
 import android.app.Application
 import at.florianschuster.reaktor.Reaktor
 import com.jakewharton.threetenabp.AndroidThreeTen
-import com.squareup.leakcanary.LeakCanary
+import com.tailoredapps.countriesexample.core.model.AppBuildInfo
 import com.tailoredapps.countriesexample.core.coreModules
-import com.tailoredapps.countriesexample.uibase.uiBaseModule
 import io.reactivex.plugins.RxJavaPlugins
+import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -33,24 +33,20 @@ class CountriesExampleApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        if (LeakCanary.isInAnalyzerProcess(this)) return
-
-        instance = this
 
         Timber.plant(Timber.DebugTree())
         AndroidThreeTen.init(this)
         RxJavaPlugins.setErrorHandler(Timber::e)
-        Reaktor.handleErrorsWith(handler = Timber::e)
 
         startKoin {
             androidContext(this@CountriesExampleApp)
             androidLogger(Level.INFO)
-            modules(coreModules + uiBaseModule + appModules)
+            modules(coreModules + appModules)
         }
-    }
 
-    companion object {
-        lateinit var instance: CountriesExampleApp
-            private set
+        Reaktor.attachErrorHandler(
+            escalateCrashes = get<AppBuildInfo>().debug,
+            handler = Timber::e
+        )
     }
 }

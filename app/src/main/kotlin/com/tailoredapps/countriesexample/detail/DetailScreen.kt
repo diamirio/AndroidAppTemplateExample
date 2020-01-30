@@ -28,7 +28,10 @@ import at.florianschuster.reaktor.ReactorView
 import at.florianschuster.reaktor.android.bind
 import at.florianschuster.reaktor.android.koin.reactor
 import at.florianschuster.reaktor.changesFrom
+import coil.api.load
 import com.jakewharton.rxbinding3.view.clicks
+import com.tailoredapps.androidapptemplate.base.ui.BaseFragment
+import com.tailoredapps.androidapptemplate.base.ui.BaseReactor
 import com.tailoredapps.androidutil.ui.IntentUtil
 import com.tailoredapps.androidutil.ui.extensions.RxDialogAction
 import com.tailoredapps.androidutil.ui.extensions.rxDialog
@@ -36,12 +39,9 @@ import com.tailoredapps.androidutil.optional.asOptional
 import com.tailoredapps.androidutil.optional.filterSome
 import com.tailoredapps.androidutil.optional.ofType
 import com.tailoredapps.countriesexample.R
-import com.tailoredapps.countriesexample.uibase.BaseReactor
-import com.tailoredapps.countriesexample.uibase.BaseFragment
 import com.tailoredapps.countriesexample.core.CountriesProvider
 import com.tailoredapps.countriesexample.core.model.Country
 import com.tailoredapps.countriesexample.main.liftsAppBarWith
-import com.tailoredapps.countriesexample.util.source
 import com.tailoredapps.countriesexample.detail.recyclerview.DetailAdapter
 import com.tailoredapps.countriesexample.detail.recyclerview.DetailAdapterInteraction
 import com.tailoredapps.countriesexample.detail.recyclerview.convertToDetailAdapterItems
@@ -67,7 +67,10 @@ class DetailFragment : BaseFragment(R.layout.fragment_detail), ReactorView<Detai
         rvDetail.adapter = adapter
         liftsAppBarWith(rvDetail)
         DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
-            .apply { ContextCompat.getDrawable(requireContext(), R.drawable.bg_divider)?.let(::setDrawable) }
+            .apply {
+                ContextCompat.getDrawable(requireContext(), R.drawable.bg_divider)
+                    ?.let(::setDrawable)
+            }
             .also(rvDetail::addItemDecoration)
 
         val locationIntentObservable = adapter.interaction
@@ -104,7 +107,10 @@ class DetailFragment : BaseFragment(R.layout.fragment_detail), ReactorView<Detai
         reactor.state.changesFrom { it.country.asOptional }
             .filterSome()
             .bind { country ->
-                ivFlag.source(R.drawable.ic_help_outline).accept(country.flagPngUrl)
+                ivFlag.load(country.flagPngUrl) {
+                    crossfade(200)
+                    error(R.drawable.ic_help_outline)
+                }
                 tvName.text = country.name
                 adapter.submitList(country.convertToDetailAdapterItems())
             }

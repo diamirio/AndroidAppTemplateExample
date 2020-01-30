@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package com.tailoredapps.countriesexample.uibase
+package com.tailoredapps.countriesexample.core.model
 
-import com.squareup.leakcanary.LeakCanary
-import org.koin.android.ext.koin.androidApplication
-import org.koin.dsl.module
-
-val uiBaseModule = module {
-    single { LeakCanary.install(androidApplication()) }
-}
+data class AppBuildInfo(
+    val debug: Boolean,
+    val buildType: String,
+    val flavor: String,
+    val versionCode: Int,
+    val versionName: String,
+    val baseUrl: String
+)

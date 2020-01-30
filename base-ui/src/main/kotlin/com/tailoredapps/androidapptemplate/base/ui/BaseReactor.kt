@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package com.tailoredapps.countriesexample.util
+package com.tailoredapps.androidapptemplate.base.ui
 
-import android.widget.ImageView
-import androidx.annotation.DrawableRes
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import io.reactivex.functions.Consumer
+import androidx.annotation.CallSuper
+import at.florianschuster.reaktor.android.ViewModelReactor
+import leakcanary.AppWatcher
 
-/**
- * Consumes an image URL to display the image in this ImageView.
- */
-fun ImageView.source(@DrawableRes fallback: Int? = null): Consumer<in String?> =
-    Consumer {
-        GlideApp.with(this)
-            .load(it)
-            .apply { fallback?.let(::error) }
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .into(this)
+abstract class BaseReactor<Action : Any, Mutation : Any, State : Any>(
+    initialState: State,
+    initialAction: Action? = null
+) : ViewModelReactor<Action, Mutation, State>(initialState, initialAction) {
+
+    @CallSuper
+    override fun onCleared() {
+        super.onCleared()
+        AppWatcher.objectWatcher.watch(this, "BaseReactor.onCleared")
     }
+}

@@ -19,11 +19,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.api.load
 import com.jakewharton.rxrelay2.PublishRelay
 import com.tailoredapps.androidutil.ui.extensions.inflate
 import com.tailoredapps.countriesexample.R
 import com.tailoredapps.countriesexample.core.model.Country
-import com.tailoredapps.countriesexample.util.source
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_country.view.*
 
@@ -42,15 +42,24 @@ class CountryAdapter : ListAdapter<Country, CountryViewHolder>(countryDiff) {
         holder.bind(getItem(position), interaction::accept)
 }
 
-private val countryDiff: DiffUtil.ItemCallback<Country> = object : DiffUtil.ItemCallback<Country>() {
-    override fun areItemsTheSame(oldItem: Country, newItem: Country): Boolean = oldItem.alpha2Code == newItem.alpha2Code
-    override fun areContentsTheSame(oldItem: Country, newItem: Country): Boolean = oldItem == newItem
+private val countryDiff = object : DiffUtil.ItemCallback<Country>() {
+    override fun areItemsTheSame(oldItem: Country, newItem: Country): Boolean =
+        oldItem.alpha2Code == newItem.alpha2Code
+
+    override fun areContentsTheSame(oldItem: Country, newItem: Country): Boolean =
+        oldItem == newItem
 }
 
-class CountryViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
+class CountryViewHolder(
+    override val containerView: View
+) : RecyclerView.ViewHolder(containerView), LayoutContainer {
+
     fun bind(item: Country, interaction: (CountryAdapterInteractionType) -> Unit) {
         itemView.tvName.text = item.name
-        itemView.ivFlag.source(R.drawable.ic_help_outline).accept(item.flagPngUrl)
+        itemView.ivFlag.load(item.flagPngUrl) {
+            crossfade(200)
+            error(R.drawable.ic_help_outline)
+        }
 
         itemView.container.setOnClickListener {
             interaction(CountryAdapterInteractionType.DetailClick(item.alpha2Code))
@@ -59,7 +68,8 @@ class CountryViewHolder(override val containerView: View) : RecyclerView.ViewHol
             interaction(CountryAdapterInteractionType.FavoriteClick(item))
         }
 
-        val favoriteRes = if (item.favorite) R.drawable.ic_favorite else R.drawable.ic_favorite_border
+        val favoriteRes =
+            if (item.favorite) R.drawable.ic_favorite else R.drawable.ic_favorite_border
         itemView.btnFavorite.setImageResource(favoriteRes)
     }
 }

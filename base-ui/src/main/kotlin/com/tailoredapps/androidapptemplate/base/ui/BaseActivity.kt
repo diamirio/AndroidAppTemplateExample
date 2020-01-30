@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package com.tailoredapps.countriesexample.uibase
+package com.tailoredapps.androidapptemplate.base.ui
 
 import android.os.Bundle
 import androidx.annotation.CallSuper
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import com.squareup.leakcanary.RefWatcher
 import com.tailoredapps.androidutil.viewstate.VS
 import com.tailoredapps.androidutil.viewstate.ViewState
 import io.reactivex.disposables.CompositeDisposable
-import org.koin.android.ext.android.inject
 
-abstract class BaseActivity(@LayoutRes protected val layout: Int) : AppCompatActivity(), ViewState by VS() {
-    private val refWatcher: RefWatcher by inject()
+abstract class BaseActivity(
+    @LayoutRes layout: Int
+) : AppCompatActivity(layout), ViewState by VS() {
 
     open val disposables = CompositeDisposable()
 
@@ -35,7 +34,6 @@ abstract class BaseActivity(@LayoutRes protected val layout: Int) : AppCompatAct
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         restoreStateFrom(savedInstanceState)
-        setContentView(layout)
     }
 
     @CallSuper
@@ -48,6 +46,5 @@ abstract class BaseActivity(@LayoutRes protected val layout: Int) : AppCompatAct
     override fun onDestroy() {
         super.onDestroy()
         disposables.clear()
-        refWatcher.watch(this)
     }
 }

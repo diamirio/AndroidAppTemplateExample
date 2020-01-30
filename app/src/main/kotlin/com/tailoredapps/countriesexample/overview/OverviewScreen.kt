@@ -29,12 +29,12 @@ import com.tailoredapps.countriesexample.all.CountryAdapter
 import com.tailoredapps.countriesexample.all.CountryAdapterInteractionType
 import com.tailoredapps.countriesexample.R
 import com.tailoredapps.countriesexample.util.asCause
-import com.tailoredapps.countriesexample.uibase.BaseFragment
-import com.tailoredapps.countriesexample.uibase.BaseReactor
 import com.tailoredapps.countriesexample.core.CountriesProvider
 import com.tailoredapps.countriesexample.core.model.Country
 import com.tailoredapps.countriesexample.main.liftsAppBarWith
 import at.florianschuster.reaktor.android.koin.reactor
+import com.tailoredapps.androidapptemplate.base.ui.BaseFragment
+import com.tailoredapps.androidapptemplate.base.ui.BaseReactor
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
