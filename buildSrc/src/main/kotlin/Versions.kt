@@ -28,6 +28,8 @@ object Versions {
 
     const val androidx_lifecycle: String = "2.2.0"
 
+    const val androidx_room: String = "2.2.3"
+
     const val androidx_test: String = "1.2.0"
 
     const val org_koin: String = "2.0.1"
@@ -61,6 +63,8 @@ object Versions {
     const val rxandroid: String = "2.1.1"
 
     const val core_ktx: String = "1.2.0-beta01"
+
+    const val debug_db: String = "1.0.6"
 
     const val material: String = "1.2.0-alpha01"
 

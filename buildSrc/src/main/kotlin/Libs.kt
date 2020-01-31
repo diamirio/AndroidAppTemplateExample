@@ -183,14 +183,7 @@ object Libs {
     /**
      * https://kotlinlang.org/
      */
-    const val kotlin_scripting_compiler_embeddable: String =
-            "org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:" +
-            Versions.org_jetbrains_kotlin
-
-    /**
-     * https://kotlinlang.org/
-     */
-    const val kotlin_stdlib: String = "org.jetbrains.kotlin:kotlin-stdlib:" +
+    const val kotlin_stdlib_jdk8: String = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:" +
             Versions.org_jetbrains_kotlin
 
     /**
@@ -228,6 +221,21 @@ object Libs {
      */
     const val lifecycle_viewmodel_ktx: String = "androidx.lifecycle:lifecycle-viewmodel-ktx:" +
             Versions.androidx_lifecycle
+
+    /**
+     * https://developer.android.com/topic/libraries/architecture/index.html
+     */
+    const val room_compiler: String = "androidx.room:room-compiler:" + Versions.androidx_room
+
+    /**
+     * https://developer.android.com/topic/libraries/architecture/index.html
+     */
+    const val room_runtime: String = "androidx.room:room-runtime:" + Versions.androidx_room
+
+    /**
+     * https://developer.android.com/topic/libraries/architecture/index.html
+     */
+    const val room_rxjava2: String = "androidx.room:room-rxjava2:" + Versions.androidx_room
 
     /**
      * https://developer.android.com/testing
@@ -331,6 +339,11 @@ object Libs {
      * http://developer.android.com/tools/extras/support-library.html
      */
     const val core_ktx: String = "androidx.core:core-ktx:" + Versions.core_ktx
+
+    /**
+     * https://github.com/amitshekhariitbhu/Android-Debug-Database
+     */
+    const val debug_db: String = "com.amitshekhar.android:debug-db:" + Versions.debug_db
 
     /**
      * http://developer.android.com/tools/extras/support-library.html
