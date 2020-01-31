@@ -35,6 +35,7 @@ import com.tailoredapps.countriesexample.main.liftsAppBarWith
 import at.florianschuster.reaktor.android.koin.reactor
 import com.tailoredapps.androidapptemplate.base.ui.BaseFragment
 import com.tailoredapps.androidapptemplate.base.ui.BaseReactor
+import com.tailoredapps.androidutil.async.mapIfSuccess
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.addTo
@@ -75,25 +76,26 @@ class OverviewFragment : BaseFragment(R.layout.fragment_overview), ReactorView<O
             .addTo(disposables)
 
         // state
-        reactor.state.changesFrom { !it.hasCountriesAndNotLoading }
+        reactor.state.changesFrom { it.displayCountriesEmpty }
             .bind(to = emptyLayout.visibility())
             .addTo(disposables)
 
-        reactor.state.changesFrom { it.countriesAsync }
-            .bind { countryAsync ->
-                srlOverView.isRefreshing = countryAsync is Async.Loading
-                when (countryAsync) {
-                    is Async.Success -> adapter.submitList(countryAsync.element)
-                    is Async.Error -> errorSnack(countryAsync.error)
-                }
+        reactor.state.changesFrom { it.countriesLoad }
+            .bind { countriesLoad ->
+                srlOverView.isRefreshing = countriesLoad is Async.Loading
+                if (countriesLoad is Async.Error) errorSnack(countriesLoad.error)
             }
+            .addTo(disposables)
+
+        reactor.state.changesFrom { it.countries }
+            .bind(adapter::submitList)
             .addTo(disposables)
     }
 
     private fun errorSnack(throwable: Throwable) {
         Timber.e(throwable)
         val message = throwable.asCause(R.string.overview_error_message).translation(resources)
-        root.snack(message, Snackbar.LENGTH_INDEFINITE, getString(R.string.overview_error_retry)) {
+        root.snack(message, Snackbar.LENGTH_LONG, getString(R.string.overview_error_retry)) {
             reactor.action.accept(OverviewReactor.Action.Reload)
         }
     }
@@ -109,15 +111,14 @@ class OverviewReactor(
     }
 
     sealed class Mutation {
-        data class SetCountries(val countries: Async<List<Country>>) : Mutation()
+        data class SetCountries(val countriesLoad: Async<List<Country>>) : Mutation()
     }
 
     data class State(
-        val countriesAsync: Async<List<Country>> = Async.Uninitialized
+        val countries: List<Country> = emptyList(),
+        val countriesLoad: Async<Unit> = Async.Uninitialized
     ) {
-        val hasCountriesAndNotLoading: Boolean
-            get() = countriesAsync is Async.Loading ||
-                    countriesAsync.complete && countriesAsync()?.isNotEmpty() == true
+        val displayCountriesEmpty: Boolean get() = countriesLoad.complete && countries.isEmpty()
     }
 
     override fun transformMutation(mutation: Observable<Mutation>): Observable<out Mutation> {
@@ -144,6 +145,18 @@ class OverviewReactor(
     }
 
     override fun reduce(previousState: State, mutation: Mutation): State = when (mutation) {
-        is Mutation.SetCountries -> previousState.copy(countriesAsync = mutation.countries)
+        is Mutation.SetCountries -> previousState.copy(
+            countries = mutation.countriesLoad() ?: previousState.countries,
+            countriesLoad = mutation.countriesLoad.map { Unit }
+        )
+    }
+}
+
+fun <T, O> Async<T>.map(mapper: (T) -> O): Async<O> {
+    return when (this) {
+        is Async.Success -> Async.Success(mapper.invoke(this.element))
+        is Async.Error -> Async.Error(error)
+        is Async.Loading -> Async.Loading
+        else -> Async.Uninitialized
     }
 }
