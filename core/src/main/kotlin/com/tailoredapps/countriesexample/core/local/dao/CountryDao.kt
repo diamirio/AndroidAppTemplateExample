@@ -21,17 +21,17 @@ import androidx.room.Query
 import com.tailoredapps.countriesexample.core.local.model.LocalCountry
 import com.tailoredapps.countriesexample.core.local.model.LocalCountryWithFavorite
 import com.tailoredapps.countriesexample.core.local.model.LocalFavoriteCountry
-import io.reactivex.Flowable
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CountryDao : BaseDao<LocalCountry> {
 
     @Query("SELECT * FROM country WHERE ${LocalCountry.PRIMARY_KEY} = :alpha2Code")
-    fun get(alpha2Code: String): Flowable<LocalCountryWithFavorite>
+    fun get(alpha2Code: String): Flow<LocalCountryWithFavorite>
 
     @Query("SELECT * FROM country LEFT JOIN favorite ON ${LocalCountry.PRIMARY_KEY} = ${LocalFavoriteCountry.PRIMARY_KEY} ORDER BY name")
-    fun getAll(): Flowable<List<LocalCountryWithFavorite>>
+    fun getAll(): Flow<List<LocalCountryWithFavorite>>
 
     @Query("SELECT * FROM country INNER JOIN favorite ON ${LocalCountry.PRIMARY_KEY} = ${LocalFavoriteCountry.PRIMARY_KEY} ORDER BY name")
-    fun getAllFavorites(): Flowable<List<LocalCountryWithFavorite>>
+    fun getAllFavorites(): Flow<List<LocalCountryWithFavorite>>
 }

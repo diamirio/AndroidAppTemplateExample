@@ -16,94 +16,101 @@ package com.tailoredapps.countriesexample.overview
 
 import android.os.Bundle
 import android.view.View
-import at.florianschuster.reaktor.ReactorView
-import at.florianschuster.reaktor.android.bind
-import at.florianschuster.reaktor.changesFrom
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
+import at.florianschuster.control.Controller
+import at.florianschuster.control.bind
 import com.google.android.material.snackbar.Snackbar
-import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
-import com.jakewharton.rxbinding3.view.clicks
-import com.jakewharton.rxbinding3.view.visibility
-import com.tailoredapps.androidutil.async.Async
-import com.tailoredapps.androidutil.ui.extensions.snack
+import com.tailoredapps.androidapptemplate.base.ui.Async
 import com.tailoredapps.countriesexample.all.CountryAdapter
 import com.tailoredapps.countriesexample.all.CountryAdapterInteractionType
 import com.tailoredapps.countriesexample.R
 import com.tailoredapps.countriesexample.util.asCause
 import com.tailoredapps.countriesexample.core.CountriesProvider
 import com.tailoredapps.countriesexample.core.model.Country
+import com.tailoredapps.androidapptemplate.base.ui.DelegateViewModel
+import com.tailoredapps.androidutil.ui.extensions.snack
 import com.tailoredapps.countriesexample.main.liftsAppBarWith
-import at.florianschuster.reaktor.android.koin.reactor
-import com.tailoredapps.androidapptemplate.base.ui.BaseFragment
-import com.tailoredapps.androidapptemplate.base.ui.BaseReactor
-import com.tailoredapps.androidutil.async.mapIfSuccess
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.ofType
 import kotlinx.android.synthetic.main.fragment_overview.*
 import kotlinx.android.synthetic.main.fragment_overview_empty.view.*
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.flattenMerge
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import reactivecircus.flowbinding.android.view.clicks
+import reactivecircus.flowbinding.swiperefreshlayout.refreshes
 import timber.log.Timber
 
-class OverviewFragment : BaseFragment(R.layout.fragment_overview), ReactorView<OverviewReactor> {
-    override val reactor: OverviewReactor by reactor()
+class OverviewFragment : Fragment(R.layout.fragment_overview) {
+
+    private val viewModel: OverviewViewModel by viewModel()
+    private val navController: NavController by lazy(::findNavController)
     private val adapter: CountryAdapter by inject()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind(reactor)
-    }
 
-    override fun bind(reactor: OverviewReactor) {
         rvOverView.adapter = adapter
         liftsAppBarWith(rvOverView)
 
-        adapter.interaction.ofType<CountryAdapterInteractionType.DetailClick>()
+        adapter.interaction.filterIsInstance<CountryAdapterInteractionType.DetailClick>()
             .map { OverviewFragmentDirections.actionOverviewToDetail(it.id) }
             .bind(to = navController::navigate)
-            .addTo(disposables)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
 
         // action
-        Observable.merge(srlOverView.refreshes(), emptyLayout.btnLoad.clicks())
-            .map { OverviewReactor.Action.Reload }
-            .bind(to = reactor.action)
-            .addTo(disposables)
+        flowOf(srlOverView.refreshes(), emptyLayout.btnLoad.clicks())
+            .flattenMerge()
+            .map { OverviewViewModel.Action.Reload }
+            .bind(to = viewModel::dispatch)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
 
-        adapter.interaction.ofType<CountryAdapterInteractionType.FavoriteClick>()
+        adapter.interaction.filterIsInstance<CountryAdapterInteractionType.FavoriteClick>()
             .map { it.country }
-            .map { OverviewReactor.Action.ToggleFavorite(it) }
-            .bind(to = reactor.action)
-            .addTo(disposables)
+            .map { OverviewViewModel.Action.ToggleFavorite(it) }
+            .bind(to = viewModel::dispatch)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
 
         // state
-        reactor.state.changesFrom { it.displayCountriesEmpty }
-            .bind(to = emptyLayout.visibility())
-            .addTo(disposables)
+        viewModel.state.map { it.displayCountriesEmpty }
+            .distinctUntilChanged()
+            .bind(to = emptyLayout::isVisible::set)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
 
-        reactor.state.changesFrom { it.countriesLoad }
+        viewModel.state.map { it.countriesLoad }
+            .distinctUntilChanged()
             .bind { countriesLoad ->
                 srlOverView.isRefreshing = countriesLoad is Async.Loading
                 if (countriesLoad is Async.Error) errorSnack(countriesLoad.error)
             }
-            .addTo(disposables)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
 
-        reactor.state.changesFrom { it.countries }
+        viewModel.state.map { it.countries }
+            .distinctUntilChanged()
             .bind(adapter::submitList)
-            .addTo(disposables)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     private fun errorSnack(throwable: Throwable) {
         Timber.e(throwable)
         val message = throwable.asCause(R.string.overview_error_message).translation(resources)
         root.snack(message, Snackbar.LENGTH_LONG, getString(R.string.overview_error_retry)) {
-            reactor.action.accept(OverviewReactor.Action.Reload)
+            viewModel.dispatch(OverviewViewModel.Action.Reload)
         }
     }
 }
 
-class OverviewReactor(
+class OverviewViewModel(
     private val countriesProvider: CountriesProvider
-) : BaseReactor<OverviewReactor.Action, OverviewReactor.Mutation, OverviewReactor.State>(State()) {
+) : DelegateViewModel<OverviewViewModel.Action, OverviewViewModel.State>() {
 
     sealed class Action {
         object Reload : Action()
@@ -121,35 +128,36 @@ class OverviewReactor(
         val displayCountriesEmpty: Boolean get() = countriesLoad.complete && countries.isEmpty()
     }
 
-    override fun transformMutation(mutation: Observable<Mutation>): Observable<out Mutation> {
-        val storedCountriesMutation = countriesProvider
-            .getCountries()
-            .map { Mutation.SetCountries(Async.Success(it)) }
-            .toObservable()
-        return Observable.merge(mutation, storedCountriesMutation)
-    }
-
-    override fun mutate(action: Action): Observable<out Mutation> = when (action) {
-        is Action.Reload -> {
-            val startLoading = Observable.just(Mutation.SetCountries(Async.Loading))
-            val refreshCountries = countriesProvider.refreshCountries()
-                .toObservable<Mutation>()
-                .onErrorReturn { Mutation.SetCountries(Async.Error(it)) }
-            Observable.concat(startLoading, refreshCountries)
+    override val controller: Controller<Action, Mutation, State> = Controller(
+        initialState = State(),
+        mutationsTransformer = { mutations ->
+            val storedCountries = countriesProvider.getCountries()
+                .map { Mutation.SetCountries(Async.Success(it)) }
+            flowOf(mutations, storedCountries).flattenMerge()
+        },
+        mutator = { action ->
+            when (action) {
+                is Action.Reload -> flow {
+                    emit(Mutation.SetCountries(Async.Loading))
+                    try {
+                        countriesProvider.refreshCountries()
+                    } catch (throwable: Throwable) {
+                        Timber.e(throwable)
+                        emit(Mutation.SetCountries(Async.Error(throwable)))
+                    }
+                }
+                is Action.ToggleFavorite -> flow { countriesProvider.toggleFavorite(action.country) }
+            }
+        },
+        reducer = { previousState, mutation ->
+            when (mutation) {
+                is Mutation.SetCountries -> previousState.copy(
+                    countries = mutation.countriesLoad() ?: previousState.countries,
+                    countriesLoad = mutation.countriesLoad.map { Unit }
+                )
+            }
         }
-        is Action.ToggleFavorite -> {
-            Single.just(action.country)
-                .flatMapCompletable(countriesProvider::toggleFavorite)
-                .toObservable()
-        }
-    }
-
-    override fun reduce(previousState: State, mutation: Mutation): State = when (mutation) {
-        is Mutation.SetCountries -> previousState.copy(
-            countries = mutation.countriesLoad() ?: previousState.countries,
-            countriesLoad = mutation.countriesLoad.map { Unit }
-        )
-    }
+    )
 }
 
 fun <T, O> Async<T>.map(mapper: (T) -> O): Async<O> {

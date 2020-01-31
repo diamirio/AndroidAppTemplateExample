@@ -18,18 +18,18 @@ package com.tailoredapps.countriesexample.main
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import com.tailoredapps.androidapptemplate.base.ui.BaseActivity
 import com.tailoredapps.androidutil.ui.extensions.liftWith
 import com.tailoredapps.countriesexample.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_appbar.*
 
-class MainActivity : BaseActivity(R.layout.activity_main) {
+class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val navController: NavController by lazy { findNavController(R.id.navHost) }
 
     override fun onCreate(savedInstanceState: Bundle?) {

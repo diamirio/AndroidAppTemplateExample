@@ -107,6 +107,90 @@ object Libs {
             "com.squareup.leakcanary:leakcanary-object-watcher-android:" +
             Versions.com_squareup_leakcanary
 
+
+    /**
+     * https://github.com/reactivecircus/FlowBinding
+     */
+    const val flowbinding_activity: String =
+        "io.github.reactivecircus.flowbinding:flowbinding-activity:" +
+                Versions.io_github_reactivecircus_flowbinding
+
+    /**
+     * https://github.com/reactivecircus/FlowBinding
+     */
+    const val flowbinding_android: String =
+        "io.github.reactivecircus.flowbinding:flowbinding-android:" +
+                Versions.io_github_reactivecircus_flowbinding
+
+    /**
+     * https://github.com/reactivecircus/FlowBinding
+     */
+    const val flowbinding_appcompat: String =
+        "io.github.reactivecircus.flowbinding:flowbinding-appcompat:" +
+                Versions.io_github_reactivecircus_flowbinding
+
+    /**
+     * https://github.com/reactivecircus/FlowBinding
+     */
+    const val flowbinding_core: String = "io.github.reactivecircus.flowbinding:flowbinding-core:" +
+            Versions.io_github_reactivecircus_flowbinding
+
+    /**
+     * https://github.com/reactivecircus/FlowBinding
+     */
+    const val flowbinding_drawerlayout: String =
+        "io.github.reactivecircus.flowbinding:flowbinding-drawerlayout:" +
+                Versions.io_github_reactivecircus_flowbinding
+
+    /**
+     * https://github.com/reactivecircus/FlowBinding
+     */
+    const val flowbinding_lifecycle: String =
+        "io.github.reactivecircus.flowbinding:flowbinding-lifecycle:" +
+                Versions.io_github_reactivecircus_flowbinding
+
+    /**
+     * https://github.com/reactivecircus/FlowBinding
+     */
+    const val flowbinding_material: String =
+        "io.github.reactivecircus.flowbinding:flowbinding-material:" +
+                Versions.io_github_reactivecircus_flowbinding
+
+    /**
+     * https://github.com/reactivecircus/FlowBinding
+     */
+    const val flowbinding_navigation: String =
+        "io.github.reactivecircus.flowbinding:flowbinding-navigation:" +
+                Versions.io_github_reactivecircus_flowbinding
+
+    /**
+     * https://github.com/reactivecircus/FlowBinding
+     */
+    const val flowbinding_preference: String =
+        "io.github.reactivecircus.flowbinding:flowbinding-preference:" +
+                Versions.io_github_reactivecircus_flowbinding
+
+    /**
+     * https://github.com/reactivecircus/FlowBinding
+     */
+    const val flowbinding_recyclerview: String =
+        "io.github.reactivecircus.flowbinding:flowbinding-recyclerview:" +
+                Versions.io_github_reactivecircus_flowbinding
+
+    /**
+     * https://github.com/reactivecircus/FlowBinding
+     */
+    const val flowbinding_swiperefreshlayout: String =
+        "io.github.reactivecircus.flowbinding:flowbinding-swiperefreshlayout:" +
+                Versions.io_github_reactivecircus_flowbinding
+
+    /**
+     * https://github.com/reactivecircus/FlowBinding
+     */
+    const val flowbinding_viewpager2: String =
+        "io.github.reactivecircus.flowbinding:flowbinding-viewpager2:" +
+                Versions.io_github_reactivecircus_flowbinding
+
     /**
      * https://developer.android.com/testing
      */
@@ -181,6 +265,18 @@ object Libs {
             Versions.org_jetbrains_kotlin
 
     /**
+     * https://github.com/Kotlin/kotlinx.coroutines
+     */
+    const val kotlinx_coroutines_core: String = "org.jetbrains.kotlinx:kotlinx-coroutines-core:" +
+            Versions.org_jetbrains_kotlinx_kotlinx_coroutines
+
+    /**
+     * https://github.com/Kotlin/kotlinx.coroutines
+     */
+    const val kotlinx_coroutines_test: String = "org.jetbrains.kotlinx:kotlinx-coroutines-test:" +
+            Versions.org_jetbrains_kotlinx_kotlinx_coroutines
+
+    /**
      * https://kotlinlang.org/
      */
     const val kotlin_stdlib_jdk8: String = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:" +
@@ -223,6 +319,12 @@ object Libs {
             Versions.androidx_lifecycle
 
     /**
+     * https://github.com/floschu/control
+     */
+    const val control_core: String = "at.florianschuster.control:control-core:" +
+            Versions.control_core
+
+    /**
      * https://developer.android.com/topic/libraries/architecture/index.html
      */
     const val room_compiler: String = "androidx.room:room-compiler:" + Versions.androidx_room
@@ -230,7 +332,7 @@ object Libs {
     /**
      * https://developer.android.com/topic/libraries/architecture/index.html
      */
-    const val room_runtime: String = "androidx.room:room-runtime:" + Versions.androidx_room
+    const val room_runtime: String = "androidx.room:room-ktx:" + Versions.androidx_room
 
     /**
      * https://developer.android.com/topic/libraries/architecture/index.html

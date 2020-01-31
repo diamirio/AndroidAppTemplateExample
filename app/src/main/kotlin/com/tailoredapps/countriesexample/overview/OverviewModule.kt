@@ -14,9 +14,9 @@
 
 package com.tailoredapps.countriesexample.overview
 
-import at.florianschuster.reaktor.android.koin.reactor
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 internal val overviewModule = module {
-    reactor { OverviewReactor(countriesProvider = get()) }
+    viewModel { OverviewViewModel(countriesProvider = get()) }
 }

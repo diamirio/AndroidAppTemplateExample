@@ -21,49 +21,49 @@ import android.os.Bundle
 import android.view.View
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import at.florianschuster.reaktor.ReactorView
-import at.florianschuster.reaktor.android.bind
-import at.florianschuster.reaktor.android.koin.reactor
-import at.florianschuster.reaktor.changesFrom
+import at.florianschuster.control.Controller
+import at.florianschuster.control.bind
 import coil.api.load
-import com.jakewharton.rxbinding3.view.clicks
-import com.tailoredapps.androidapptemplate.base.ui.BaseFragment
-import com.tailoredapps.androidapptemplate.base.ui.BaseReactor
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.tailoredapps.androidapptemplate.base.ui.DelegateViewModel
 import com.tailoredapps.androidutil.ui.IntentUtil
-import com.tailoredapps.androidutil.ui.extensions.RxDialogAction
-import com.tailoredapps.androidutil.ui.extensions.rxDialog
-import com.tailoredapps.androidutil.optional.asOptional
-import com.tailoredapps.androidutil.optional.filterSome
-import com.tailoredapps.androidutil.optional.ofType
 import com.tailoredapps.countriesexample.R
 import com.tailoredapps.countriesexample.core.CountriesProvider
 import com.tailoredapps.countriesexample.core.model.Country
-import com.tailoredapps.countriesexample.main.liftsAppBarWith
 import com.tailoredapps.countriesexample.detail.recyclerview.DetailAdapter
 import com.tailoredapps.countriesexample.detail.recyclerview.DetailAdapterInteraction
 import com.tailoredapps.countriesexample.detail.recyclerview.convertToDetailAdapterItems
-import io.reactivex.Observable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.ofType
+import com.tailoredapps.countriesexample.main.liftsAppBarWith
 import kotlinx.android.synthetic.main.fragment_detail.*
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flattenMerge
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import reactivecircus.flowbinding.android.view.clicks
 import timber.log.Timber
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
-class DetailFragment : BaseFragment(R.layout.fragment_detail), ReactorView<DetailReactor> {
+class DetailFragment : Fragment(R.layout.fragment_detail) {
+
     private val args: DetailFragmentArgs by navArgs()
-    override val reactor: DetailReactor by reactor { parametersOf(args.alpha2code) }
+    private val viewModel: DetailViewModel by viewModel { parametersOf(args.alpha2code) }
     private val adapter: DetailAdapter by inject()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind(reactor)
-    }
 
-    override fun bind(reactor: DetailReactor) {
         rvDetail.adapter = adapter
         liftsAppBarWith(rvDetail)
         DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
@@ -73,39 +73,42 @@ class DetailFragment : BaseFragment(R.layout.fragment_detail), ReactorView<Detai
             }
             .also(rvDetail::addItemDecoration)
 
-        val locationIntentObservable = adapter.interaction
-            .ofType<DetailAdapterInteraction.LocationClick>()
+        val locationFlow = adapter.interaction
+            .filterIsInstance<DetailAdapterInteraction.LocationClick>()
             .map { "${it.latLng.first}, ${it.latLng.second}" }
-            .map(IntentUtil::maps)
 
-        val capitalIntentObservable = adapter.interaction
-            .ofType<DetailAdapterInteraction.CapitalClick>()
+        val capitalFlow = adapter.interaction
+            .filterIsInstance<DetailAdapterInteraction.CapitalClick>()
             .map { it.capital }
-            .map(IntentUtil::maps)
 
-        Observable.merge(locationIntentObservable, capitalIntentObservable)
+        flowOf(locationFlow, capitalFlow)
+            .flattenMerge()
+            .map { IntentUtil.maps(it) }
             .bind(to = requireContext()::startActivity)
-            .addTo(disposables)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
 
         // action
         btnMore.clicks()
-            .map { reactor.currentState.country.asOptional }
-            .filterSome()
-            .map(Country::infoUrl)
-            .flatMapMaybe { url ->
-                rxDialog {
-                    titleResource = R.string.detail_dialog_title
-                    message = getString(R.string.detail_dialog_message, url)
-                    positiveButtonResource = R.string.detail_dialog_positive
-                    negativeButtonResource = R.string.detail_dialog_negative
-                }.ofType<RxDialogAction.Positive>().map { url }
+            .map { viewModel.currentState.country }
+            .filterNotNull()
+            .map { it.infoUrl }
+            .map { url ->
+                val answer = yesNoDialog(
+                    title = getString(R.string.detail_dialog_title),
+                    message = getString(R.string.detail_dialog_message, url),
+                    positiveButtonText = getString(R.string.detail_dialog_positive),
+                    negativeButtonText = getString(R.string.detail_dialog_negative)
+                )
+                if (answer) url else null
             }
+            .filterNotNull()
             .bind(to = this::openChromeTab)
-            .addTo(disposables)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
 
         // state
-        reactor.state.changesFrom { it.country.asOptional }
-            .filterSome()
+        viewModel.state.map { it.country }
+            .distinctUntilChanged()
+            .filterNotNull()
             .bind { country ->
                 ivFlag.load(country.flagPngUrl) {
                     crossfade(200)
@@ -114,7 +117,7 @@ class DetailFragment : BaseFragment(R.layout.fragment_detail), ReactorView<Detai
                 tvName.text = country.name
                 adapter.submitList(country.convertToDetailAdapterItems())
             }
-            .addTo(disposables)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     private fun openChromeTab(url: String) {
@@ -127,36 +130,41 @@ class DetailFragment : BaseFragment(R.layout.fragment_detail), ReactorView<Detai
             startActivity(IntentUtil.web(url)) // fallback of chrome not installed -> open default browser
         }
     }
+
+    private suspend fun Fragment.yesNoDialog(
+        title: String,
+        message: String,
+        positiveButtonText: String,
+        negativeButtonText: String
+    ): Boolean = suspendCoroutine { continuation ->
+        MaterialAlertDialogBuilder(requireContext()).apply {
+            setTitle(title)
+            setMessage(message)
+            setPositiveButton(positiveButtonText) { _, _ -> continuation.resume(true) }
+            setNegativeButton(negativeButtonText) { _, _ -> continuation.resume(false) }
+        }.show()
+    }
 }
 
-class DetailReactor(
+class DetailViewModel(
     private val alpha2Code: String,
     private val countriesProvider: CountriesProvider
-) : BaseReactor<DetailReactor.Action, DetailReactor.Mutation, DetailReactor.State>(
-    initialState = State(),
-    initialAction = Action.InitialLoad
-) {
-    enum class Action {
-        InitialLoad
-    }
+) : DelegateViewModel<Nothing, DetailViewModel.State>() {
 
-    sealed class Mutation {
-        data class SetCountry(val country: Country) : Mutation()
-    }
+    data class Mutation(val country: Country)
 
-    data class State(
-        val country: Country? = null
-    )
+    data class State(val country: Country? = null)
 
-    override fun mutate(action: Action): Observable<out Mutation> = when (action) {
-        Action.InitialLoad -> {
-            countriesProvider.getCountry(alpha2Code)
-                .map { Mutation.SetCountry(it) }
-                .toObservable()
+    override val controller: Controller<Nothing, Mutation, State> = Controller(
+        initialState = State(),
+        mutationsTransformer = { mutations ->
+            flowOf(
+                mutations,
+                countriesProvider.getCountry(alpha2Code).map { Mutation(it) }
+            ).flattenMerge()
+        },
+        reducer = { previousState, mutation ->
+            previousState.copy(country = mutation.country)
         }
-    }
-
-    override fun reduce(previousState: State, mutation: Mutation): State = when (mutation) {
-        is Mutation.SetCountry -> previousState.copy(country = mutation.country)
-    }
+    )
 }

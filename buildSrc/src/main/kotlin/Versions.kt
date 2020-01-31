@@ -10,6 +10,8 @@ import kotlin.String
  * YOU are responsible for updating manually the dependency version.
  */
 object Versions {
+    const val org_jetbrains_kotlinx_kotlinx_coroutines: String = "1.3.3"
+
     const val com_tailoredapps_androidutil: String = "16"
 
     const val com_jakewharton_rxbinding3: String = "3.1.0"
@@ -23,8 +25,11 @@ object Versions {
     const val com_squareup_okhttp3: String = "4.3.1"
 
     const val org_jetbrains_kotlin: String = "1.3.61"
+    const val io_github_reactivecircus_flowbinding: String = "0.9.0"
 
     const val androidx_navigation: String = "2.2.0"
+
+    const val control_core: String = "0.2.3"
 
     const val androidx_lifecycle: String = "2.2.0"
 

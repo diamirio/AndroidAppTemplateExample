@@ -14,9 +14,9 @@
 
 package com.tailoredapps.countriesexample.favorites
 
-import at.florianschuster.reaktor.android.koin.reactor
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 internal val favoritesModule = module {
-    reactor { FavoritesReactor(countriesProvider = get()) }
+    viewModel { FavoritesViewModel(countriesProvider = get()) }
 }

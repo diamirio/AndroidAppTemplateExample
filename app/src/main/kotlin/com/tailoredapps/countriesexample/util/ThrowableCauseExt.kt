@@ -18,7 +18,6 @@ package com.tailoredapps.countriesexample.util
 
 import android.content.res.Resources
 import androidx.annotation.StringRes
-import com.tailoredapps.androidutil.network.NetworkUnavailableException
 import com.tailoredapps.countriesexample.R
 import retrofit2.HttpException
 
@@ -34,8 +33,6 @@ sealed class Cause(@StringRes val default: Int = R.string.error_other) {
         }
     }
 
-    object NetworkUnavailable : Cause(R.string.error_network_unavailable)
-
     class Http(private val code: Int) : Cause() {
         override fun translation(resources: Resources): String = when (code) {
             401 -> resources.getString(R.string.error_not_authenticated)
@@ -48,7 +45,6 @@ sealed class Cause(@StringRes val default: Int = R.string.error_other) {
 
     companion object {
         fun fromThrowable(throwable: Throwable, @StringRes otherRes: Int? = null): Cause = when (throwable) {
-            is NetworkUnavailableException -> NetworkUnavailable
             is HttpException -> Http(throwable.code())
             else -> Other(otherRes)
         }

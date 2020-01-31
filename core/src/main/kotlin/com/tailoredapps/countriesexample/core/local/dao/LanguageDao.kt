@@ -19,14 +19,13 @@ package com.tailoredapps.countriesexample.core.local.dao
 import androidx.room.Dao
 import androidx.room.Query
 import com.tailoredapps.countriesexample.core.local.model.LocalLanguage
-import io.reactivex.Flowable
-import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LanguageDao : BaseDao<LocalLanguage> {
     @Query("SELECT * FROM language WHERE l_name = :name")
-    fun get(name: String): Single<LocalLanguage>
+    suspend fun get(name: String): LocalLanguage
 
     @Query("SELECT * FROM language")
-    fun getAll(): Flowable<List<LocalLanguage>>
+    fun getAll(): Flow<List<LocalLanguage>>
 }

@@ -1,26 +1,20 @@
 apply from: rootProject.file("gradle/library-module-android.gradle")
 
 dependencies {
+    api(Libs.control_core)
     api(Libs.gson)
     api(Libs.koin_android)
     api(Libs.koin_core)
     api(Libs.kotlin_stdlib_jdk8)
+    api(Libs.kotlinx_coroutines_core)
     api(Libs.retrofit)
-    api(Libs.rxjava)
-    api(Libs.rxkotlin)
-    api(Libs.rxrelay)
     api(Libs.threetenabp)
     api(Libs.timber)
-    api(Libs.util_async)
-    api(Libs.util_network)
-    api(Libs.util_optional)
 
-    implementation(Libs.adapter_rxjava2)
     implementation(Libs.converter_gson)
     implementation(Libs.logging_interceptor)
     implementation(Libs.okhttp)
     implementation(Libs.room_runtime)
-    implementation(Libs.room_rxjava2)
 
     kapt(Libs.room_compiler)
     debugImplementation(Libs.debug_db)

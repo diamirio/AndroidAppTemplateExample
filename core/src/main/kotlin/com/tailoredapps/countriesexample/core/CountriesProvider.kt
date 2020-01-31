@@ -16,91 +16,97 @@
 
 package com.tailoredapps.countriesexample.core
 
-import com.tailoredapps.androidutil.network.networkresponse.split
-import com.tailoredapps.countriesexample.core.local.*
+import com.tailoredapps.countriesexample.core.local.CountriesDatabase
+import com.tailoredapps.countriesexample.core.local.asCountryWithLanguages
+import com.tailoredapps.countriesexample.core.local.asLanguageList
+import com.tailoredapps.countriesexample.core.local.asLocalCountry
+import com.tailoredapps.countriesexample.core.local.asLocalLanguageList
 import com.tailoredapps.countriesexample.core.local.model.CountryLanguageJoin
 import com.tailoredapps.countriesexample.core.local.model.LocalCountryWithFavorite
 import com.tailoredapps.countriesexample.core.local.model.LocalFavoriteCountry
 import com.tailoredapps.countriesexample.core.model.Country
 import com.tailoredapps.countriesexample.core.remote.CountriesApi
 import com.tailoredapps.countriesexample.core.remote.model.RemoteCountry
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 interface CountriesProvider {
-    fun refreshCountries(): Completable
+    suspend fun refreshCountries()
 
-    fun getCountries(): Flowable<List<Country>>
-    fun getFavoriteCountries(): Flowable<List<Country>>
-    fun getCountry(alpha2Code: String): Flowable<Country>
-    fun toggleFavorite(country: Country): Completable
+    fun getCountries(): Flow<List<Country>>
+    fun getFavoriteCountries(): Flow<List<Country>>
+    fun getCountry(alpha2Code: String): Flow<Country>
+
+    suspend fun toggleFavorite(country: Country)
 }
 
 class RetrofitRoomCountriesProvider(
     private val countriesApi: CountriesApi,
-    private val countriesDb: CountriesDatabase
+    private val countriesDb: CountriesDatabase,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : CountriesProvider {
 
-    override fun refreshCountries(): Completable = countriesApi.all()
-        .split()
-        .flattenAsObservable { it }
-        .flatMapCompletable(::updateOrInsertCountry)
-        .subscribeOn(Schedulers.io())
+    override suspend fun refreshCountries() = withContext(ioDispatcher) {
+        val countries = countriesApi.all()
+        countries.forEach { updateOrInsertCountry(it) }
+    }
 
-    override fun getCountries(): Flowable<List<Country>> =
+    override fun getCountries(): Flow<List<Country>> =
         countriesDb.countryDao().getAll()
-            .onBackpressureLatest()
-            .flatMap(::combineWithLanguages)
-            .subscribeOn(Schedulers.io())
+            .conflate()
+            .map { it.combineWithLanguages() }
+            .flowOn(ioDispatcher)
 
-    override fun getFavoriteCountries(): Flowable<List<Country>> =
+    override fun getFavoriteCountries(): Flow<List<Country>> =
         countriesDb.countryDao().getAllFavorites()
-            .onBackpressureLatest()
-            .flatMap(::combineWithLanguages)
-            .subscribeOn(Schedulers.io())
+            .conflate()
+            .map { it.combineWithLanguages() }
+            .flowOn(ioDispatcher)
 
-    override fun getCountry(alpha2Code: String): Flowable<Country> =
+    override fun getCountry(alpha2Code: String): Flow<Country> =
         countriesDb.countryDao().get(alpha2Code)
-            .flatMap(::combineWithLanguages)
-            .subscribeOn(Schedulers.io())
+            .map { it.combineWithLanguages() }
+            .flowOn(ioDispatcher)
 
-    override fun toggleFavorite(country: Country): Completable =
+    override suspend fun toggleFavorite(country: Country) =
         if (country.favorite) removeAsFavorite(country.alpha2Code)
         else setAsFavorite(country.alpha2Code)
 
-    private fun removeAsFavorite(alpha2Code: String): Completable =
+    private suspend fun removeAsFavorite(alpha2Code: String) = withContext(ioDispatcher) {
         countriesDb.favoriteDao().removeFavorite(LocalFavoriteCountry(alpha2Code))
-            .subscribeOn(Schedulers.io())
+    }
 
-    private fun setAsFavorite(alpha2Code: String): Completable =
+    private suspend fun setAsFavorite(alpha2Code: String) = withContext(ioDispatcher) {
         countriesDb.favoriteDao().addFavorite(LocalFavoriteCountry(alpha2Code))
-            .subscribeOn(Schedulers.io())
+    }
 
-    private fun updateOrInsertCountry(country: RemoteCountry): Completable = Completable
-        .fromAction {
+    private suspend fun updateOrInsertCountry(country: RemoteCountry) =
+        withContext(ioDispatcher) {
             // insert or update country
             countriesDb.countryDao().insertOrUpdate(country.asLocalCountry)
 
             // insert or update languages
-            countriesDb.languageDao().insertOrUpdate(*country.languages.asLocalLanguageList.toTypedArray())
+            countriesDb.languageDao()
+                .insertOrUpdate(*country.languages.asLocalLanguageList.toTypedArray())
 
             // insert or update country language join
             country.languages.forEach { language ->
-                countriesDb.countryLanguageDao().insertOrUpdate(CountryLanguageJoin(country.alpha2Code, language.name))
+                countriesDb.countryLanguageDao()
+                    .insertOrUpdate(CountryLanguageJoin(country.alpha2Code, language.name))
             }
         }
-        .subscribeOn(Schedulers.io())
 
-    private fun combineWithLanguages(countries: List<LocalCountryWithFavorite>): Flowable<List<Country>> =
-        Flowable.fromIterable(countries)
-            .flatMap(::combineWithLanguages)
-            .toList()
-            .toFlowable()
+    private suspend fun List<LocalCountryWithFavorite>.combineWithLanguages(): List<Country> =
+        map { it.combineWithLanguages() }
 
-    private fun combineWithLanguages(country: LocalCountryWithFavorite): Flowable<Country> =
-        countriesDb.countryLanguageDao()
-            .getLanguagesByCountry(country.country.alpha2Code)
-            .map { country.asCountryWithLanguages(it.asLanguageList) }
-            .toFlowable()
+    private suspend fun LocalCountryWithFavorite.combineWithLanguages(): Country {
+        val localLanguages = countriesDb.countryLanguageDao()
+            .getLanguagesByCountry(country.alpha2Code)
+        return asCountryWithLanguages(localLanguages.asLanguageList)
+    }
 }

@@ -16,64 +16,69 @@ package com.tailoredapps.countriesexample.favorites
 
 import android.os.Bundle
 import android.view.View
-import at.florianschuster.reaktor.ReactorView
-import at.florianschuster.reaktor.android.bind
-import at.florianschuster.reaktor.changesFrom
-import com.jakewharton.rxbinding3.view.visibility
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
+import at.florianschuster.control.Controller
+import at.florianschuster.control.bind
 import com.tailoredapps.countriesexample.all.CountryAdapter
 import com.tailoredapps.countriesexample.all.CountryAdapterInteractionType
 import com.tailoredapps.countriesexample.R
 import com.tailoredapps.countriesexample.core.CountriesProvider
 import com.tailoredapps.countriesexample.core.model.Country
+import com.tailoredapps.androidapptemplate.base.ui.DelegateViewModel
 import com.tailoredapps.countriesexample.main.liftsAppBarWith
-import at.florianschuster.reaktor.android.koin.reactor
-import com.tailoredapps.androidapptemplate.base.ui.BaseFragment
-import com.tailoredapps.androidapptemplate.base.ui.BaseReactor
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.ofType
 import kotlinx.android.synthetic.main.fragment_favorites.*
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.flattenMerge
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FavoritesFragment : BaseFragment(R.layout.fragment_favorites), ReactorView<FavoritesReactor> {
-    override val reactor: FavoritesReactor by reactor()
+class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
+    private val viewModel: FavoritesViewModel by viewModel()
+    private val navController: NavController by lazy(::findNavController)
     private val adapter: CountryAdapter by inject()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind(reactor)
-    }
 
-    override fun bind(reactor: FavoritesReactor) {
         rvFavorites.adapter = adapter
         liftsAppBarWith(rvFavorites)
 
-        adapter.interaction.ofType<CountryAdapterInteractionType.DetailClick>()
+        adapter.interaction.filterIsInstance<CountryAdapterInteractionType.DetailClick>()
             .map { FavoritesFragmentDirections.actionFavoritesToDetail(it.id) }
             .bind(to = navController::navigate)
-            .addTo(disposables)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
 
         // action
-        adapter.interaction.ofType<CountryAdapterInteractionType.FavoriteClick>()
-            .map { FavoritesReactor.Action.RemoveFavorite(it.country) }
-            .bind(to = reactor.action)
-            .addTo(disposables)
+        adapter.interaction.filterIsInstance<CountryAdapterInteractionType.FavoriteClick>()
+            .map { FavoritesViewModel.Action.RemoveFavorite(it.country) }
+            .bind(to = viewModel::dispatch)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
 
         // state
-        reactor.state.changesFrom { it.countries }
+        viewModel.state.map { it.countries }
+            .distinctUntilChanged()
             .bind(to = adapter::submitList)
-            .addTo(disposables)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
 
-        reactor.state.changesFrom { it.countries.isEmpty() }
-            .bind(to = emptyLayout.visibility())
-            .addTo(disposables)
+        viewModel.state.map { it.countries.isEmpty() }
+            .distinctUntilChanged()
+            .bind(to = emptyLayout::isVisible::set)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 }
 
-class FavoritesReactor(
+class FavoritesViewModel(
     private val countriesProvider: CountriesProvider
-) : BaseReactor<FavoritesReactor.Action, FavoritesReactor.Mutation, FavoritesReactor.State>(State()) {
+) : DelegateViewModel<FavoritesViewModel.Action, FavoritesViewModel.State>() {
 
     sealed class Action {
         data class RemoveFavorite(val country: Country) : Action()
@@ -87,23 +92,23 @@ class FavoritesReactor(
         val countries: List<Country> = emptyList()
     )
 
-    override fun transformMutation(mutation: Observable<Mutation>): Observable<out Mutation> {
-        val favoritesObservable = countriesProvider
-            .getFavoriteCountries()
-            .map { Mutation.SetCountries(it) }
-            .toObservable()
-        return Observable.merge(mutation, favoritesObservable)
-    }
-
-    override fun mutate(action: Action): Observable<out Mutation> = when (action) {
-        is Action.RemoveFavorite -> {
-            Single.just(action.country)
-                .flatMapCompletable(countriesProvider::toggleFavorite)
-                .toObservable()
+    override val controller: Controller<Action, Mutation, State> = Controller(
+        initialState = State(),
+        mutationsTransformer = { mutations ->
+            val favorites = countriesProvider
+                .getFavoriteCountries()
+                .map { Mutation.SetCountries(it) }
+            flowOf(mutations, favorites).flattenMerge()
+        },
+        mutator = { action ->
+            when (action) {
+                is Action.RemoveFavorite -> flow { countriesProvider.toggleFavorite(action.country) }
+            }
+        },
+        reducer = { previousState, mutation ->
+            when (mutation) {
+                is Mutation.SetCountries -> previousState.copy(countries = mutation.countries)
+            }
         }
-    }
-
-    override fun reduce(previousState: State, mutation: Mutation): State = when (mutation) {
-        is Mutation.SetCountries -> previousState.copy(countries = mutation.countries)
-    }
+    )
 }
