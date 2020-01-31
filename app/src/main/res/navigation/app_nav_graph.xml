@@ -7,7 +7,7 @@
 
     <fragment
             android:id="@+id/overview"
-            android:name="com.tailoredapps.countriesexample.overview.OverviewFragment"
+            android:name="com.tailoredapps.countriesexample.overview.OverviewView"
             tools:layout="@layout/fragment_overview">
         <action
                 android:id="@+id/action_overview_to_detail"
@@ -20,7 +20,7 @@
 
     <fragment
             android:id="@+id/favorites"
-            android:name="com.tailoredapps.countriesexample.favorites.FavoritesFragment"
+            android:name="com.tailoredapps.countriesexample.favorites.FavoritesView"
             tools:layout="@layout/fragment_favorites">
         <action
                 android:id="@+id/action_favorites_to_detail"
@@ -33,7 +33,7 @@
 
     <fragment
             android:id="@+id/detail"
-            android:name="com.tailoredapps.countriesexample.detail.DetailFragment"
+            android:name="com.tailoredapps.countriesexample.detail.DetailView"
             tools:layout="@layout/fragment_detail">
         <argument
                 android:name="alpha2code"

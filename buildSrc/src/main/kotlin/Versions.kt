@@ -12,9 +12,9 @@ import kotlin.String
 object Versions {
     const val org_jetbrains_kotlinx_kotlinx_coroutines: String = "1.3.3"
 
-    const val com_tailoredapps_androidutil: String = "16"
+    const val io_github_reactivecircus_flowbinding: String = "0.9.0"
 
-    const val com_jakewharton_rxbinding3: String = "3.1.0"
+    const val com_tailoredapps_androidutil: String = "16"
 
     const val com_squareup_leakcanary: String = "2.1"
 
@@ -25,11 +25,8 @@ object Versions {
     const val com_squareup_okhttp3: String = "4.3.1"
 
     const val org_jetbrains_kotlin: String = "1.3.61"
-    const val io_github_reactivecircus_flowbinding: String = "0.9.0"
 
     const val androidx_navigation: String = "2.2.0"
-
-    const val control_core: String = "0.2.3"
 
     const val androidx_lifecycle: String = "2.2.0"
 
@@ -47,13 +44,13 @@ object Versions {
 
     const val de_fayard_refreshversions_gradle_plugin: String = "0.7.0" // available: "0.8.6"
 
-    const val reaktor_android_koin: String = "1.1.0"
-
     const val constraintlayout: String = "1.1.3"
 
     const val ktlint_gradle: String = "9.1.1"
 
     const val activity_ktx: String = "1.1.0"
+
+    const val control_core: String = "0.3.0"
 
     const val easylauncher: String = "1.3.1"
 
@@ -65,23 +62,15 @@ object Versions {
 
     const val appcompat: String = "1.1.0"
 
-    const val rxandroid: String = "2.1.1"
-
     const val core_ktx: String = "1.2.0-beta01"
 
     const val debug_db: String = "1.0.6"
 
     const val material: String = "1.2.0-alpha01"
 
-    const val rxkotlin: String = "2.4.0"
-
     const val browser: String = "1.2.0"
 
-    const val rxrelay: String = "2.1.1"
-
     const val ktlint: String = "0.35.0" // available: "0.36.0"
-
-    const val rxjava: String = "2.2.17"
 
     const val timber: String = "4.7.1"
 

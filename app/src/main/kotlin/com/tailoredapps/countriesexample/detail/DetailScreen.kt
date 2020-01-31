@@ -55,9 +55,9 @@ import timber.log.Timber
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class DetailFragment : Fragment(R.layout.fragment_detail) {
+class DetailView : Fragment(R.layout.fragment_detail) {
 
-    private val args: DetailFragmentArgs by navArgs()
+    private val args: DetailViewArgs by navArgs()
     private val viewModel: DetailViewModel by viewModel { parametersOf(args.alpha2code) }
     private val adapter: DetailAdapter by inject()
 

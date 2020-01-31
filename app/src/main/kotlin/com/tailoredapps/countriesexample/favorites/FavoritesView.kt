@@ -21,27 +21,20 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
-import at.florianschuster.control.Controller
 import at.florianschuster.control.bind
+import com.tailoredapps.countriesexample.R
 import com.tailoredapps.countriesexample.all.CountryAdapter
 import com.tailoredapps.countriesexample.all.CountryAdapterInteractionType
-import com.tailoredapps.countriesexample.R
-import com.tailoredapps.countriesexample.core.CountriesProvider
-import com.tailoredapps.countriesexample.core.model.Country
-import com.tailoredapps.androidapptemplate.base.ui.DelegateViewModel
 import com.tailoredapps.countriesexample.main.liftsAppBarWith
 import kotlinx.android.synthetic.main.fragment_favorites.*
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.flattenMerge
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
+class FavoritesView : Fragment(R.layout.fragment_favorites) {
     private val viewModel: FavoritesViewModel by viewModel()
     private val navController: NavController by lazy(::findNavController)
     private val adapter: CountryAdapter by inject()
@@ -53,7 +46,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
         liftsAppBarWith(rvFavorites)
 
         adapter.interaction.filterIsInstance<CountryAdapterInteractionType.DetailClick>()
-            .map { FavoritesFragmentDirections.actionFavoritesToDetail(it.id) }
+            .map { FavoritesViewDirections.actionFavoritesToDetail(it.id) }
             .bind(to = navController::navigate)
             .launchIn(viewLifecycleOwner.lifecycleScope)
 
@@ -74,41 +67,4 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
             .bind(to = emptyLayout::isVisible::set)
             .launchIn(viewLifecycleOwner.lifecycleScope)
     }
-}
-
-class FavoritesViewModel(
-    private val countriesProvider: CountriesProvider
-) : DelegateViewModel<FavoritesViewModel.Action, FavoritesViewModel.State>() {
-
-    sealed class Action {
-        data class RemoveFavorite(val country: Country) : Action()
-    }
-
-    sealed class Mutation {
-        data class SetCountries(val countries: List<Country>) : Mutation()
-    }
-
-    data class State(
-        val countries: List<Country> = emptyList()
-    )
-
-    override val controller: Controller<Action, Mutation, State> = Controller(
-        initialState = State(),
-        mutationsTransformer = { mutations ->
-            val favorites = countriesProvider
-                .getFavoriteCountries()
-                .map { Mutation.SetCountries(it) }
-            flowOf(mutations, favorites).flattenMerge()
-        },
-        mutator = { action ->
-            when (action) {
-                is Action.RemoveFavorite -> flow { countriesProvider.toggleFavorite(action.country) }
-            }
-        },
-        reducer = { previousState, mutation ->
-            when (mutation) {
-                is Mutation.SetCountries -> previousState.copy(countries = mutation.countries)
-            }
-        }
-    )
 }

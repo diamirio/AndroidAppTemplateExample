@@ -1,113 +1,118 @@
 package com.tailoredapps.countriesexample
 
-import com.tailoredapps.androidapptemplate.RxSchedulersOverrideRule
-import com.tailoredapps.androidutil.async.Async
+import com.tailoredapps.androidapptemplate.base.ui.Async
 import com.tailoredapps.countriesexample.core.CountriesProvider
 import com.tailoredapps.countriesexample.core.model.Country
 import com.tailoredapps.countriesexample.overview.OverviewViewModel
-import com.tailoredapps.countriesexample.overview.overviewModule
-import io.mockk.MockKAnnotations
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
-import io.reactivex.BackpressureStrategy
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.subjects.BehaviorSubject
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.koin.core.context.startKoin
-import org.koin.dsl.module
-import org.koin.test.AutoCloseKoinTest
-import org.koin.test.inject
 import kotlin.test.assertEquals
 
-class OverviewViewModelTest : AutoCloseKoinTest() {
+internal class OverviewViewModelTest {
 
     @get:Rule
-    val rxSchedulersOverrideRule = RxSchedulersOverrideRule()
+    private val testScopeRule = TestCoroutineScopeRule()
 
-    private val viewModel: OverviewViewModel by inject()
+    private lateinit var viewModel: OverviewViewModel
 
     private val provider: CountriesProvider = mockk()
 
     @Before
     fun before() {
-        MockKAnnotations.init(this)
-        startKoin {
-            modules(overviewModule + module { single { provider } })
-        }
+        viewModel = OverviewViewModel(provider, testScopeRule)
     }
 
     @Test
     fun testLoadAllCountriesOnStart() {
-        every { provider.getCountries() } returns Flowable.just(listOf(mockCountry))
+        every { provider.getCountries() } returns flowOf(listOf(mockCountry))
 
-        viewModel.state.subscribe()
+        viewModel.state
 
-        verify { provider.getCountries() }
+        verify(exactly = 1) { provider.getCountries() }
     }
 
     @Test
     fun testReloadActionTriggersRefreshCountriesCall() {
-        every { provider.getCountries() } returns Flowable.just(listOf(mockCountry))
-        every { provider.refreshCountries() } returns Completable.complete()
+        every { provider.getCountries() } returns flowOf(listOf(mockCountry))
+        coEvery { provider.refreshCountries() } just Runs
 
-        val reloadAction = OverviewViewModel.Action.Reload
+        viewModel.dispatch(OverviewViewModel.Action.Reload)
 
-        viewModel.state.subscribe()
-        viewModel.action.accept(reloadAction)
-
-        verify { provider.refreshCountries() }
+        coVerify { provider.refreshCountries() }
     }
 
     @Test
     fun testReloadActionSetsLoadingAndSuccessState() {
-        val subject = BehaviorSubject.createDefault(listOf(mockCountry))
+        val channel = ConflatedBroadcastChannel(listOf(mockCountry))
 
-        every { provider.getCountries() } returns subject.toFlowable(BackpressureStrategy.LATEST)
-        every { provider.refreshCountries() } returns Completable.complete()
+        every { provider.getCountries() } returns channel.asFlow()
+        coEvery { provider.refreshCountries() } just Runs
 
-        val testObserver = viewModel.state.test()
+        val states = viewModel.state.testIn(testScopeRule)
 
-        viewModel.action.accept(OverviewViewModel.Action.Reload)
+        viewModel.dispatch(OverviewViewModel.Action.Reload)
 
-        subject.onNext(listOf(mockCountry, mockCountry))
+        channel.offer(listOf(mockCountry, mockCountry))
 
-        val stateValues = testObserver.values().map { it.countriesAsync }
-        assertEquals(Async.Success(listOf(mockCountry)), stateValues[0])
-        assertEquals(Async.Loading, stateValues[1])
-        assertEquals(Async.Success(listOf(mockCountry, mockCountry)), stateValues[2])
-        testObserver.assertValueCount(3)
+        val stateLoads = states.map { it.countriesLoad }
+        assertEquals(Async.Success(Unit), stateLoads[0])
+        assertEquals(Async.Loading, stateLoads[1])
+        assertEquals(Async.Success(Unit), stateLoads[2])
+
+        val stateCountries = states.map { it.countries }
+        assertEquals(listOf(mockCountry), stateCountries[0])
+        assertEquals(listOf(mockCountry), stateCountries[1])
+        assertEquals(listOf(mockCountry, mockCountry), stateCountries[2])
+
+        assertEquals(3, states.count())
     }
 
     @Test
     fun testReloadActionSetsErrorStateOnApiFailure() {
         val errorToThrow = Throwable()
 
-        every { provider.getCountries() } returns Flowable.just(listOf(mockCountry))
-        every { provider.refreshCountries() } returns Completable.error(errorToThrow)
+        every { provider.getCountries() } returns flowOf(listOf(mockCountry))
+        coEvery { provider.refreshCountries() } just Runs
 
-        val testObserver = viewModel.state.test()
+        val states = viewModel.state.testIn(testScopeRule)
 
-        viewModel.action.accept(OverviewViewModel.Action.Reload)
+        viewModel.dispatch(OverviewViewModel.Action.Reload)
 
-        val stateValues = testObserver.values().map { it.countriesAsync }
-        assertEquals(Async.Success(listOf(mockCountry)), stateValues[0])
-        assertEquals(Async.Loading, stateValues[1])
-        assertEquals(Async.Error(errorToThrow), stateValues[2])
-        testObserver.assertValueCount(3)
+        val stateLoads = states.map { it.countriesLoad }
+        assertEquals(Async.Success(Unit), stateLoads[0])
+        assertEquals(Async.Loading, stateLoads[1])
+        assertEquals(Async.Error(errorToThrow), stateLoads[2])
+
+        val stateCountries = states.map { it.countries }
+        assertEquals(listOf(mockCountry), stateCountries[0])
+        assertEquals(listOf(mockCountry), stateCountries[1])
+        assertEquals(listOf(mockCountry), stateCountries[2])
+
+        assertEquals(3, states.count())
     }
 
     @Test
     fun testToggleFavoriteActionTriggersToggleFavoriteInRepo() {
-        every { provider.getCountries() } returns Flowable.just(listOf(mockCountry))
+        every { provider.getCountries() } returns flowOf(listOf(mockCountry))
 
-        viewModel.state.subscribe()
-        viewModel.action.accept(OverviewViewModel.Action.ToggleFavorite(mockCountry))
+        viewModel.dispatch(OverviewViewModel.Action.ToggleFavorite(mockCountry))
 
-        verify { provider.toggleFavorite(mockCountry) }
+        coVerify { provider.toggleFavorite(mockCountry) }
     }
 
     @Test
@@ -116,23 +121,33 @@ class OverviewViewModelTest : AutoCloseKoinTest() {
         val favoriteToggledMockCountry =
             initialMockCountry.copy(favorite = !initialMockCountry.favorite)
 
-        val subject = BehaviorSubject.createDefault(listOf(initialMockCountry))
+        val channel = ConflatedBroadcastChannel(listOf(initialMockCountry))
 
-        every { provider.getCountries() } returns subject.toFlowable(BackpressureStrategy.LATEST)
+        every { provider.getCountries() } returns channel.asFlow()
 
-        val testObserver = viewModel.state.test()
+        val states = viewModel.state.testIn(testScopeRule)
 
-        viewModel.action.accept(OverviewViewModel.Action.ToggleFavorite(initialMockCountry))
+        viewModel.dispatch(OverviewViewModel.Action.ToggleFavorite(initialMockCountry))
 
-        subject.onNext(listOf(favoriteToggledMockCountry))
+        channel.offer(listOf(favoriteToggledMockCountry))
 
-        val stateValues = testObserver.values().map { it.countriesAsync }
-        assertEquals(Async.Success(listOf(initialMockCountry)), stateValues[0])
-        assertEquals(Async.Success(listOf(favoriteToggledMockCountry)), stateValues[1])
-        testObserver.assertValueCount(2)
+        val stateCountries = states.map { it.countries }
+        assertEquals(listOf(initialMockCountry), stateCountries[0])
+        assertEquals(listOf(favoriteToggledMockCountry), stateCountries[1])
+        assertEquals(2, stateCountries.count())
     }
 
     companion object {
-        val mockCountry = Country("", "", "", null, false, 0, 0.0, "", "", "", "", emptyList())
+        val mockCountry = Country(
+            "", "", "", null,
+            false, 0, 0.0, "",
+            "", "", "", emptyList()
+        )
     }
+}
+
+private fun <T> Flow<T>.testIn(scope: TestCoroutineScope): List<T> {
+    val states = mutableListOf<T>()
+    scope.launch { toList(states) }
+    return states
 }
