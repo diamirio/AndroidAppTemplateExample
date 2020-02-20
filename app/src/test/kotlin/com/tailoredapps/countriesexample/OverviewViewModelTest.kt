@@ -26,22 +26,22 @@ import kotlin.test.assertEquals
 internal class OverviewViewModelTest {
 
     @get:Rule
-    private val testScopeRule = TestCoroutineScopeRule()
+    val testScopeRule = TestCoroutineScopeRule(overrideMainDispatcher = true)
 
-    private lateinit var viewModel: OverviewViewModel
+    private lateinit var sut: OverviewViewModel
 
     private val provider: CountriesProvider = mockk()
 
     @Before
     fun before() {
-        viewModel = OverviewViewModel(provider, testScopeRule)
+        sut = OverviewViewModel(provider)
     }
 
     @Test
     fun testLoadAllCountriesOnStart() {
         every { provider.getCountries() } returns flowOf(listOf(mockCountry))
 
-        viewModel.state
+        sut.state
 
         verify(exactly = 1) { provider.getCountries() }
     }
@@ -51,7 +51,7 @@ internal class OverviewViewModelTest {
         every { provider.getCountries() } returns flowOf(listOf(mockCountry))
         coEvery { provider.refreshCountries() } just Runs
 
-        viewModel.dispatch(OverviewViewModel.Action.Reload)
+        sut.dispatch(OverviewViewModel.Action.Reload)
 
         coVerify { provider.refreshCountries() }
     }
@@ -63,9 +63,9 @@ internal class OverviewViewModelTest {
         every { provider.getCountries() } returns channel.asFlow()
         coEvery { provider.refreshCountries() } just Runs
 
-        val states = viewModel.state.testIn(testScopeRule)
+        val states = sut.state.testIn(testScopeRule)
 
-        viewModel.dispatch(OverviewViewModel.Action.Reload)
+        sut.dispatch(OverviewViewModel.Action.Reload)
 
         channel.offer(listOf(mockCountry, mockCountry))
 
@@ -87,11 +87,11 @@ internal class OverviewViewModelTest {
         val errorToThrow = Throwable()
 
         every { provider.getCountries() } returns flowOf(listOf(mockCountry))
-        coEvery { provider.refreshCountries() } just Runs
+        coEvery { provider.refreshCountries() } throws errorToThrow
 
-        val states = viewModel.state.testIn(testScopeRule)
+        val states = sut.state.testIn(testScopeRule)
 
-        viewModel.dispatch(OverviewViewModel.Action.Reload)
+        sut.dispatch(OverviewViewModel.Action.Reload)
 
         val stateLoads = states.map { it.countriesLoad }
         assertEquals(Async.Success(Unit), stateLoads[0])
@@ -109,8 +109,9 @@ internal class OverviewViewModelTest {
     @Test
     fun testToggleFavoriteActionTriggersToggleFavoriteInRepo() {
         every { provider.getCountries() } returns flowOf(listOf(mockCountry))
+        coEvery { provider.toggleFavorite(any()) } just Runs
 
-        viewModel.dispatch(OverviewViewModel.Action.ToggleFavorite(mockCountry))
+        sut.dispatch(OverviewViewModel.Action.ToggleFavorite(mockCountry))
 
         coVerify { provider.toggleFavorite(mockCountry) }
     }
@@ -124,10 +125,11 @@ internal class OverviewViewModelTest {
         val channel = ConflatedBroadcastChannel(listOf(initialMockCountry))
 
         every { provider.getCountries() } returns channel.asFlow()
+        coEvery { provider.toggleFavorite(any()) } just Runs
 
-        val states = viewModel.state.testIn(testScopeRule)
+        val states = sut.state.testIn(testScopeRule)
 
-        viewModel.dispatch(OverviewViewModel.Action.ToggleFavorite(initialMockCountry))
+        sut.dispatch(OverviewViewModel.Action.ToggleFavorite(initialMockCountry))
 
         channel.offer(listOf(favoriteToggledMockCountry))
 

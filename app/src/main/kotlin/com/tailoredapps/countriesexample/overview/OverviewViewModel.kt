@@ -14,13 +14,14 @@
 
 package com.tailoredapps.countriesexample.overview
 
+import androidx.lifecycle.viewModelScope
 import at.florianschuster.control.Controller
-import at.florianschuster.control.ControllerScope
+import at.florianschuster.control.createController
 import com.tailoredapps.androidapptemplate.base.ui.Async
-import com.tailoredapps.androidapptemplate.base.ui.DelegateViewModel
+import com.tailoredapps.androidapptemplate.base.ui.ControllerViewModel
+import com.tailoredapps.androidapptemplate.base.ui.map
 import com.tailoredapps.countriesexample.core.CountriesProvider
 import com.tailoredapps.countriesexample.core.model.Country
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -28,9 +29,8 @@ import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
 class OverviewViewModel(
-    private val countriesProvider: CountriesProvider,
-    scope: CoroutineScope = ControllerScope()
-) : DelegateViewModel<OverviewViewModel.Action, OverviewViewModel.State>() {
+    private val countriesProvider: CountriesProvider
+) : ControllerViewModel<OverviewViewModel.Action, OverviewViewModel.State>() {
 
     sealed class Action {
         object Reload : Action()
@@ -48,14 +48,16 @@ class OverviewViewModel(
         val displayCountriesEmpty: Boolean get() = countriesLoad.complete && countries.isEmpty()
     }
 
-    override val controller: Controller<Action, Mutation, State> = Controller(
+    override val controller: Controller<Action, Mutation, State> = viewModelScope.createController(
+        tag = "OverviewViewModel",
         initialState = State(),
         mutationsTransformer = { mutations ->
-            val storedCountries = countriesProvider.getCountries()
-                .map { Mutation.SetCountries(Async.Success(it)) }
-            flowOf(mutations, storedCountries).flattenMerge()
+            flowOf(
+                mutations,
+                countriesProvider.getCountries().map { Mutation.SetCountries(Async.Success(it)) }
+            ).flattenMerge()
         },
-        mutator = { action ->
+        mutator = { action, _ ->
             when (action) {
                 is Action.Reload -> flow {
                     emit(Mutation.SetCountries(Async.Loading))
@@ -76,16 +78,6 @@ class OverviewViewModel(
                     countriesLoad = mutation.countriesLoad.map { Unit }
                 )
             }
-        },
-        scope = scope
+        }
     )
-}
-
-fun <T, O> Async<T>.map(mapper: (T) -> O): Async<O> {
-    return when (this) {
-        is Async.Success -> Async.Success(mapper.invoke(this.element))
-        is Async.Error -> Async.Error(error)
-        is Async.Loading -> Async.Loading
-        else -> Async.Uninitialized
-    }
 }

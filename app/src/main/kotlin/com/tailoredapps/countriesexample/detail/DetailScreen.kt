@@ -23,14 +23,16 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import at.florianschuster.control.Controller
 import at.florianschuster.control.bind
+import at.florianschuster.control.createController
 import coil.api.load
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.tailoredapps.androidapptemplate.base.ui.DelegateViewModel
+import com.tailoredapps.androidapptemplate.base.ui.ControllerViewModel
 import com.tailoredapps.androidutil.ui.IntentUtil
 import com.tailoredapps.countriesexample.R
 import com.tailoredapps.countriesexample.core.CountriesProvider
@@ -149,13 +151,14 @@ class DetailView : Fragment(R.layout.fragment_detail) {
 class DetailViewModel(
     private val alpha2Code: String,
     private val countriesProvider: CountriesProvider
-) : DelegateViewModel<Nothing, DetailViewModel.State>() {
+) : ControllerViewModel<Nothing, DetailViewModel.State>() {
 
     data class Mutation(val country: Country)
 
     data class State(val country: Country? = null)
 
-    override val controller: Controller<Nothing, Mutation, State> = Controller(
+    override val controller: Controller<Nothing, Mutation, State> = viewModelScope.createController(
+        tag = "DetailViewModel",
         initialState = State(),
         mutationsTransformer = { mutations ->
             flowOf(
@@ -163,8 +166,6 @@ class DetailViewModel(
                 countriesProvider.getCountry(alpha2Code).map { Mutation(it) }
             ).flattenMerge()
         },
-        reducer = { previousState, mutation ->
-            previousState.copy(country = mutation.country)
-        }
+        reducer = { previousState, mutation -> previousState.copy(country = mutation.country) }
     )
 }

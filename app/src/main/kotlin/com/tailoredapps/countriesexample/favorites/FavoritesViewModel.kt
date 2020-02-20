@@ -14,8 +14,10 @@
 
 package com.tailoredapps.countriesexample.favorites
 
+import androidx.lifecycle.viewModelScope
 import at.florianschuster.control.Controller
-import com.tailoredapps.androidapptemplate.base.ui.DelegateViewModel
+import at.florianschuster.control.createController
+import com.tailoredapps.androidapptemplate.base.ui.ControllerViewModel
 import com.tailoredapps.countriesexample.core.CountriesProvider
 import com.tailoredapps.countriesexample.core.model.Country
 import kotlinx.coroutines.flow.flattenMerge
@@ -25,7 +27,7 @@ import kotlinx.coroutines.flow.map
 
 class FavoritesViewModel(
     private val countriesProvider: CountriesProvider
-) : DelegateViewModel<FavoritesViewModel.Action, FavoritesViewModel.State>() {
+) : ControllerViewModel<FavoritesViewModel.Action, FavoritesViewModel.State>() {
 
     sealed class Action {
         data class RemoveFavorite(val country: Country) : Action()
@@ -39,7 +41,8 @@ class FavoritesViewModel(
         val countries: List<Country> = emptyList()
     )
 
-    override val controller: Controller<Action, Mutation, State> = Controller(
+    override val controller: Controller<Action, Mutation, State> = viewModelScope.createController(
+        tag = "FavoritesViewModel",
         initialState = State(),
         mutationsTransformer = { mutations ->
             val favorites = countriesProvider
@@ -47,7 +50,7 @@ class FavoritesViewModel(
                 .map { Mutation.SetCountries(it) }
             flowOf(mutations, favorites).flattenMerge()
         },
-        mutator = { action ->
+        mutator = { action, _ ->
             when (action) {
                 is Action.RemoveFavorite -> flow { countriesProvider.toggleFavorite(action.country) }
             }

@@ -16,3 +16,12 @@ sealed class Async<out T>(val complete: Boolean, val shouldLoad: Boolean) {
     val initialized: Boolean get() = this !is Uninitialized
     val loading: Boolean get() = this is Loading
 }
+
+fun <T, O> Async<T>.map(mapper: (T) -> O): Async<O> {
+    return when (this) {
+        is Async.Success -> Async.Success(mapper.invoke(this.element))
+        is Async.Error -> Async.Error(error)
+        is Async.Loading -> Async.Loading
+        else -> Async.Uninitialized
+    }
+}

@@ -42,13 +42,14 @@ class TestCoroutineScopeRule(
     val overrideMainDispatcher: Boolean = false
 ) : TestRule, TestCoroutineScope by TestCoroutineScope() {
 
-    val testDispatcher = coroutineContext[ContinuationInterceptor] as TestCoroutineDispatcher
+    val dispatcher = coroutineContext[ContinuationInterceptor] as TestCoroutineDispatcher
 
     override fun apply(base: Statement, description: Description): Statement =
         object : Statement() {
+
             @Throws(Throwable::class)
             override fun evaluate() {
-                if (overrideMainDispatcher) Dispatchers.setMain(testDispatcher)
+                if (overrideMainDispatcher) Dispatchers.setMain(dispatcher)
                 base.evaluate()
                 cleanupTestCoroutines()
                 if (overrideMainDispatcher) Dispatchers.resetMain()
