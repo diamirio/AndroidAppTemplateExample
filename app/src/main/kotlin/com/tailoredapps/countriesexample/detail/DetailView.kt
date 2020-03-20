@@ -129,22 +129,22 @@ class DetailView : Fragment(R.layout.fragment_detail) {
         }
     }
 
-    private suspend fun Fragment.yesNoDialog(
-        title: String,
-        message: String,
-        positiveButtonText: String,
-        negativeButtonText: String
-    ): Boolean = suspendCoroutine { continuation ->
-        MaterialAlertDialogBuilder(requireContext()).apply {
-            setTitle(title)
-            setMessage(message)
-            setPositiveButton(positiveButtonText) { _, _ -> continuation.resume(true) }
-            setNegativeButton(negativeButtonText) { _, _ -> continuation.resume(false) }
-        }.show()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         removeLiftsAppBarWith(rvDetail)
     }
+}
+
+private suspend fun Fragment.yesNoDialog(
+    title: String,
+    message: String,
+    positiveButtonText: String,
+    negativeButtonText: String
+): Boolean = suspendCoroutine { continuation ->
+    MaterialAlertDialogBuilder(requireContext()).apply {
+        setTitle(title)
+        setMessage(message)
+        setPositiveButton(positiveButtonText) { _, _ -> continuation.resume(true) }
+        setNegativeButton(negativeButtonText) { _, _ -> continuation.resume(false) }
+    }.show()
 }
