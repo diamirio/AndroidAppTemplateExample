@@ -1,5 +1,6 @@
 /*
- * Copyright 2019 Florian Schuster. All rights reserved.
+ * Copyright 2020 Tailored Media GmbH.
+ * Created by Florian Schuster.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -44,9 +45,10 @@ sealed class Cause(@StringRes val default: Int = R.string.error_other) {
     open fun translation(resources: Resources): String = resources.getString(default)
 
     companion object {
-        fun fromThrowable(throwable: Throwable, @StringRes otherRes: Int? = null): Cause = when (throwable) {
-            is HttpException -> Http(throwable.code())
-            else -> Other(otherRes)
-        }
+        fun fromThrowable(throwable: Throwable, @StringRes otherRes: Int? = null): Cause =
+            when (throwable) {
+                is HttpException -> Http(throwable.code())
+                else -> Other(otherRes)
+            }
     }
 }

@@ -22,6 +22,13 @@ object Libs {
     /**
      * https://github.com/reactivecircus/FlowBinding
      */
+    const val flowbinding_swiperefreshlayout: String =
+            "io.github.reactivecircus.flowbinding:flowbinding-swiperefreshlayout:" +
+            Versions.io_github_reactivecircus_flowbinding
+
+    /**
+     * https://github.com/reactivecircus/FlowBinding
+     */
     const val flowbinding_activity: String =
             "io.github.reactivecircus.flowbinding:flowbinding-activity:" +
             Versions.io_github_reactivecircus_flowbinding
@@ -51,13 +58,6 @@ object Libs {
      */
     const val flowbinding_material: String =
             "io.github.reactivecircus.flowbinding:flowbinding-material:" +
-            Versions.io_github_reactivecircus_flowbinding
-
-    /**
-     * https://github.com/reactivecircus/FlowBinding
-     */
-    const val flowbinding_swiperefreshlayout: String =
-            "io.github.reactivecircus.flowbinding:flowbinding-swiperefreshlayout:" +
             Versions.io_github_reactivecircus_flowbinding
 
     /**
@@ -122,13 +122,13 @@ object Libs {
             Versions.com_squareup_retrofit2
 
     /**
-     * https://github.com/square/okhttp
+     * https://square.github.io/okhttp/
      */
     const val logging_interceptor: String = "com.squareup.okhttp3:logging-interceptor:" +
             Versions.com_squareup_okhttp3
 
     /**
-     * https://github.com/square/okhttp
+     * https://square.github.io/okhttp/
      */
     const val okhttp: String = "com.squareup.okhttp3:okhttp:" + Versions.com_squareup_okhttp3
 
@@ -304,7 +304,7 @@ object Libs {
     const val appcompat: String = "androidx.appcompat:appcompat:" + Versions.appcompat
 
     /**
-     * http://developer.android.com/tools/extras/support-library.html
+     * https://developer.android.com/jetpack/androidx
      */
     const val core_ktx: String = "androidx.core:core-ktx:" + Versions.core_ktx
 

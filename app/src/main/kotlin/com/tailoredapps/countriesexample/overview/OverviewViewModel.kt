@@ -1,4 +1,6 @@
-/* Copyright 2018 Florian Schuster
+/*
+ * Copyright 2020 Tailored Media GmbH.
+ * Created by Florian Schuster.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +18,9 @@ package com.tailoredapps.countriesexample.overview
 
 import androidx.lifecycle.viewModelScope
 import at.florianschuster.control.Controller
+import at.florianschuster.control.Mutator
+import at.florianschuster.control.Reducer
+import at.florianschuster.control.Transformer
 import at.florianschuster.control.createController
 import com.tailoredapps.androidapptemplate.base.ui.Async
 import com.tailoredapps.androidapptemplate.base.ui.ControllerViewModel
@@ -49,15 +54,14 @@ class OverviewViewModel(
     }
 
     override val controller: Controller<Action, Mutation, State> = viewModelScope.createController(
-        tag = "OverviewViewModel",
         initialState = State(),
-        mutationsTransformer = { mutations ->
+        mutationsTransformer = Transformer { mutations ->
             flowOf(
                 mutations,
                 countriesProvider.getCountries().map { Mutation.SetCountries(Async.Success(it)) }
             ).flattenMerge()
         },
-        mutator = { action, _ ->
+        mutator = Mutator { action, _, _ ->
             when (action) {
                 is Action.Reload -> flow {
                     emit(Mutation.SetCountries(Async.Loading))
@@ -71,7 +75,7 @@ class OverviewViewModel(
                 is Action.ToggleFavorite -> flow { countriesProvider.toggleFavorite(action.country) }
             }
         },
-        reducer = { previousState, mutation ->
+        reducer = Reducer { mutation, previousState ->
             when (mutation) {
                 is Mutation.SetCountries -> previousState.copy(
                     countries = mutation.countriesLoad() ?: previousState.countries,

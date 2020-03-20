@@ -2,6 +2,8 @@ package com.tailoredapps.countriesexample.detail
 
 import androidx.lifecycle.viewModelScope
 import at.florianschuster.control.Controller
+import at.florianschuster.control.Reducer
+import at.florianschuster.control.Transformer
 import at.florianschuster.control.createController
 import com.tailoredapps.androidapptemplate.base.ui.ControllerViewModel
 import com.tailoredapps.countriesexample.core.CountriesProvider
@@ -13,21 +15,28 @@ import kotlinx.coroutines.flow.map
 class DetailViewModel(
     private val alpha2Code: String,
     private val countriesProvider: CountriesProvider
-) : ControllerViewModel<Nothing, DetailViewModel.State>() {
+) : ControllerViewModel<DetailViewModel.Action, DetailViewModel.State>() {
 
-    data class Mutation(val country: Country)
+    sealed class Action
+
+    sealed class Mutation {
+        data class SetCountry(val country: Country) : Mutation()
+    }
 
     data class State(val country: Country? = null)
 
-    override val controller: Controller<Nothing, Mutation, State> = viewModelScope.createController(
-        tag = "DetailViewModel",
+    override val controller: Controller<Action, Mutation, State> = viewModelScope.createController(
         initialState = State(),
-        mutationsTransformer = { mutations ->
+        mutationsTransformer = Transformer { mutations ->
             flowOf(
                 mutations,
-                countriesProvider.getCountry(alpha2Code).map { Mutation(it) }
+                countriesProvider.getCountry(alpha2Code).map { Mutation.SetCountry(it) }
             ).flattenMerge()
         },
-        reducer = { previousState, mutation -> previousState.copy(country = mutation.country) }
+        reducer = Reducer { mutation, previousState ->
+            when (mutation) {
+                is Mutation.SetCountry -> previousState.copy(country = mutation.country)
+            }
+        }
     )
 }
