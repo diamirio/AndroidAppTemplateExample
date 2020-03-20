@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@color/grey_900</color>
+    <color name="colorPrimaryLight">@color/grey_900</color>
+    <color name="colorPrimaryDark">@color/grey_900</color>
+    <color name="colorAccent">@color/blue_500</color>
+    <color name="colorAccentLight">@color/blue_300</color>
+    <color name="colorAccentDark">@color/blue_700</color>
+
+    <color name="windowBackground">@color/black</color>
+    <color name="divider">@color/grey_600</color>
+    <color name="favoriteColor">@color/red_500</color>
+</resources>

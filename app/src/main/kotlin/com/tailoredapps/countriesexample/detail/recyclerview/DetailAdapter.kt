@@ -17,9 +17,12 @@ package com.tailoredapps.countriesexample.detail.recyclerview
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.jakewharton.rxrelay2.PublishRelay
 import com.tailoredapps.androidutil.ui.extensions.inflate
 import com.tailoredapps.countriesexample.R
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 
 sealed class DetailAdapterInteraction {
     data class LocationClick(val latLng: Pair<Double, Double>) : DetailAdapterInteraction()
@@ -27,19 +30,26 @@ sealed class DetailAdapterInteraction {
 }
 
 class DetailAdapter : ListAdapter<DetailAdapterItem, DetailViewHolder>(detailAdapterItemDiff) {
-    val interaction: PublishRelay<DetailAdapterInteraction> = PublishRelay.create()
+
+    private val _interaction = BroadcastChannel<DetailAdapterInteraction>(BUFFERED)
+    val interaction: Flow<DetailAdapterInteraction> = _interaction.asFlow()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder =
         DetailViewHolder(parent.inflate(R.layout.item_detail))
 
     override fun onBindViewHolder(holder: DetailViewHolder, position: Int) =
-        holder.bind(getItem(position), interaction::accept)
+        holder.bind(getItem(position)) { _interaction.offer(it) }
 }
 
 private val detailAdapterItemDiff = object : DiffUtil.ItemCallback<DetailAdapterItem>() {
-    override fun areItemsTheSame(oldItem: DetailAdapterItem, newItem: DetailAdapterItem): Boolean =
-        oldItem.id == newItem.id
 
-    override fun areContentsTheSame(oldItem: DetailAdapterItem, newItem: DetailAdapterItem): Boolean =
-        oldItem == newItem
+    override fun areItemsTheSame(
+        oldItem: DetailAdapterItem,
+        newItem: DetailAdapterItem
+    ): Boolean = oldItem.id == newItem.id
+
+    override fun areContentsTheSame(
+        oldItem: DetailAdapterItem,
+        newItem: DetailAdapterItem
+    ): Boolean = oldItem == newItem
 }

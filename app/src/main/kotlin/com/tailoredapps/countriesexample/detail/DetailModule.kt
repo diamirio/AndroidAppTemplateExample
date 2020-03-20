@@ -1,5 +1,6 @@
 /*
- * Copyright 2019 Florian Schuster.
+ * Copyright 2020 Tailored Media GmbH.
+ * Created by Florian Schuster.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,11 +17,11 @@
 
 package com.tailoredapps.countriesexample.detail
 
-import at.florianschuster.reaktor.android.koin.reactor
 import com.tailoredapps.countriesexample.detail.recyclerview.DetailAdapter
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 internal val detailModule = module {
-    reactor { (alpha2Code: String) -> DetailReactor(alpha2Code = alpha2Code, countriesProvider = get()) }
+    viewModel { (alpha2Code: String) -> DetailViewModel(alpha2Code = alpha2Code, countriesProvider = get()) }
     factory { DetailAdapter() }
 }

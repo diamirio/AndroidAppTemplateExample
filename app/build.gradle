@@ -111,7 +111,6 @@ dependencies {
     implementation(Libs.coil)
 }
 
-
 easylauncher {
     iconNames "@mipmap/ic_launcher_foreground"
     foregroundIconNames "@mipmap/ic_launcher_foreground"

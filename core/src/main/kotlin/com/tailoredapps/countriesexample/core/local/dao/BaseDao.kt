@@ -25,20 +25,20 @@ import androidx.room.Update
 @Dao
 interface BaseDao<T> {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertOrUpdate(vararg item: T)
+    suspend fun insertOrUpdate(vararg item: T)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertOrUpdate(item: T): Long
+    suspend fun insertOrUpdate(item: T): Long
 
     @Insert
-    fun insertOrFail(vararg item: T)
+    suspend fun insertOrFail(vararg item: T)
 
     @Insert
-    fun insertOrFail(item: T): Long
+    suspend fun insertOrFail(item: T): Long
 
     @Delete
-    fun delete(vararg item: T)
+    suspend fun delete(vararg item: T)
 
     @Update
-    fun update(vararg item: T)
+    suspend fun update(vararg item: T)
 }

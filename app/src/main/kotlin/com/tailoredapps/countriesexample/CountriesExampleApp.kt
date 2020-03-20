@@ -1,5 +1,6 @@
 /*
- * Copyright 2019 Florian Schuster.
+ * Copyright 2020 Tailored Media GmbH.
+ * Created by Florian Schuster.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,12 +18,9 @@
 package com.tailoredapps.countriesexample
 
 import android.app.Application
-import at.florianschuster.reaktor.Reaktor
+import at.florianschuster.control.ControllerLog
 import com.jakewharton.threetenabp.AndroidThreeTen
-import com.tailoredapps.countriesexample.core.model.AppBuildInfo
 import com.tailoredapps.countriesexample.core.coreModules
-import io.reactivex.plugins.RxJavaPlugins
-import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -36,7 +34,6 @@ class CountriesExampleApp : Application() {
 
         Timber.plant(Timber.DebugTree())
         AndroidThreeTen.init(this)
-        RxJavaPlugins.setErrorHandler(Timber::e)
 
         startKoin {
             androidContext(this@CountriesExampleApp)
@@ -44,9 +41,6 @@ class CountriesExampleApp : Application() {
             modules(coreModules + appModules)
         }
 
-        Reaktor.attachErrorHandler(
-            escalateCrashes = get<AppBuildInfo>().debug,
-            handler = Timber::e
-        )
+        ControllerLog.default = ControllerLog.Custom { Timber.v(it) }
     }
 }

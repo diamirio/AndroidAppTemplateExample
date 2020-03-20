@@ -1,5 +1,6 @@
 /*
- * Copyright 2019 Florian Schuster.
+ * Copyright 2020 Tailored Media GmbH.
+ * Created by Florian Schuster.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,32 +15,33 @@
  * limitations under the License.
  */
 
-package com.tailoredapps.countriesexample.main
+package com.tailoredapps.countriesexample
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import com.tailoredapps.androidapptemplate.base.ui.BaseActivity
 import com.tailoredapps.androidutil.ui.extensions.liftWith
-import com.tailoredapps.countriesexample.R
+import com.tailoredapps.androidutil.ui.extensions.removeLiftWith
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_appbar.*
 
-class MainActivity : BaseActivity(R.layout.activity_main) {
+class MainActivity : AppCompatActivity(R.layout.activity_main) {
+
     private val navController: NavController by lazy { findNavController(R.id.navHost) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        bnv.setupWithNavController(navController)
 
-        AppBarConfiguration
-            .Builder(R.id.overview, R.id.favorites)
-            .build()
-            .let { toolbar.setupWithNavController(navController, it) }
+        bnv.setupWithNavController(navController)
+        toolbar.setupWithNavController(
+            navController,
+            AppBarConfiguration.Builder(R.id.overview, R.id.favorites).build()
+        )
     }
 
     override fun onSupportNavigateUp(): Boolean = navController.navigateUp()
@@ -55,4 +57,10 @@ fun Fragment.liftsAppBarWith(view: View) {
     val activity = activity as? MainActivity ?: return
     activity.appBar.setLiftable(true)
     activity.appBar.liftWith(view)
+}
+
+fun Fragment.removeLiftsAppBarWith(view: View) {
+    val activity = activity as? MainActivity ?: return
+    activity.appBar.setLiftable(true)
+    activity.appBar.removeLiftWith(view)
 }

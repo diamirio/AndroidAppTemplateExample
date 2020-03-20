@@ -1,5 +1,6 @@
 /*
- * Copyright 2019 Florian Schuster.
+ * Copyright 2020 Tailored Media GmbH.
+ * Created by Florian Schuster.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,13 +17,11 @@
 
 package com.tailoredapps.countriesexample.core.remote
 
-import com.tailoredapps.androidutil.network.networkresponse.NetworkResponse
 import com.tailoredapps.countriesexample.core.remote.model.RemoteCountry
-import io.reactivex.Single
 import retrofit2.http.GET
 
 interface CountriesApi {
 
     @GET("all")
-    fun all(): Single<NetworkResponse<List<RemoteCountry>>>
+    suspend fun all(): List<RemoteCountry>
 }

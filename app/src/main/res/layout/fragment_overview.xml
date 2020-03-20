@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/root"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/windowBackground">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/srlOverView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/srlOverView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvOverView"
-                android:layout_width="match_parent"
-                android:padding="@dimen/all_margin_half"
-                android:clipToPadding="false"
-                android:scrollbars="vertical"
-                android:layout_height="wrap_content"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="2"
-                tools:listitem="@layout/item_country"/>
+            android:id="@+id/rvOverView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:padding="@dimen/all_margin_half"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="2"
+            tools:listitem="@layout/item_country" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <include
-            android:id="@+id/emptyLayout"
-            layout="@layout/fragment_overview_empty"
-            android:visibility="gone"/>
+        android:id="@+id/emptyLayout"
+        layout="@layout/fragment_overview_empty"
+        android:visibility="gone" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

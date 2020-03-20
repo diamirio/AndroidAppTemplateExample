@@ -21,13 +21,12 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import com.tailoredapps.countriesexample.core.local.model.LocalFavoriteCountry
-import io.reactivex.Completable
 
 @Dao
 interface FavoriteDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun addFavorite(favoriteCountry: LocalFavoriteCountry): Completable
+    suspend fun addFavorite(favoriteCountry: LocalFavoriteCountry)
 
     @Delete
-    fun removeFavorite(favoriteCountry: LocalFavoriteCountry): Completable
+    suspend  fun removeFavorite(favoriteCountry: LocalFavoriteCountry)
 }

@@ -1,4 +1,6 @@
-/* Copyright 2018 Florian Schuster
+/*
+ * Copyright 2020 Tailored Media GmbH.
+ * Created by Florian Schuster.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +22,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.api.load
-import com.jakewharton.rxrelay2.PublishRelay
 import com.tailoredapps.androidutil.ui.extensions.inflate
 import com.tailoredapps.countriesexample.R
 import com.tailoredapps.countriesexample.core.model.Country
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_country.view.*
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 
 sealed class CountryAdapterInteractionType {
     data class DetailClick(val id: String) : CountryAdapterInteractionType()
@@ -33,21 +38,28 @@ sealed class CountryAdapterInteractionType {
 }
 
 class CountryAdapter : ListAdapter<Country, CountryViewHolder>(countryDiff) {
-    val interaction = PublishRelay.create<CountryAdapterInteractionType>()
+
+    private val _interaction = BroadcastChannel<CountryAdapterInteractionType>(BUFFERED)
+    val interaction: Flow<CountryAdapterInteractionType> = _interaction.asFlow()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountryViewHolder =
         CountryViewHolder(parent.inflate(R.layout.item_country))
 
     override fun onBindViewHolder(holder: CountryViewHolder, position: Int) =
-        holder.bind(getItem(position), interaction::accept)
+        holder.bind(getItem(position)) { _interaction.offer(it) }
 }
 
 private val countryDiff = object : DiffUtil.ItemCallback<Country>() {
-    override fun areItemsTheSame(oldItem: Country, newItem: Country): Boolean =
-        oldItem.alpha2Code == newItem.alpha2Code
 
-    override fun areContentsTheSame(oldItem: Country, newItem: Country): Boolean =
-        oldItem == newItem
+    override fun areItemsTheSame(
+        oldItem: Country,
+        newItem: Country
+    ): Boolean = oldItem.alpha2Code == newItem.alpha2Code
+
+    override fun areContentsTheSame(
+        oldItem: Country,
+        newItem: Country
+    ): Boolean = oldItem == newItem
 }
 
 class CountryViewHolder(
@@ -68,8 +80,8 @@ class CountryViewHolder(
             interaction(CountryAdapterInteractionType.FavoriteClick(item))
         }
 
-        val favoriteRes =
+        itemView.btnFavorite.setImageResource(
             if (item.favorite) R.drawable.ic_favorite else R.drawable.ic_favorite_border
-        itemView.btnFavorite.setImageResource(favoriteRes)
+        )
     }
 }

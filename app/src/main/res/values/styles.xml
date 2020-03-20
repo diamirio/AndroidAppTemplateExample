@@ -1,30 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorControlHighlight">@color/black_opacity_10</item>
 
-        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowBackground">@color/windowBackground</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="android:navigationBarColor">@color/colorPrimary</item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
-
-        <item name="alertDialogTheme">@style/AlertDialogTheme</item>
-    </style>
-
-    <!-- Text -->
-    <style name="Title" parent="TextAppearance.MaterialComponents.Headline5">
-        <item name="android:textColor">@color/textDarkPrimary</item>
-    </style>
-
-    <style name="Text" parent="TextAppearance.MaterialComponents.Body2">
-        <item name="android:textColor">@color/textDarkPrimary</item>
-    </style>
-
-    <style name="Text.Bold">
-        <item name="android:textStyle">bold</item>
     </style>
 
     <!-- Divider -->
@@ -35,9 +20,12 @@
     </style>
 
     <!-- Alert -->
-    <style name="AlertDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert.Bridge">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="AlertDialogTheme" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
+        <item name="buttonBarPositiveButtonStyle">@style/AlertButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/AlertButtonStyle</item>
+    </style>
+
+    <style name="AlertButtonStyle" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/colorAccent</item>
     </style>
 </resources>

@@ -20,12 +20,12 @@ import androidx.room.Dao
 import androidx.room.Query
 import com.tailoredapps.countriesexample.core.local.model.CountryLanguageJoin
 import com.tailoredapps.countriesexample.core.local.model.LocalLanguage
-import io.reactivex.Single
 
 @Dao
 interface CountryLanguageDao : BaseDao<CountryLanguageJoin> {
+
     @Query("""SELECT * FROM language
         JOIN country_language_join ON l_name = fk_language
         WHERE  fk_country = :alpha2Code""")
-    fun getLanguagesByCountry(alpha2Code: String): Single<List<LocalLanguage>>
+    suspend fun getLanguagesByCountry(alpha2Code: String): List<LocalLanguage>
 }
