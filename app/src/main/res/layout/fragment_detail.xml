@@ -22,7 +22,7 @@
 
         <TextView
             android:id="@+id/tvName"
-            style="@style/Title"
+            style="@style/TextAppearance.MaterialComponents.Headline5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/all_margin"
@@ -49,7 +49,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnMore"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/all_margin"
@@ -62,7 +62,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rvDetail"
-            app:rippleColor="@color/colorAccentLight" />
+            app:rippleColor="?colorControlHighlight"
+            app:strokeColor="?colorAccent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

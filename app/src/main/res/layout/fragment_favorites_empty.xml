@@ -21,7 +21,7 @@
 
     <TextView
         android:id="@+id/tvText"
-        style="@style/Text.Bold"
+        style="@style/TextAppearance.MaterialComponents.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/all_margin"

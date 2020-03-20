@@ -141,9 +141,10 @@ private suspend fun Fragment.yesNoDialog(
     positiveButtonText: String,
     negativeButtonText: String
 ): Boolean = suspendCoroutine { continuation ->
-    MaterialAlertDialogBuilder(requireContext()).apply {
+    MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme).apply {
         setTitle(title)
         setMessage(message)
+        setOnCancelListener { continuation.resume(false) }
         setPositiveButton(positiveButtonText) { _, _ -> continuation.resume(true) }
         setNegativeButton(negativeButtonText) { _, _ -> continuation.resume(false) }
     }.show()

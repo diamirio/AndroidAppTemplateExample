@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="?listPreferredItemHeight"
-    android:background="?attr/selectableItemBackground">
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:minHeight="?listPreferredItemHeight">
 
     <ImageView
         android:id="@+id/ivIndicator"
@@ -12,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/all_margin"
         android:contentDescription="@string/item_detail_iv_cd_icon"
-        android:tint="@color/textDarkSecondary"
+        android:tint="@color/grey_700"
         android:tintMode="src_in"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
@@ -22,7 +23,7 @@
 
     <TextView
         android:id="@+id/tvTitle"
-        style="@style/Text.Bold"
+        style="@style/TextAppearance.MaterialComponents.Body1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/all_margin"
@@ -36,7 +37,7 @@
 
     <TextView
         android:id="@+id/tvSubtitle"
-        style="@style/Text"
+        style="@style/TextAppearance.MaterialComponents.Body2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/all_margin"
