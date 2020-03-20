@@ -25,8 +25,8 @@ import at.florianschuster.control.bind
 import com.tailoredapps.countriesexample.R
 import com.tailoredapps.countriesexample.all.CountryAdapter
 import com.tailoredapps.countriesexample.all.CountryAdapterInteractionType
-import com.tailoredapps.countriesexample.main.liftsAppBarWith
-import com.tailoredapps.countriesexample.main.removeLiftsAppBarWith
+import com.tailoredapps.countriesexample.liftsAppBarWith
+import com.tailoredapps.countriesexample.removeLiftsAppBarWith
 import kotlinx.android.synthetic.main.fragment_favorites.*
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterIsInstance

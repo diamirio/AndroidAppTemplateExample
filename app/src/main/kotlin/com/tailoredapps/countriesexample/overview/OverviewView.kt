@@ -28,8 +28,8 @@ import com.tailoredapps.androidutil.ui.extensions.snack
 import com.tailoredapps.countriesexample.R
 import com.tailoredapps.countriesexample.all.CountryAdapter
 import com.tailoredapps.countriesexample.all.CountryAdapterInteractionType
-import com.tailoredapps.countriesexample.main.liftsAppBarWith
-import com.tailoredapps.countriesexample.main.removeLiftsAppBarWith
+import com.tailoredapps.countriesexample.liftsAppBarWith
+import com.tailoredapps.countriesexample.removeLiftsAppBarWith
 import com.tailoredapps.countriesexample.util.asCause
 import kotlinx.android.synthetic.main.fragment_overview.*
 import kotlinx.android.synthetic.main.fragment_overview_empty.view.*

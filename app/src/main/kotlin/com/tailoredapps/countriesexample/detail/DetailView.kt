@@ -23,25 +23,19 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import at.florianschuster.control.Controller
 import at.florianschuster.control.bind
-import at.florianschuster.control.createController
 import coil.api.load
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.tailoredapps.androidapptemplate.base.ui.ControllerViewModel
 import com.tailoredapps.androidutil.ui.IntentUtil
 import com.tailoredapps.countriesexample.R
-import com.tailoredapps.countriesexample.core.CountriesProvider
-import com.tailoredapps.countriesexample.core.model.Country
 import com.tailoredapps.countriesexample.detail.recyclerview.DetailAdapter
 import com.tailoredapps.countriesexample.detail.recyclerview.DetailAdapterInteraction
 import com.tailoredapps.countriesexample.detail.recyclerview.convertToDetailAdapterItems
-import com.tailoredapps.countriesexample.main.liftsAppBarWith
-import com.tailoredapps.countriesexample.main.removeLiftsAppBarWith
+import com.tailoredapps.countriesexample.liftsAppBarWith
+import com.tailoredapps.countriesexample.removeLiftsAppBarWith
 import kotlinx.android.synthetic.main.fragment_detail.*
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterIsInstance
@@ -152,26 +146,4 @@ class DetailView : Fragment(R.layout.fragment_detail) {
         super.onDestroyView()
         removeLiftsAppBarWith(rvDetail)
     }
-}
-
-class DetailViewModel(
-    private val alpha2Code: String,
-    private val countriesProvider: CountriesProvider
-) : ControllerViewModel<Nothing, DetailViewModel.State>() {
-
-    data class Mutation(val country: Country)
-
-    data class State(val country: Country? = null)
-
-    override val controller: Controller<Nothing, Mutation, State> = viewModelScope.createController(
-        tag = "DetailViewModel",
-        initialState = State(),
-        mutationsTransformer = { mutations ->
-            flowOf(
-                mutations,
-                countriesProvider.getCountry(alpha2Code).map { Mutation(it) }
-            ).flattenMerge()
-        },
-        reducer = { previousState, mutation -> previousState.copy(country = mutation.country) }
-    )
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tailoredapps.countriesexample.main
+package com.tailoredapps.countriesexample
 
 import android.os.Bundle
 import android.view.View
@@ -26,7 +26,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.tailoredapps.androidutil.ui.extensions.liftWith
 import com.tailoredapps.androidutil.ui.extensions.removeLiftWith
-import com.tailoredapps.countriesexample.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_appbar.*
 
