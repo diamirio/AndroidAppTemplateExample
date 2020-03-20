@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.tailoredapps.androidutil.ui.extensions.inflate
 import com.tailoredapps.countriesexample.R
 import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 
@@ -29,8 +30,9 @@ sealed class DetailAdapterInteraction {
 }
 
 class DetailAdapter : ListAdapter<DetailAdapterItem, DetailViewHolder>(detailAdapterItemDiff) {
-    private val _interaction: BroadcastChannel<DetailAdapterInteraction> = BroadcastChannel(1)
-    val interaction: Flow<DetailAdapterInteraction> get() = _interaction.asFlow()
+
+    private val _interaction = BroadcastChannel<DetailAdapterInteraction>(BUFFERED)
+    val interaction: Flow<DetailAdapterInteraction> = _interaction.asFlow()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder =
         DetailViewHolder(parent.inflate(R.layout.item_detail))
@@ -40,6 +42,7 @@ class DetailAdapter : ListAdapter<DetailAdapterItem, DetailViewHolder>(detailAda
 }
 
 private val detailAdapterItemDiff = object : DiffUtil.ItemCallback<DetailAdapterItem>() {
+
     override fun areItemsTheSame(
         oldItem: DetailAdapterItem,
         newItem: DetailAdapterItem
