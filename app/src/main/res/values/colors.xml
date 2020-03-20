@@ -7,6 +7,7 @@
     <color name="colorAccentLight">@color/blue_300</color>
     <color name="colorAccentDark">@color/blue_700</color>
 
+    <color name="windowBackground">@color/white</color>
     <color name="divider">@color/grey_300</color>
     <color name="favoriteColor">@color/red_500</color>
 

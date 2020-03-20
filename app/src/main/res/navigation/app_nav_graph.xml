@@ -1,42 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/app_graph"
-        app:startDestination="@id/overview">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_graph"
+    app:startDestination="@id/overview">
 
     <fragment
-            android:id="@+id/overview"
-            android:name="com.tailoredapps.countriesexample.overview.OverviewView"
-            tools:layout="@layout/fragment_overview">
+        android:id="@+id/overview"
+        android:name="com.tailoredapps.countriesexample.overview.OverviewView"
+        tools:layout="@layout/fragment_overview">
+
         <action
-                android:id="@+id/action_overview_to_detail"
-                app:destination="@id/detail"
-                app:enterAnim="@anim/slide_in_right"
-                app:exitAnim="@anim/slide_out_left"
-                app:popEnterAnim="@anim/slide_in_left"
-                app:popExitAnim="@anim/slide_out_right" />
+            android:id="@+id/action_overview_to_detail"
+            app:destination="@id/detail"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/stay"
+            app:popEnterAnim="@anim/stay"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
-            android:id="@+id/favorites"
-            android:name="com.tailoredapps.countriesexample.favorites.FavoritesView"
-            tools:layout="@layout/fragment_favorites">
+        android:id="@+id/favorites"
+        android:name="com.tailoredapps.countriesexample.favorites.FavoritesView"
+        tools:layout="@layout/fragment_favorites">
+
         <action
-                android:id="@+id/action_favorites_to_detail"
-                app:destination="@id/detail"
-                app:enterAnim="@anim/slide_in_right"
-                app:exitAnim="@anim/slide_out_left"
-                app:popEnterAnim="@anim/slide_in_left"
-                app:popExitAnim="@anim/slide_out_right" />
+            android:id="@+id/action_favorites_to_detail"
+            app:destination="@id/detail"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/stay"
+            app:popEnterAnim="@anim/stay"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
-            android:id="@+id/detail"
-            android:name="com.tailoredapps.countriesexample.detail.DetailView"
-            tools:layout="@layout/fragment_detail">
+        android:id="@+id/detail"
+        android:name="com.tailoredapps.countriesexample.detail.DetailView"
+        tools:layout="@layout/fragment_detail">
+
         <argument
-                android:name="alpha2code"
-                app:argType="string" />
+            android:name="alpha2code"
+            app:argType="string" />
     </fragment>
 </navigation>

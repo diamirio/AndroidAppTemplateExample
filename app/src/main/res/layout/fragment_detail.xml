@@ -1,67 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/windowBackground">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
         <ImageView
-                android:id="@+id/ivFlag"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:contentDescription="@string/detail_iv_cd_flag"
-                android:scaleType="centerCrop"
-                app:layout_constraintDimensionRatio="3:2"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@mipmap/ic_launcher" />
+            android:id="@+id/ivFlag"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:contentDescription="@string/detail_iv_cd_flag"
+            android:scaleType="centerCrop"
+            app:layout_constraintDimensionRatio="3:2"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@mipmap/ic_launcher" />
 
         <TextView
-                android:id="@+id/tvName"
-                style="@style/Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/all_margin"
-                app:layout_constraintTop_toBottomOf="@id/ivFlag"
-                tools:text="Austria" />
+            android:id="@+id/tvName"
+            style="@style/Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/all_margin"
+            app:layout_constraintTop_toBottomOf="@id/ivFlag"
+            tools:text="Austria" />
 
         <View
-                android:id="@+id/dividerTitle"
-                style="@style/Divider"
-                android:layout_marginTop="@dimen/all_margin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvName" />
+            android:id="@+id/dividerTitle"
+            style="@style/Divider"
+            android:layout_marginTop="@dimen/all_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvName" />
 
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvDetail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="true"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintTop_toBottomOf="@id/dividerTitle"
-                tools:itemCount="3"
-                tools:listitem="@layout/item_detail" />
+            android:id="@+id/rvDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="true"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@id/dividerTitle"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_detail" />
 
         <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnMore"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/all_margin"
-                android:layout_marginTop="@dimen/all_margin"
-                android:layout_marginEnd="@dimen/all_margin"
-                android:layout_marginBottom="@dimen/all_margin"
-                android:text="@string/detail_btn_more"
-                android:textColor="?colorAccent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rvDetail"
-                app:rippleColor="@color/colorAccentLight" />
+            android:id="@+id/btnMore"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/all_margin"
+            android:layout_marginTop="@dimen/all_margin"
+            android:layout_marginEnd="@dimen/all_margin"
+            android:layout_marginBottom="@dimen/all_margin"
+            android:text="@string/detail_btn_more"
+            android:textColor="?colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rvDetail"
+            app:rippleColor="@color/colorAccentLight" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
