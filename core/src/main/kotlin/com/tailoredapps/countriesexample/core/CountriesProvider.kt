@@ -32,7 +32,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.withContext
 
 interface CountriesProvider {
@@ -58,19 +58,20 @@ class RetrofitRoomCountriesProvider(
 
     override fun getCountries(): Flow<List<Country>> =
         countriesDb.countryDao().getAll()
+            .mapLatest { it.combineWithLanguages() }
             .conflate()
-            .map { it.combineWithLanguages() }
             .flowOn(ioDispatcher)
 
     override fun getFavoriteCountries(): Flow<List<Country>> =
         countriesDb.countryDao().getAllFavorites()
+            .mapLatest { it.combineWithLanguages() }
             .conflate()
-            .map { it.combineWithLanguages() }
             .flowOn(ioDispatcher)
 
     override fun getCountry(alpha2Code: String): Flow<Country> =
         countriesDb.countryDao().get(alpha2Code)
-            .map { it.combineWithLanguages() }
+            .mapLatest { it.combineWithLanguages() }
+            .conflate()
             .flowOn(ioDispatcher)
 
     override suspend fun toggleFavorite(country: Country) =
