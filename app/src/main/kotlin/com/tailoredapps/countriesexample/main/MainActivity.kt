@@ -25,6 +25,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.tailoredapps.androidutil.ui.extensions.liftWith
+import com.tailoredapps.androidutil.ui.extensions.removeLiftWith
 import com.tailoredapps.countriesexample.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_appbar.*
@@ -55,4 +56,10 @@ fun Fragment.liftsAppBarWith(view: View) {
     val activity = activity as? MainActivity ?: return
     activity.appBar.setLiftable(true)
     activity.appBar.liftWith(view)
+}
+
+fun Fragment.removeLiftsAppBarWith(view:View) {
+    val activity = activity as? MainActivity ?: return
+    activity.appBar.setLiftable(true)
+    activity.appBar.removeLiftWith(view)
 }

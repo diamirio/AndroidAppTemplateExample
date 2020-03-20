@@ -41,6 +41,7 @@ import com.tailoredapps.countriesexample.detail.recyclerview.DetailAdapter
 import com.tailoredapps.countriesexample.detail.recyclerview.DetailAdapterInteraction
 import com.tailoredapps.countriesexample.detail.recyclerview.convertToDetailAdapterItems
 import com.tailoredapps.countriesexample.main.liftsAppBarWith
+import com.tailoredapps.countriesexample.main.removeLiftsAppBarWith
 import kotlinx.android.synthetic.main.fragment_detail.*
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterIsInstance
@@ -145,6 +146,11 @@ class DetailView : Fragment(R.layout.fragment_detail) {
             setPositiveButton(positiveButtonText) { _, _ -> continuation.resume(true) }
             setNegativeButton(negativeButtonText) { _, _ -> continuation.resume(false) }
         }.show()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        removeLiftsAppBarWith(rvDetail)
     }
 }
 

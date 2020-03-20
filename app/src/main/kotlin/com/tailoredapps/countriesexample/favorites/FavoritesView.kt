@@ -26,6 +26,7 @@ import com.tailoredapps.countriesexample.R
 import com.tailoredapps.countriesexample.all.CountryAdapter
 import com.tailoredapps.countriesexample.all.CountryAdapterInteractionType
 import com.tailoredapps.countriesexample.main.liftsAppBarWith
+import com.tailoredapps.countriesexample.main.removeLiftsAppBarWith
 import kotlinx.android.synthetic.main.fragment_favorites.*
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterIsInstance
@@ -66,5 +67,10 @@ class FavoritesView : Fragment(R.layout.fragment_favorites) {
             .distinctUntilChanged()
             .bind(to = emptyLayout::isVisible::set)
             .launchIn(viewLifecycleOwner.lifecycleScope)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        removeLiftsAppBarWith(rvFavorites)
     }
 }

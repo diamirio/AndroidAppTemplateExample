@@ -29,6 +29,7 @@ import com.tailoredapps.countriesexample.R
 import com.tailoredapps.countriesexample.all.CountryAdapter
 import com.tailoredapps.countriesexample.all.CountryAdapterInteractionType
 import com.tailoredapps.countriesexample.main.liftsAppBarWith
+import com.tailoredapps.countriesexample.main.removeLiftsAppBarWith
 import com.tailoredapps.countriesexample.util.asCause
 import kotlinx.android.synthetic.main.fragment_overview.*
 import kotlinx.android.synthetic.main.fragment_overview_empty.view.*
@@ -100,5 +101,10 @@ class OverviewView : Fragment(R.layout.fragment_overview) {
         root.snack(message, Snackbar.LENGTH_LONG, getString(R.string.overview_error_retry)) {
             viewModel.dispatch(OverviewViewModel.Action.Reload)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        removeLiftsAppBarWith(rvOverView)
     }
 }
