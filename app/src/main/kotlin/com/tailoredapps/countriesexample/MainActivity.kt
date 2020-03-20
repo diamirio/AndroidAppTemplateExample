@@ -30,16 +30,17 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_appbar.*
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
+
     private val navController: NavController by lazy { findNavController(R.id.navHost) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        bnv.setupWithNavController(navController)
 
-        AppBarConfiguration
-            .Builder(R.id.overview, R.id.favorites)
-            .build()
-            .let { toolbar.setupWithNavController(navController, it) }
+        bnv.setupWithNavController(navController)
+        toolbar.setupWithNavController(
+            navController,
+            AppBarConfiguration.Builder(R.id.overview, R.id.favorites).build()
+        )
     }
 
     override fun onSupportNavigateUp(): Boolean = navController.navigateUp()
@@ -57,7 +58,7 @@ fun Fragment.liftsAppBarWith(view: View) {
     activity.appBar.liftWith(view)
 }
 
-fun Fragment.removeLiftsAppBarWith(view:View) {
+fun Fragment.removeLiftsAppBarWith(view: View) {
     val activity = activity as? MainActivity ?: return
     activity.appBar.setLiftable(true)
     activity.appBar.removeLiftWith(view)

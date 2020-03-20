@@ -47,9 +47,9 @@ import timber.log.Timber
 
 class OverviewView : Fragment(R.layout.fragment_overview) {
 
-    private val viewModel: OverviewViewModel by viewModel()
     private val navController: NavController by lazy(::findNavController)
     private val adapter: CountryAdapter by inject()
+    private val viewModel: OverviewViewModel by viewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

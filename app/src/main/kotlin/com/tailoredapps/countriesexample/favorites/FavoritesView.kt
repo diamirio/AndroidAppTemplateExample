@@ -36,9 +36,10 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoritesView : Fragment(R.layout.fragment_favorites) {
-    private val viewModel: FavoritesViewModel by viewModel()
+
     private val navController: NavController by lazy(::findNavController)
     private val adapter: CountryAdapter by inject()
+    private val viewModel: FavoritesViewModel by viewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

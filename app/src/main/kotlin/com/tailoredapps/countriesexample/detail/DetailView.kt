@@ -55,8 +55,8 @@ import kotlin.coroutines.suspendCoroutine
 class DetailView : Fragment(R.layout.fragment_detail) {
 
     private val args: DetailViewArgs by navArgs()
-    private val viewModel: DetailViewModel by viewModel { parametersOf(args.alpha2code) }
     private val adapter: DetailAdapter by inject()
+    private val viewModel: DetailViewModel by viewModel { parametersOf(args.alpha2code) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
