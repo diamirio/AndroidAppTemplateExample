@@ -51,7 +51,7 @@ object Versions {
 
     const val activity_ktx: String = "1.1.0"
 
-    const val control_core: String = "0.6.2"
+    const val control_core: String = "0.7.1"
 
     const val easylauncher: String = "1.3.1"
 

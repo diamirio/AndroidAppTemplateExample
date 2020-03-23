@@ -2,8 +2,6 @@ package com.tailoredapps.countriesexample.detail
 
 import androidx.lifecycle.viewModelScope
 import at.florianschuster.control.Controller
-import at.florianschuster.control.Reducer
-import at.florianschuster.control.Transformer
 import at.florianschuster.control.createController
 import com.tailoredapps.androidapptemplate.base.ui.ControllerViewModel
 import com.tailoredapps.countriesexample.core.CountriesProvider
@@ -27,13 +25,13 @@ class DetailViewModel(
 
     override val controller: Controller<Action, Mutation, State> = viewModelScope.createController(
         initialState = State(),
-        mutationsTransformer = Transformer { mutations ->
+        mutationsTransformer = { mutations ->
             flowOf(
                 mutations,
                 countriesProvider.getCountry(alpha2Code).map { Mutation.SetCountry(it) }
             ).flattenMerge()
         },
-        reducer = Reducer { mutation, previousState ->
+        reducer = { mutation, previousState ->
             when (mutation) {
                 is Mutation.SetCountry -> previousState.copy(country = mutation.country)
             }

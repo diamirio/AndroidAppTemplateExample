@@ -18,9 +18,6 @@ package com.tailoredapps.countriesexample.overview
 
 import androidx.lifecycle.viewModelScope
 import at.florianschuster.control.Controller
-import at.florianschuster.control.Mutator
-import at.florianschuster.control.Reducer
-import at.florianschuster.control.Transformer
 import at.florianschuster.control.createController
 import com.tailoredapps.androidapptemplate.base.ui.Async
 import com.tailoredapps.androidapptemplate.base.ui.ControllerViewModel
@@ -55,13 +52,13 @@ class OverviewViewModel(
 
     override val controller: Controller<Action, Mutation, State> = viewModelScope.createController(
         initialState = State(),
-        mutationsTransformer = Transformer { mutations ->
+        mutationsTransformer = { mutations ->
             flowOf(
                 mutations,
                 countriesProvider.getCountries().map { Mutation.SetCountries(Async.Success(it)) }
             ).flattenMerge()
         },
-        mutator = Mutator { action, _, _ ->
+        mutator = { action ->
             when (action) {
                 is Action.Reload -> flow {
                     emit(Mutation.SetCountries(Async.Loading))
@@ -75,7 +72,7 @@ class OverviewViewModel(
                 is Action.ToggleFavorite -> flow { countriesProvider.toggleFavorite(action.country) }
             }
         },
-        reducer = Reducer { mutation, previousState ->
+        reducer = { mutation, previousState ->
             when (mutation) {
                 is Mutation.SetCountries -> previousState.copy(
                     countries = mutation.countriesLoad() ?: previousState.countries,

@@ -18,9 +18,6 @@ package com.tailoredapps.countriesexample.favorites
 
 import androidx.lifecycle.viewModelScope
 import at.florianschuster.control.Controller
-import at.florianschuster.control.Mutator
-import at.florianschuster.control.Reducer
-import at.florianschuster.control.Transformer
 import at.florianschuster.control.createController
 import com.tailoredapps.androidapptemplate.base.ui.ControllerViewModel
 import com.tailoredapps.countriesexample.core.CountriesProvider
@@ -48,18 +45,18 @@ class FavoritesViewModel(
 
     override val controller: Controller<Action, Mutation, State> = viewModelScope.createController(
         initialState = State(),
-        mutationsTransformer = Transformer { mutations ->
+        mutationsTransformer = { mutations ->
             val favorites = countriesProvider
                 .getFavoriteCountries()
                 .map { Mutation.SetCountries(it) }
             flowOf(mutations, favorites).flattenMerge()
         },
-        mutator = Mutator { action, _, _ ->
+        mutator = { action ->
             when (action) {
                 is Action.RemoveFavorite -> flow { countriesProvider.toggleFavorite(action.country) }
             }
         },
-        reducer = Reducer { mutation, previousState ->
+        reducer = { mutation, previousState ->
             when (mutation) {
                 is Mutation.SetCountries -> previousState.copy(countries = mutation.countries)
             }
