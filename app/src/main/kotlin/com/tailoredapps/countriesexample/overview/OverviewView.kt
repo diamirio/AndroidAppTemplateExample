@@ -21,20 +21,19 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import at.florianschuster.control.bind
 import com.google.android.material.snackbar.Snackbar
 import com.tailoredapps.androidapptemplate.base.ui.Async
+import com.tailoredapps.androidapptemplate.base.ui.viewBinding
 import com.tailoredapps.androidutil.ui.extensions.snack
 import com.tailoredapps.countriesexample.R
 import com.tailoredapps.countriesexample.all.CountryAdapter
 import com.tailoredapps.countriesexample.all.CountryAdapterInteractionType
+import com.tailoredapps.countriesexample.databinding.FragmentOverviewBinding
 import com.tailoredapps.countriesexample.liftsAppBarWith
 import com.tailoredapps.countriesexample.removeLiftsAppBarWith
 import com.tailoredapps.countriesexample.util.asCause
-import kotlinx.android.synthetic.main.fragment_overview.*
-import kotlinx.android.synthetic.main.fragment_overview_empty.view.*
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flattenMerge
@@ -49,15 +48,15 @@ import timber.log.Timber
 
 class OverviewView : Fragment(R.layout.fragment_overview) {
 
-    private val navController: NavController by lazy(::findNavController)
-    private val adapter: CountryAdapter by inject()
-    private val viewModel: OverviewViewModel by viewModel()
+    private val binding by viewBinding(FragmentOverviewBinding::bind)
+    private val navController by lazy(::findNavController)
+    private val adapter by inject<CountryAdapter>()
+    private val viewModel by viewModel<OverviewViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        rvOverView.adapter = adapter
-        liftsAppBarWith(rvOverView)
+        binding.rvOverView.adapter = adapter
 
         adapter.interaction.filterIsInstance<CountryAdapterInteractionType.DetailClick>()
             .map { OverviewViewDirections.actionOverviewToDetail(it.id) }
@@ -65,7 +64,7 @@ class OverviewView : Fragment(R.layout.fragment_overview) {
             .launchIn(viewLifecycleOwner.lifecycleScope)
 
         // action
-        flowOf(srlOverView.refreshes(), emptyLayout.btnLoad.clicks())
+        flowOf(binding.srlOverView.refreshes(), binding.emptyLayout.btnLoad.clicks())
             .flattenMerge()
             .map { OverviewViewModel.Action.Reload }
             .bind(to = viewModel::dispatch)
@@ -80,13 +79,13 @@ class OverviewView : Fragment(R.layout.fragment_overview) {
         // state
         viewModel.state.map { it.displayCountriesEmpty }
             .distinctUntilChanged()
-            .bind(to = emptyLayout::isVisible::set)
+            .bind(to = binding.emptyLayout.emptyLayout::isVisible::set)
             .launchIn(viewLifecycleOwner.lifecycleScope)
 
         viewModel.state.map { it.countriesLoad }
             .distinctUntilChanged()
             .bind { countriesLoad ->
-                srlOverView.isRefreshing = countriesLoad is Async.Loading
+                binding.srlOverView.isRefreshing = countriesLoad is Async.Loading
                 if (countriesLoad is Async.Error) errorSnack(countriesLoad.error)
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
@@ -100,13 +99,20 @@ class OverviewView : Fragment(R.layout.fragment_overview) {
     private fun errorSnack(throwable: Throwable) {
         Timber.e(throwable)
         val message = throwable.asCause(R.string.overview_error_message).translation(resources)
-        root.snack(message, Snackbar.LENGTH_LONG, getString(R.string.overview_error_retry)) {
-            viewModel.dispatch(OverviewViewModel.Action.Reload)
-        }
+        binding.root.snack(
+            message,
+            Snackbar.LENGTH_LONG,
+            getString(R.string.overview_error_retry)
+        ) { viewModel.dispatch(OverviewViewModel.Action.Reload) }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        removeLiftsAppBarWith(rvOverView)
+    override fun onStart() {
+        super.onStart()
+        liftsAppBarWith(binding.rvOverView)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        removeLiftsAppBarWith(binding.rvOverView)
     }
 }

@@ -4,7 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/activity_main_appbar" />
+    <include
+        android:id="@+id/mainAppBar"
+        layout="@layout/activity_main_appbar" />
 
     <fragment
         android:id="@+id/navHost"
@@ -15,7 +17,7 @@
         app:layout_anchor="@id/bnv"
         app:layout_anchorGravity="top"
         app:layout_constraintBottom_toTopOf="@id/bnv"
-        app:layout_constraintTop_toBottomOf="@id/appBar"
+        app:layout_constraintTop_toBottomOf="@id/mainAppBar"
         app:navGraph="@navigation/app_nav_graph" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

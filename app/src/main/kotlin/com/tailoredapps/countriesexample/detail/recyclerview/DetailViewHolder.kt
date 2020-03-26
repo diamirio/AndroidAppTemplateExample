@@ -14,20 +14,17 @@
 
 package com.tailoredapps.countriesexample.detail.recyclerview
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.item_detail.view.*
+import com.tailoredapps.countriesexample.databinding.ItemDetailBinding
 
 class DetailViewHolder(
-    override val containerView: View
-) : RecyclerView.ViewHolder(containerView), LayoutContainer {
+    private val binding: ItemDetailBinding
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: DetailAdapterItem, interaction: ((DetailAdapterInteraction) -> Unit)) {
-        val resources = itemView.context.resources
-        itemView.tvTitle.text = item.title
-        itemView.tvSubtitle.text = resources.getString(item.subtitle)
-        itemView.ivIndicator.setImageResource(item.icon)
-        itemView.setOnClickListener { item.interaction?.let(interaction) }
+        binding.tvTitle.text = item.title
+        binding.tvSubtitle.text = itemView.context.resources.getString(item.subtitle)
+        binding.ivIndicator.setImageResource(item.icon)
+        binding.root.setOnClickListener { item.interaction?.let(interaction) }
     }
 }

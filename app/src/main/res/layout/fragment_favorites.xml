@@ -20,5 +20,5 @@
     <include
         android:id="@+id/emptyLayout"
         layout="@layout/fragment_favorites_empty"
-        android:visibility="gone" />
+        tools:visibility="gone" />
 </androidx.constraintlayout.widget.ConstraintLayout>

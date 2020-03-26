@@ -16,17 +16,15 @@
 
 package com.tailoredapps.countriesexample.all
 
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.api.load
-import com.tailoredapps.androidutil.ui.extensions.inflate
+import com.tailoredapps.androidapptemplate.base.ui.viewBinding
 import com.tailoredapps.countriesexample.R
 import com.tailoredapps.countriesexample.core.model.Country
-import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.item_country.view.*
+import com.tailoredapps.countriesexample.databinding.ItemCountryBinding
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.Flow
@@ -43,7 +41,9 @@ class CountryAdapter : ListAdapter<Country, CountryViewHolder>(countryDiff) {
     val interaction: Flow<CountryAdapterInteractionType> = _interaction.asFlow()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountryViewHolder =
-        CountryViewHolder(parent.inflate(R.layout.item_country))
+        CountryViewHolder(
+            parent.viewBinding { ItemCountryBinding.inflate(it, parent, false) }
+        )
 
     override fun onBindViewHolder(holder: CountryViewHolder, position: Int) =
         holder.bind(getItem(position)) { _interaction.offer(it) }
@@ -63,24 +63,24 @@ private val countryDiff = object : DiffUtil.ItemCallback<Country>() {
 }
 
 class CountryViewHolder(
-    override val containerView: View
-) : RecyclerView.ViewHolder(containerView), LayoutContainer {
+    private val binding: ItemCountryBinding
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: Country, interaction: (CountryAdapterInteractionType) -> Unit) {
-        itemView.tvName.text = item.name
-        itemView.ivFlag.load(item.flagPngUrl) {
+        binding.tvName.text = item.name
+        binding.ivFlag.load(item.flagPngUrl) {
             crossfade(200)
             error(R.drawable.ic_help_outline)
         }
 
-        itemView.container.setOnClickListener {
+        binding.container.setOnClickListener {
             interaction(CountryAdapterInteractionType.DetailClick(item.alpha2Code))
         }
-        itemView.btnFavorite.setOnClickListener {
+        binding.btnFavorite.setOnClickListener {
             interaction(CountryAdapterInteractionType.FavoriteClick(item))
         }
 
-        itemView.btnFavorite.setImageResource(
+        binding.btnFavorite.setImageResource(
             if (item.favorite) R.drawable.ic_favorite else R.drawable.ic_favorite_border
         )
     }

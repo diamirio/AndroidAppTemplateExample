@@ -30,14 +30,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import at.florianschuster.control.bind
 import coil.api.load
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.tailoredapps.androidapptemplate.base.ui.viewBinding
 import com.tailoredapps.androidutil.ui.IntentUtil
 import com.tailoredapps.countriesexample.R
+import com.tailoredapps.countriesexample.databinding.FragmentDetailBinding
 import com.tailoredapps.countriesexample.detail.recyclerview.DetailAdapter
 import com.tailoredapps.countriesexample.detail.recyclerview.DetailAdapterInteraction
 import com.tailoredapps.countriesexample.detail.recyclerview.convertToDetailAdapterItems
 import com.tailoredapps.countriesexample.liftsAppBarWith
 import com.tailoredapps.countriesexample.removeLiftsAppBarWith
-import kotlinx.android.synthetic.main.fragment_detail.*
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.filterNotNull
@@ -55,21 +56,22 @@ import kotlin.coroutines.suspendCoroutine
 
 class DetailView : Fragment(R.layout.fragment_detail) {
 
-    private val args: DetailViewArgs by navArgs()
-    private val adapter: DetailAdapter by inject()
-    private val viewModel: DetailViewModel by viewModel { parametersOf(args.alpha2code) }
+    private val args by navArgs<DetailViewArgs>()
+    private val binding by viewBinding(FragmentDetailBinding::bind)
+    private val adapter by inject<DetailAdapter>()
+    private val viewModel by viewModel<DetailViewModel> { parametersOf(args.alpha2code) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        rvDetail.adapter = adapter
-        liftsAppBarWith(rvDetail)
-        DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
-            .apply {
-                ContextCompat.getDrawable(requireContext(), R.drawable.bg_divider)
-                    ?.let(::setDrawable)
-            }
-            .also(rvDetail::addItemDecoration)
+        binding.rvDetail.adapter = adapter
+        binding.rvDetail.addItemDecoration(
+            DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
+                .apply {
+                    ContextCompat.getDrawable(requireContext(), R.drawable.bg_divider)
+                        ?.let(::setDrawable)
+                }
+        )
 
         val locationFlow = adapter.interaction
             .filterIsInstance<DetailAdapterInteraction.LocationClick>()
@@ -86,7 +88,7 @@ class DetailView : Fragment(R.layout.fragment_detail) {
             .launchIn(viewLifecycleOwner.lifecycleScope)
 
         // action
-        btnMore.clicks()
+        binding.btnMore.clicks()
             .map { viewModel.currentState.country }
             .filterNotNull()
             .map { it.infoUrl }
@@ -108,11 +110,11 @@ class DetailView : Fragment(R.layout.fragment_detail) {
             .distinctUntilChanged()
             .filterNotNull()
             .bind { country ->
-                ivFlag.load(country.flagPngUrl) {
+                binding.ivFlag.load(country.flagPngUrl) {
                     crossfade(200)
                     error(R.drawable.ic_help_outline)
                 }
-                tvName.text = country.name
+                binding.tvName.text = country.name
                 adapter.submitList(country.convertToDetailAdapterItems())
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
@@ -129,9 +131,14 @@ class DetailView : Fragment(R.layout.fragment_detail) {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        removeLiftsAppBarWith(rvDetail)
+    override fun onStart() {
+        super.onStart()
+        liftsAppBarWith(binding.rvDetail)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        removeLiftsAppBarWith(binding.rvDetail)
     }
 }
 
