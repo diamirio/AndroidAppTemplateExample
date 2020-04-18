@@ -28,6 +28,7 @@ import com.tailoredapps.androidapptemplate.base.ui.viewBinding
 import com.tailoredapps.androidutil.ui.extensions.liftWith
 import com.tailoredapps.androidutil.ui.extensions.removeLiftWith
 import com.tailoredapps.countriesexample.databinding.ActivityMainBinding
+import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,6 +38,7 @@ class MainActivity : AppCompatActivity() {
     internal val appBar get() = binding.mainAppBar.mainAppBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setupKoinFragmentFactory()
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 

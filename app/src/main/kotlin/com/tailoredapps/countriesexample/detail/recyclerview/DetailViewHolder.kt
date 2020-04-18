@@ -18,10 +18,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tailoredapps.countriesexample.databinding.ItemDetailBinding
 
 class DetailViewHolder(
-    private val binding: ItemDetailBinding
+    private val binding: ItemDetailBinding,
+    private val interaction: ((DetailAdapterInteraction) -> Unit)
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: DetailAdapterItem, interaction: ((DetailAdapterInteraction) -> Unit)) {
+    fun bind(item: DetailAdapterItem) {
         binding.tvTitle.text = item.title
         binding.tvSubtitle.text = itemView.context.resources.getString(item.subtitle)
         binding.ivIndicator.setImageResource(item.icon)

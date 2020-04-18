@@ -16,9 +16,11 @@
 
 package com.tailoredapps.countriesexample.overview
 
+import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 internal val overviewModule = module {
+    fragment { OverviewView(adapter = get()) }
     viewModel { OverviewViewModel(countriesProvider = get()) }
 }

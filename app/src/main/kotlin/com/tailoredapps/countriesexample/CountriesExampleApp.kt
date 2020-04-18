@@ -23,6 +23,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tailoredapps.countriesexample.core.coreModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
+import org.koin.androidx.fragment.koin.fragmentFactory
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import timber.log.Timber
@@ -38,6 +39,7 @@ class CountriesExampleApp : Application() {
         startKoin {
             androidContext(this@CountriesExampleApp)
             androidLogger(Level.INFO)
+            fragmentFactory()
             modules(coreModules + appModules)
         }
 

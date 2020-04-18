@@ -34,13 +34,17 @@ class DetailAdapter : ListAdapter<DetailAdapterItem, DetailViewHolder>(detailAda
     private val _interaction = BroadcastChannel<DetailAdapterInteraction>(BUFFERED)
     val interaction: Flow<DetailAdapterInteraction> = _interaction.asFlow()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder =
-        DetailViewHolder(
-            parent.viewBinding { ItemDetailBinding.inflate(it, parent, false) }
-        )
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): DetailViewHolder = DetailViewHolder(
+        parent.viewBinding { ItemDetailBinding.inflate(it, parent, false) }
+    ) { _interaction.offer(it) }
 
-    override fun onBindViewHolder(holder: DetailViewHolder, position: Int) =
-        holder.bind(getItem(position)) { _interaction.offer(it) }
+    override fun onBindViewHolder(
+        holder: DetailViewHolder,
+        position: Int
+    ) = holder.bind(getItem(position))
 }
 
 private val detailAdapterItemDiff = object : DiffUtil.ItemCallback<DetailAdapterItem>() {

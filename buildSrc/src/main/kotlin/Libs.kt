@@ -240,6 +240,9 @@ object Libs {
 
     const val koin_core: String = "org.koin:koin-core:" + Versions.org_koin
 
+    const val koin_fragment: String = "org.koin:koin-androidx-fragment:" +
+        Versions.org_koin
+
     const val koin_test: String = "org.koin:koin-test:" + Versions.org_koin
 
     /**
