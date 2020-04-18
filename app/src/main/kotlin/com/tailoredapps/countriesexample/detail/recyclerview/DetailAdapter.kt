@@ -17,8 +17,8 @@ package com.tailoredapps.countriesexample.detail.recyclerview
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.tailoredapps.androidutil.ui.extensions.inflate
-import com.tailoredapps.countriesexample.R
+import com.tailoredapps.androidapptemplate.base.ui.viewBinding
+import com.tailoredapps.countriesexample.databinding.ItemDetailBinding
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.Flow
@@ -35,7 +35,9 @@ class DetailAdapter : ListAdapter<DetailAdapterItem, DetailViewHolder>(detailAda
     val interaction: Flow<DetailAdapterInteraction> = _interaction.asFlow()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder =
-        DetailViewHolder(parent.inflate(R.layout.item_detail))
+        DetailViewHolder(
+            parent.viewBinding { ItemDetailBinding.inflate(it, parent, false) }
+        )
 
     override fun onBindViewHolder(holder: DetailViewHolder, position: Int) =
         holder.bind(getItem(position)) { _interaction.offer(it) }

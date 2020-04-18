@@ -22,13 +22,6 @@ object Libs {
     /**
      * https://github.com/reactivecircus/FlowBinding
      */
-    const val flowbinding_swiperefreshlayout: String =
-            "io.github.reactivecircus.flowbinding:flowbinding-swiperefreshlayout:" +
-            Versions.io_github_reactivecircus_flowbinding
-
-    /**
-     * https://github.com/reactivecircus/FlowBinding
-     */
     const val flowbinding_activity: String =
             "io.github.reactivecircus.flowbinding:flowbinding-activity:" +
             Versions.io_github_reactivecircus_flowbinding
@@ -58,6 +51,13 @@ object Libs {
      */
     const val flowbinding_material: String =
             "io.github.reactivecircus.flowbinding:flowbinding-material:" +
+            Versions.io_github_reactivecircus_flowbinding
+
+    /**
+     * https://github.com/reactivecircus/FlowBinding
+     */
+    const val flowbinding_swiperefreshlayout: String =
+            "io.github.reactivecircus.flowbinding:flowbinding-swiperefreshlayout:" +
             Versions.io_github_reactivecircus_flowbinding
 
     /**
@@ -189,6 +189,12 @@ object Libs {
             Versions.androidx_navigation
 
     /**
+     * https://developer.android.com/topic/libraries/architecture/index.html
+     */
+    const val lifecycle_common_java8: String = "androidx.lifecycle:lifecycle-common-java8:" +
+            Versions.androidx_lifecycle
+
+    /**
      * https://developer.android.com/jetpack/androidx
      */
     const val lifecycle_runtime_ktx: String = "androidx.lifecycle:lifecycle-runtime-ktx:" +
@@ -297,6 +303,8 @@ object Libs {
      */
     const val threetenabp: String = "com.jakewharton.threetenabp:threetenabp:" +
             Versions.threetenabp
+
+    const val viewbinding: String = "androidx.databinding:viewbinding:" + Versions.viewbinding
 
     /**
      * https://developer.android.com/jetpack/androidx
