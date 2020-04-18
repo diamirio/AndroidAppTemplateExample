@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
-package com.tailoredapps.countriesexample.all
+package com.tailoredapps.countriesexample
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.api.load
 import com.tailoredapps.androidapptemplate.base.ui.viewBinding
-import com.tailoredapps.countriesexample.R
 import com.tailoredapps.countriesexample.core.model.Country
 import com.tailoredapps.countriesexample.databinding.ItemCountryBinding
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -40,13 +39,17 @@ class CountryAdapter : ListAdapter<Country, CountryViewHolder>(countryDiff) {
     private val _interaction = BroadcastChannel<CountryAdapterInteractionType>(BUFFERED)
     val interaction: Flow<CountryAdapterInteractionType> = _interaction.asFlow()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountryViewHolder =
-        CountryViewHolder(
-            parent.viewBinding { ItemCountryBinding.inflate(it, parent, false) }
-        )
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): CountryViewHolder = CountryViewHolder(
+        parent.viewBinding { ItemCountryBinding.inflate(it, parent, false) }
+    ) { _interaction.offer(it) }
 
-    override fun onBindViewHolder(holder: CountryViewHolder, position: Int) =
-        holder.bind(getItem(position)) { _interaction.offer(it) }
+    override fun onBindViewHolder(
+        holder: CountryViewHolder,
+        position: Int
+    ) = holder.bind(getItem(position))
 }
 
 private val countryDiff = object : DiffUtil.ItemCallback<Country>() {
@@ -63,10 +66,11 @@ private val countryDiff = object : DiffUtil.ItemCallback<Country>() {
 }
 
 class CountryViewHolder(
-    private val binding: ItemCountryBinding
+    private val binding: ItemCountryBinding,
+    private val interaction: (CountryAdapterInteractionType) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: Country, interaction: (CountryAdapterInteractionType) -> Unit) {
+    fun bind(item: Country) {
         binding.tvName.text = item.name
         binding.ivFlag.load(item.flagPngUrl) {
             crossfade(200)

@@ -155,12 +155,6 @@ object Libs {
     /**
      * https://kotlinlang.org/
      */
-    const val kotlin_gradle_plugin: String = "org.jetbrains.kotlin:kotlin-gradle-plugin:" +
-            Versions.org_jetbrains_kotlin
-
-    /**
-     * https://kotlinlang.org/
-     */
     const val kotlin_stdlib_jdk8: String = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:" +
             Versions.org_jetbrains_kotlin
 
@@ -168,6 +162,12 @@ object Libs {
      * https://kotlinlang.org/
      */
     const val kotlin_test: String = "org.jetbrains.kotlin:kotlin-test:" +
+            Versions.org_jetbrains_kotlin
+
+    /**
+     * https://kotlinlang.org/
+     */
+    const val kotlin_gradle_plugin: String = "org.jetbrains.kotlin:kotlin-gradle-plugin:" +
             Versions.org_jetbrains_kotlin
 
     /**
@@ -232,6 +232,9 @@ object Libs {
     const val androidx_test_runner: String = "androidx.test:runner:" + Versions.androidx_test
 
     const val koin_android: String = "org.koin:koin-android:" + Versions.org_koin
+
+    const val koin_androidx_fragment: String = "org.koin:koin-androidx-fragment:" +
+            Versions.org_koin
 
     const val koin_androidx_scope: String = "org.koin:koin-androidx-scope:" + Versions.org_koin
 

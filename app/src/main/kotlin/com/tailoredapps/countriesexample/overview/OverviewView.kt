@@ -28,8 +28,8 @@ import com.tailoredapps.androidapptemplate.base.ui.Async
 import com.tailoredapps.androidapptemplate.base.ui.viewBinding
 import com.tailoredapps.androidutil.ui.extensions.snack
 import com.tailoredapps.countriesexample.R
-import com.tailoredapps.countriesexample.all.CountryAdapter
-import com.tailoredapps.countriesexample.all.CountryAdapterInteractionType
+import com.tailoredapps.countriesexample.CountryAdapter
+import com.tailoredapps.countriesexample.CountryAdapterInteractionType
 import com.tailoredapps.countriesexample.databinding.FragmentOverviewBinding
 import com.tailoredapps.countriesexample.liftsAppBarWith
 import com.tailoredapps.countriesexample.removeLiftsAppBarWith
@@ -40,17 +40,17 @@ import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import reactivecircus.flowbinding.android.view.clicks
 import reactivecircus.flowbinding.swiperefreshlayout.refreshes
 import timber.log.Timber
 
-class OverviewView : Fragment(R.layout.fragment_overview) {
+class OverviewView(
+    private val adapter: CountryAdapter
+) : Fragment(R.layout.fragment_overview) {
 
     private val binding by viewBinding(FragmentOverviewBinding::bind)
     private val navController by lazy(::findNavController)
-    private val adapter by inject<CountryAdapter>()
     private val viewModel by viewModel<OverviewViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

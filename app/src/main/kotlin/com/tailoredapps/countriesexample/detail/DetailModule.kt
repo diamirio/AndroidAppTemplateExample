@@ -18,10 +18,14 @@
 package com.tailoredapps.countriesexample.detail
 
 import com.tailoredapps.countriesexample.detail.recyclerview.DetailAdapter
+import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 internal val detailModule = module {
-    viewModel { (alpha2Code: String) -> DetailViewModel(alpha2Code = alpha2Code, countriesProvider = get()) }
     factory { DetailAdapter() }
+    fragment { DetailView(adapter = get()) }
+    viewModel { (alpha2Code: String) ->
+        DetailViewModel(alpha2Code = alpha2Code, countriesProvider = get())
+    }
 }

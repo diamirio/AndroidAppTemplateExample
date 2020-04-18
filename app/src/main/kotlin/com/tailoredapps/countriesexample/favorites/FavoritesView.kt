@@ -25,8 +25,8 @@ import androidx.navigation.fragment.findNavController
 import at.florianschuster.control.bind
 import com.tailoredapps.androidapptemplate.base.ui.viewBinding
 import com.tailoredapps.countriesexample.R
-import com.tailoredapps.countriesexample.all.CountryAdapter
-import com.tailoredapps.countriesexample.all.CountryAdapterInteractionType
+import com.tailoredapps.countriesexample.CountryAdapter
+import com.tailoredapps.countriesexample.CountryAdapterInteractionType
 import com.tailoredapps.countriesexample.databinding.FragmentFavoritesBinding
 import com.tailoredapps.countriesexample.liftsAppBarWith
 import com.tailoredapps.countriesexample.removeLiftsAppBarWith
@@ -34,14 +34,14 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FavoritesView : Fragment(R.layout.fragment_favorites) {
+class FavoritesView(
+    private val adapter: CountryAdapter
+) : Fragment(R.layout.fragment_favorites) {
 
     private val binding by viewBinding(FragmentFavoritesBinding::bind)
     private val navController by lazy(::findNavController)
-    private val adapter by inject<CountryAdapter>()
     private val viewModel by viewModel<FavoritesViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

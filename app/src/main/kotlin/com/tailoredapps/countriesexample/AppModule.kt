@@ -19,7 +19,6 @@ package com.tailoredapps.countriesexample
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
-import com.tailoredapps.countriesexample.all.CountryAdapter
 import com.tailoredapps.countriesexample.core.model.AppBuildInfo
 import com.tailoredapps.countriesexample.detail.detailModule
 import com.tailoredapps.countriesexample.favorites.favoritesModule
